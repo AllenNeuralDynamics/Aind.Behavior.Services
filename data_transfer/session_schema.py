@@ -1,10 +1,24 @@
 import datetime
 from typing import Any, Dict, List, Tuple, Union
 
-from aind_data_schema.core.session import RelativePosition, RewardSolution, Session, SpoutSide, Stream
+from aind_data_schema.core.session import (
+    RelativePosition,
+    RewardSolution,
+    Session,
+    SpoutSide,
+    Stream,
+    RewardDeliveryConfig,
+    RewardSolution,
+    RewardSpoutConfig,
+    SpoutSide,
+)
 from aind_data_schema.models.devices import LightEmittingDiode, RewardDelivery, RewardSpout
 from aind_data_schema.models.modalities import Modality
 from aind_data_schema.models.stimulus import BehaviorStimulation, StimulusEpoch
+from aind_data_schema.models.organizations import Organization
+from aind_data_schema.models.coordinates import Translation3dTransform, Axis, AxisName
+from aind_data_schema.models.devices import Device
+from aind_data_schema.models.stimulus import Software
 
 
 def generate_schema(save_schema: bool = False):
@@ -14,9 +28,6 @@ def generate_schema(save_schema: bool = False):
     # Streams
     streams: List[Stream] = []  # names of Devices must match to the rig schema
 
-    ir_led = LightEmittingDiode(name="IrLightSource", excitation_power=1)
-    lamp = LightEmittingDiode(name="Lamp", excitation_power=1)  # to be replaced by Lamp
-
     streams.append(
         Stream(
             stream_end_time=placeholder_time,
@@ -24,7 +35,7 @@ def generate_schema(save_schema: bool = False):
             stream_modalities=[Modality.BEHAVIOR, Modality.BEHAVIOR_VIDEOS],
             daq_names=["Harp.Behavior", "Harp.ClockSynchronizer", "Harp.Lickometer", "Harp.Olfactometer"],
             camera_names=["MainCamera"],
-            light_sources=[ir_led, lamp],
+            light_sources=[],
             stimulus_device_names=[
                 "Speaker",
                 "LeftMonitor",
@@ -34,28 +45,65 @@ def generate_schema(save_schema: bool = False):
                 "RewardDelivery",
             ],
             notes="This is a stream",
-            # mouse_platform_name=["Wheel"], # placeholder, to be implemented
+            mouse_platform_name="Wheel",
+            active_mouse_platform=True,
         )
     )
 
     reward = RewardDelivery(
-        reward_solution=RewardSolution.WATER,
         reward_spouts=[
-            RewardSpout(side=SpoutSide.CENTER, starting_position=RelativePosition(), variable_position=True)
+            RewardSpout(
+                name="RandomSpout",
+                side=SpoutSide.CENTER,
+                spout_position=RelativePosition(
+                    device_position_transformations=[Translation3dTransform(translation=[0, 0, 0])],
+                    device_origin="Wheel",
+                    device_axes=[
+                        Axis(name=AxisName.X, direction="idk..."),
+                        Axis(name=AxisName.X, direction="idk..."),
+                        Axis(name=AxisName.X, direction="idk..."),
+                    ],  # and this is why it should be a dictionary....
+                ),
+                spout_diameter=2,
+                solenoid_valve=Device(name="SolenoidValve", device_type="SolenoidValve"),
+            )
         ],
+    )  # Why is this a duplicate from reward_spout_config?
+
+    reward_spout_config = RewardSpoutConfig(
+        side=SpoutSide.CENTER,
+        starting_position=RelativePosition(
+            device_position_transformations=[Translation3dTransform(translation=[0, 0, 0])],
+            device_origin="Wheel",
+            device_axes=[
+                Axis(name=AxisName.X, direction="idk..."),
+                Axis(name=AxisName.X, direction="idk..."),
+                Axis(name=AxisName.X, direction="idk..."),
+            ],  # and this is why it should be a dictionary....
+        ),
+        variable_position=True,
+    )
+
+    reward_config = RewardDeliveryConfig(reward_solution=RewardSolution.WATER, reward_spouts=[reward_spout_config])
+
+    bonsai_software = Software(
+        name="bonsai",
+        version="https://github.com/AllenNeuralDynamics/Aind.Behavior.VrForaging/blob/b613a620a75c4a92caba1307eb6f2ed5c3db1308/bonsai/Bonsai.config",
+        url="https://github.com/AllenNeuralDynamics/Aind.Behavior.VrForaging",
+    )
+    vr_foraging_script = Software(
+        name="vr_foraging_script",
+        version="b613a620a75c4a92caba1307eb6f2ed5c3db1308",
+        url="https://github.com/AllenNeuralDynamics/Aind.Behavior.VrForaging",
     )
 
     behavior_stim = BehaviorStimulation(
         behavior_name="vr-foraging",
         session_number=1,
-        behavior_software="Bonsai",
-        behavior_software_version="https://github.com/AllenNeuralDynamics/aind-vr-foraging/blob/main/bonsai/Bonsai.config",
-        behavior_script="https://github.com/AllenNeuralDynamics/aind-vr-foraging/blob/main/src/vr-foraging.bonsai",
-        behavior_script_version="795f8760c6aff6105885d027664c01fbc4762c5c",
-        input_parameters={},
+        behavior_software=[bonsai_software],
+        behavior_script=vr_foraging_script,
         output_parameters={},  # outcome of the session
-        reward_consumed_during_training=0,
-        reward_consumed_total=0,
+        reward_consumed_during_epoch=0,
         trials_total=-1,
         trials_finished=-1,
         trials_rewarded=-1,
@@ -70,12 +118,12 @@ def generate_schema(save_schema: bool = False):
         session_start_time=placeholder_time,
         rig_id="Rig1",
         session_type="foraging-vr",
-        subject_id=123132,
+        subject_id="123132",
         animal_weight_post=0,
         animal_weight_prior=0,
         data_streams=streams,
         stimulus_epochs=stimulus_epochs,
-        reward_delivery=reward,
+        reward_delivery=reward_config,
         notes="This is a session",
     )
 

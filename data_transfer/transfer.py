@@ -56,4 +56,10 @@ if __name__ == "__main__":
         session = abs.AindBehaviorSessionModel.model_validate_json(f.read())
 
     aind_session = generate_schema(save_schema=False)
+    aind_session.subject_id = session.subject
+    aind_session.session_start_time = session.date
+    aind_session.session_end_time = session.date
+    aind_session.session_type = session.experiment
+    aind_session.notes = session.notes
+
     # copy_directories(root, target)
