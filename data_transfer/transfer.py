@@ -7,6 +7,7 @@ from typing import Dict, Optional
 import aind_behavior_services as abs
 from aind_data_schema.models.modalities import Modality
 from session_schema import generate_schema
+import sys
 
 MODALITY_DIR_MAP: Dict[str, Optional[Modality]] = {
     "Lickometer.harp": Modality.BEHAVIOR,
@@ -24,35 +25,46 @@ MODALITY_DIR_MAP: Dict[str, Optional[Modality]] = {
 }
 
 
-def copy_directories(ROOT: PathLike, target: PathLike):
-    for root, dirs, files in os.walk(ROOT):
+def copy_directories(src: PathLike, dst: PathLike):
+    """
+    Copy directories from the source path to the destination path.
+
+    Args:
+        src (PathLike): The source path containing the directories to be copied.
+        dst (PathLike): The destination path where the directories will be copied to.
+
+    Returns:
+        None
+    """
+    for root, dirs, files in os.walk(src):
         for directory in dirs:
             if directory in MODALITY_DIR_MAP.keys():
                 if MODALITY_DIR_MAP[directory] is None:
                     print(f"Copying {directory} to target root.")
-                    shutil.copytree(os.path.join(root, directory), os.path.join(target, directory), dirs_exist_ok=True)
+                    shutil.copytree(os.path.join(root, directory), os.path.join(dst, directory), dirs_exist_ok=True)
                 else:
                     print(f"Copying {directory} to {MODALITY_DIR_MAP[directory].name}")
                     shutil.copytree(
                         os.path.join(root, directory),
-                        os.path.join(target, MODALITY_DIR_MAP[directory].name, directory),
+                        os.path.join(dst, MODALITY_DIR_MAP[directory].name, directory),
                         dirs_exist_ok=True,
                     )
+    return True
 
 
-if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description='Copy directories based on modality mapping')
-    # parser.add_argument('root', type=str, help='Root folder path')
-    # parser.add_argument('target', type=str, help='Target folder path')
-    # args = parser.parse_args()
+def make_session_schema(src: PathLike, dst: PathLike):
+    """
+    Generate the session schema for the target path.
 
-    # root = args.root
-    # target = args.target
-    root = r"C:\Users\bruno.cruz\OneDrive - Allen Institute\Desktop\20240304T143745"
-    target = r"C:\Users\bruno.cruz\OneDrive - Allen Institute\Desktop\20240304T143745_AIND"
+    Args:
+        src (PathLike): The source path containing the directories to be copied.
+        dst (PathLike): The destination path where the directories will be copied to.
 
+    Returns:
+        None
+    """
     session: abs.AindBehaviorSessionModel
-    with open(os.path.join(root, r"Config/RawSubject.json"), "r", encoding="utf-8") as f:
+    with open(os.path.join(src, r"Config/RawSubject.json"), "r", encoding="utf-8") as f:
         session = abs.AindBehaviorSessionModel.model_validate_json(f.read())
 
     aind_session = generate_schema(save_schema=False)
@@ -62,4 +74,24 @@ if __name__ == "__main__":
     aind_session.session_type = session.experiment
     aind_session.notes = session.notes
 
-    # copy_directories(root, target)
+    with open(os.path.join(dst, 'Config', "AindSession.json"), "w", encoding="utf-8") as f:
+        f.write(aind_session.model_dump_json(indent=3))
+    return aind_session
+
+
+def main(root: PathLike, target: PathLike):
+    success: bool = copy_directories(root, target)
+    aind_session = make_session_schema(root, target)
+    return (success, aind_session)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Copy directories based on modality mapping')
+    parser.add_argument('root', type=str, help='Root folder path')
+    parser.add_argument('target', type=str, help='Target folder path')
+    args = parser.parse_args()
+
+    src = args.root
+    target = args.target
+    _, _ = main(src, target)
+
