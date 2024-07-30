@@ -1,19 +1,16 @@
 import unittest
 from typing import Literal
 
-from aind_behavior_services.launcher import Launcher, LauncherCli
-
 from aind_behavior_services import (
     AindBehaviorRigModel,
     AindBehaviorSessionModel,
     AindBehaviorTaskLogicModel,
 )
+from aind_behavior_services.launcher import Launcher, LauncherCli
 
 
 class LauncherTests(unittest.TestCase):
-
     def test_instance(self):
-
         __version__ = "0.1.0"
 
         class AindGenericTaskRig(AindBehaviorRigModel):
@@ -39,7 +36,6 @@ class LauncherTests(unittest.TestCase):
             self.assertTrue("This is broken" in context.exception)
 
     def test_launcher_cli(self):
-
         __version__ = "0.1.0"
 
         class AindGenericTaskRig(AindBehaviorRigModel):

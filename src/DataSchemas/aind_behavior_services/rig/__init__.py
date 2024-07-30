@@ -4,8 +4,9 @@ import os
 from enum import Enum
 from typing import Annotated, Dict, Generic, Literal, Optional, TypeVar, Union
 
-from aind_behavior_services.base import SchemaVersionedModel, coerce_schema_version
 from pydantic import BaseModel, Field, RootModel, field_validator
+
+from aind_behavior_services.base import SchemaVersionedModel, coerce_schema_version
 
 
 class Device(BaseModel):
@@ -19,7 +20,7 @@ class VideoWriterFfmpeg(BaseModel):
     frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
     container_extension: str = Field(default="mp4", description="Container extension")
     output_arguments: str = Field(
-        default="-c:v hevc_nvenc -pix_fmt x2rgb10le -color_range full -tune hq -preset p3 -rc vbr -cq 16 -rc-lookahead 56 -temporal-aq 1 -qmin 0 -qmax 10",  # noqa E501
+        default="-c:v hevc_nvenc -pix_fmt x2rgb10le -color_range full -tune hq -preset p3 -rc vbr -cq 16 -rc-lookahead 56 -temporal-aq 1 -qmin 0 -qmax 10",  # E501
         description="Output arguments",
     )
 
@@ -43,6 +44,13 @@ class WebCamera(Device):
     )
 
 
+class Rect(BaseModel):
+    x: int = Field(default=0, ge=0, description="X coordinate of the top-left corner")
+    y: int = Field(default=0, ge=0, description="Y coordinate of the top-left corner")
+    width: int = Field(default=0, ge=0, description="Width of the rectangle")
+    height: int = Field(default=0, ge=0, description="Height of the rectangle")
+
+
 class SpinnakerCamera(Device):
     device_type: Literal["SpinnakerCamera"] = Field(default="SpinnakerCamera", description="Device type")
     serial_number: str = Field(..., description="Camera serial number")
@@ -50,9 +58,18 @@ class SpinnakerCamera(Device):
     color_processing: Literal["Default", "NoColorProcessing"] = Field(default="Default", description="Color processing")
     exposure: int = Field(default=1000, ge=100, description="Exposure time")
     gain: float = Field(default=0, ge=0, description="Gain")
+    region_of_interest: Rect = Field(default=Rect(), description="Region of interest", validate_default=True)
     video_writer: Optional[VideoWriter] = Field(
         default=None, description="Video writer. If not provided, no video will be saved."
     )
+
+    @field_validator("region_of_interest")
+    @classmethod
+    def validate_roi(cls, v: Rect) -> Rect:
+        if v.width == 0 or v.height == 0:
+            if any([x != 0 for x in [v.width, v.height, v.x, v.y]]):
+                raise ValueError("If width or height is 0, all other values must be 0")
+        return v
 
 
 TCamera = TypeVar("TCamera", bound=Union[WebCamera, SpinnakerCamera])
@@ -167,13 +184,39 @@ class HarpDevice(RootModel):
     ]
 
 
+class Vector3(BaseModel):
+    x: float = Field(default=0, description="X coordinate of the point")
+    y: float = Field(default=0, description="Y coordinate of the point")
+    z: float = Field(default=0, description="Z coordinate of the point")
+
+
+class DisplayIntrinsics(BaseModel):
+    frame_width: int = Field(default=1920, ge=0, description="Frame width")
+    frame_height: int = Field(default=1080, ge=0, description="Frame height")
+    display_width: float = Field(default=20, ge=0, description="Display width (cm)")
+    display_height: float = Field(default=15, ge=0, description="Display width (cm)")
+
+
+class DisplayExtrinsics(BaseModel):
+    rotation: Vector3 = Field(
+        default=Vector3(x=0.0, y=0.0, z=0.0), description="Rotation vector (radians)", validate_default=True
+    )
+    translation: Vector3 = Field(
+        default=Vector3(x=0.0, y=1.309016, z=-13.27), description="Translation (in cm)", validate_default=True
+    )
+
+
+class DisplayCalibration(BaseModel):
+    intrinsics: DisplayIntrinsics = Field(default=DisplayIntrinsics(), description="Intrinsics", validate_default=True)
+    extrinsics: DisplayExtrinsics = Field(default=DisplayExtrinsics(), description="Extrinsics", validate_default=True)
+
+
 class Screen(Device):
     device_type: Literal["Screen"] = Field(default="Screen", description="Device type")
     display_index: int = Field(default=1, description="Display index")
     target_render_frequency: float = Field(default=60, description="Target render frequency")
     target_update_frequency: float = Field(default=120, description="Target update frequency")
-    calibration_directory: str = Field(default="Calibration\\Monitors\\", description="Calibration directory")
-    texture_assets_directory: str = Field(default="Textures", description="Calibration directory")
+    calibration: DisplayCalibration = Field(default=DisplayCalibration(), description="Calibration")
     brightness: float = Field(default=0, le=1, ge=-1, description="Brightness")
     contrast: float = Field(default=1, le=1, ge=-1, description="Contrast")
 

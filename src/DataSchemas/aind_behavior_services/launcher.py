@@ -5,8 +5,6 @@ import secrets
 from typing import Generic, List, Optional, Tuple, Type, TypeVar, Union
 
 import git
-from aind_behavior_services.db_utils import SubjectDataBase, SubjectEntry
-from aind_behavior_services.utils import open_bonsai_process
 from pydantic import ValidationError
 
 from aind_behavior_services import (
@@ -14,6 +12,8 @@ from aind_behavior_services import (
     AindBehaviorSessionModel,
     AindBehaviorTaskLogicModel,
 )
+from aind_behavior_services.db_utils import SubjectDataBase, SubjectEntry
+from aind_behavior_services.utils import open_bonsai_process
 
 TRig = TypeVar("TRig", bound=AindBehaviorRigModel)  # pylint: disable=invalid-name
 TSession = TypeVar("TSession", bound=AindBehaviorSessionModel)  # pylint: disable=invalid-name
@@ -514,7 +514,6 @@ class Launcher(Generic[TRig, TSession, TTaskLogic]):
 
 
 class LauncherCli(Generic[TRig, TSession, TTaskLogic]):
-
     def __init__(
         self,
         rig_schema: Type[TRig],
@@ -527,7 +526,6 @@ class LauncherCli(Generic[TRig, TSession, TTaskLogic]):
         repository_dir: Optional[os.PathLike | str] = None,
         **launcher_kwargs,
     ) -> None:
-
         parser = self._get_default_arg_parser()
         args, _ = parser.parse_known_args()
 
@@ -577,7 +575,6 @@ class LauncherCli(Generic[TRig, TSession, TTaskLogic]):
 
     @staticmethod
     def _get_default_arg_parser() -> argparse.ArgumentParser:
-
         parser = argparse.ArgumentParser()
 
         parser.add_argument("--data_dir", help="Specify the data directory")
