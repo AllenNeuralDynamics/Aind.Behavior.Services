@@ -109,9 +109,8 @@ class LogPayload(BaseModel):
     application_version: Optional[str] = Field(default=None, description="The version of the application")
 
 
-@with_message_type
 class StopMessage(BaseModel):
-    pass
+    message_type: Literal["stop"] = "stop"
 
 
 @with_message_type
