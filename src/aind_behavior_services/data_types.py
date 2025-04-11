@@ -72,17 +72,24 @@ def with_message_type(cls: type[TPayload]) -> type[TPayload]:
         return cls
 
 
+class MessageType(StrEnum):
+    REQUEST = "request"
+    REPLY = "reply"
+    EVENT = "event"
+
+
 class BaseMessage(BaseModel, Generic[TPayload]):
     """
     A message is a generic message that can be used to track any message that occurs in the software.
     """
 
-    message_type: str
+    message_type: MessageType
     protocol_version: Literal[1] = 1
     timestamp: datetime.datetime = Field(description="The timestamp of the message")
     payload: TPayload = Field(description="The payload of the message")
     process_id: str = Field(description="Process that created the message")
     hostname: str = Field(description="Hostname that created the message")
+
 
 
 class LogLevel(enum.IntEnum):
@@ -109,22 +116,22 @@ class LogPayload(BaseModel):
     application_version: Optional[str] = Field(default=None, description="The version of the application")
 
 
-class StopMessage(BaseModel):
+class StopPayload(BaseModel):
     message_type: Literal["stop"] = "stop"
 
 
 @with_message_type
-class StartMessage(BaseModel):
+class StartPayload(BaseModel):
     pass
 
 
 PayloadType = TypeAliasType(
-    "MessageType",
+    "PayloadType",
     Annotated[
         Union[
-            StartMessage,
+            StartPayload,
             LogPayload,
-            StopMessage,
+            StopPayload,
         ],
         Field(discriminator="message_type"),
     ],
