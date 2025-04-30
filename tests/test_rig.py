@@ -4,16 +4,20 @@ from typing import List, Literal, Optional
 from pydantic import Field
 
 from aind_behavior_services.rig import (
+    AindBehaviorRigModel,
+)
+from aind_behavior_services.rig.cameras import (
     FFMPEG_INPUT,
     FFMPEG_OUTPUT_8BIT,
     FFMPEG_OUTPUT_16BIT,
-    AindBehaviorRigModel,
+    VideoWriterFfmpeg,
+    VideoWriterFfmpegFactory,
+)
+from aind_behavior_services.rig.harp import (
     ConnectedClockOutput,
     HarpDevice,
     HarpDeviceGeneric,
     HarpWhiteRabbit,
-    VideoWriterFfmpeg,
-    VideoWriterFfmpegFactory,
     validate_harp_clock_output,
 )
 

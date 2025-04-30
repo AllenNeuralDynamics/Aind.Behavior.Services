@@ -7,7 +7,7 @@ import numpy as np
 from pydantic import BaseModel, Field
 from sklearn.linear_model import LinearRegression
 
-from aind_behavior_services.calibration import Calibration
+from ._base import Calibration
 
 logger = logging.getLogger(__name__)
 
