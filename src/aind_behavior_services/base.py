@@ -28,7 +28,7 @@ from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 from semver import Version
 
-from aind_behavior_services import __version__ as pkg_version
+from . import __version__ as pkg_version
 
 logger = logging.getLogger(__name__)
 
