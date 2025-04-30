@@ -4,6 +4,7 @@ import logging
 from typing import Dict, Literal, Optional
 
 from pydantic import BaseModel, Field
+from typing_extensions import deprecated
 
 from aind_behavior_services.base import SchemaVersionedModel
 
@@ -12,13 +13,15 @@ logger = logging.getLogger(__name__)
 # Import core types
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
+@deprecated("SubjectDataBase is deprecated.")
 class SubjectEntry(BaseModel):
     task_logic_target: str = Field(..., description="Name of the json file containing the task logic")
 
 
+@deprecated("SubjectDataBase is deprecated.")
 class SubjectDataBase(SchemaVersionedModel):
     version: Literal[__version__] = __version__
     subjects: Dict[str, Optional[SubjectEntry]] = Field(

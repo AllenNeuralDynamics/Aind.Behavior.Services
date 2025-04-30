@@ -2,8 +2,16 @@ __version__ = "0.10.2"
 
 import logging
 
-from .rig import AindBehaviorRigModel  # noqa: F401
-from .session import AindBehaviorSessionModel  # noqa: F401
-from .task_logic import AindBehaviorTaskLogicModel  # noqa: F401
+from .base import SchemaVersionedModel
+from .rig import AindBehaviorRigModel
+from .session import AindBehaviorSessionModel
+from .task_logic import AindBehaviorTaskLogicModel
+
+__all__ = [
+    "AindBehaviorRigModel",
+    "AindBehaviorSessionModel",
+    "AindBehaviorTaskLogicModel",
+    "SchemaVersionedModel",
+]
 
 logger = logging.getLogger(__name__)

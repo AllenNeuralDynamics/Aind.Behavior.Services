@@ -252,6 +252,11 @@ class HarpEnvironmentSensor(_HarpDeviceBase):
     who_am_i: Literal[1405] = 1405
 
 
+class HarpCuttlefishfip(_HarpDeviceBase):
+    device_type: Literal["cuTTLefishFip"] = "cuTTLefishFip"
+    who_am_i: Literal[1407] = 1407
+
+
 _HarpDevice = Union[
     HarpDeviceGeneric,
     HarpUSBHub,
@@ -293,6 +298,7 @@ _HarpDevice = Union[
     HarpCuttlefish,
     HarpWhiteRabbit,
     HarpEnvironmentSensor,
+    HarpCuttlefishfip,
 ]
 
 if TYPE_CHECKING:
@@ -345,5 +351,6 @@ __all__ = [
     "HarpCuttlefish",
     "HarpWhiteRabbit",
     "HarpEnvironmentSensor",
+    "HarpCuttlefishfip",
     "HarpDevice",
 ]

@@ -3,9 +3,10 @@ from typing import ClassVar, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from aind_behavior_services.calibration import Calibration
 from aind_behavior_services.patterns import ValuePair
-from aind_behavior_services.rig import HarpTreadmill
+from aind_behavior_services.rig.harp import HarpTreadmill
+
+from ._base import Calibration
 
 logger = logging.getLogger(__name__)
 

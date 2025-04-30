@@ -1,4 +1,11 @@
-from ._base import AindBehaviorRigModel, Device, TRig  # noqa
-from .cameras import *  # noqa
-from .harp import *  # noqa
-from .visual_stimulation import *  # noqa
+from . import cameras, harp, network, visual_stimulation
+from ._base import AindBehaviorRigModel, Device
+
+__all__ = [
+    "AindBehaviorRigModel",
+    "Device",
+    "cameras",
+    "harp",
+    "visual_stimulation",
+    "network",
+]

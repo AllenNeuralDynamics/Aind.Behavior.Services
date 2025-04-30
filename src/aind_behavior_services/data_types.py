@@ -4,6 +4,7 @@ import logging
 from enum import StrEnum
 from typing import Any, Generic, Literal, Optional, TypeVar, cast
 
+
 from pydantic import BaseModel, Field, SerializeAsAny, create_model
 from typing_extensions import Annotated, TypeAliasType, Union
 
@@ -29,11 +30,10 @@ class TimestampSource(StrEnum):
     RENDER = "render"
 
 
-T = TypeVar("T", bound=Any)
+TData = TypeVar("TData", bound=Any)
 
 
-
-class SoftwareEvent(BaseModel, Generic[T]):
+class SoftwareEvent(BaseModel, Generic[TData]):
     """
     A software event is a generic event that can be used to track any event that occurs in the software.
     """
@@ -43,7 +43,7 @@ class SoftwareEvent(BaseModel, Generic[T]):
     timestamp_source: TimestampSource = Field(default=TimestampSource.NULL, description="The source of the timestamp")
     frame_index: Optional[int] = Field(default=None, ge=0, description="The frame index of the event")
     frame_timestamp: Optional[float] = Field(default=None, description="The timestamp of the frame")
-    data: Optional[T] = Field(default=None, description="The data of the event")
+    data: Optional[TData] = Field(default=None, description="The data of the event")
     data_type: DataType = Field(default=DataType.NULL, alias="dataType", description="The data type of the event")
     data_type_hint: Optional[str] = Field(default=None, description="The data type hint of the event")
 
