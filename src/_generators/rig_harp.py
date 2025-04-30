@@ -6,7 +6,7 @@ import jinja2
 import requests
 import yaml
 
-WHOAMI_REMOTE = "https://raw.githubusercontent.com/harp-tech/protocol/refs/heads/main/whoami.yml"
+WHOAMI_REMOTE = "https://raw.githubusercontent.com/harp-tech/whoami/refs/heads/main/whoami.yml"
 
 
 class HarpBoard(TypedDict):
@@ -17,7 +17,7 @@ class HarpBoard(TypedDict):
 
 
 def fetch_who_am_i_list(remote: str = WHOAMI_REMOTE) -> dict:
-    response = requests.get(remote)
+    response = requests.get(remote, timeout=5)
     response.raise_for_status()
     parsed = yaml.load(response.content, Loader=yaml.FullLoader)["devices"]
     return {whoami: name for whoami, name in zip(parsed.keys(), map(lambda x: x.get("name"), parsed.values()))}
