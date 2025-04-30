@@ -4,11 +4,10 @@ import logging
 from enum import StrEnum
 from typing import Any, Generic, Literal, Optional, TypeVar, cast
 
-
 from pydantic import BaseModel, Field, SerializeAsAny, create_model
 from typing_extensions import Annotated, TypeAliasType, Union
 
-from aind_behavior_services.base import SchemaVersionedModel
+from .base import SchemaVersionedModel
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +88,6 @@ class BaseMessage(BaseModel, Generic[TPayload]):
     payload: TPayload = Field(description="The payload of the message")
     process_id: str = Field(description="Process that created the message")
     hostname: str = Field(description="Hostname that created the message")
-
 
 
 class LogLevel(enum.IntEnum):

@@ -2,11 +2,11 @@ import inspect
 import logging
 from pathlib import Path
 
-from aind_behavior_services import db_utils
-from aind_behavior_services.calibration import aind_manipulator
-from aind_behavior_services.data_types import DataTypes
-from aind_behavior_services.session import AindBehaviorSessionModel
-from aind_behavior_services.utils import (
+from .. import db_utils
+from ..calibration import aind_manipulator
+from ..data_types import DataTypes
+from ..session import AindBehaviorSessionModel
+from ..utils import (
     convert_pydantic_to_bonsai,
     pascal_to_snake_case,
     snake_to_pascal_case,

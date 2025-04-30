@@ -4,7 +4,8 @@ from typing import List, Literal, Optional, Self
 from pydantic import Field, model_validator
 
 import aind_behavior_services.utils
-from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
+
+from ..base import DefaultAwareDatetime, SchemaVersionedModel
 
 __version__ = "0.3.1"
 import logging
