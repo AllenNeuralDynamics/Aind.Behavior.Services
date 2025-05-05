@@ -1,6 +1,7 @@
 {
   "definitions": {
     "SubjectEntry": {
+      "deprecated": true,
       "properties": {
         "task_logic_target": {
           "description": "Name of the json file containing the task logic",
@@ -15,6 +16,7 @@
       "type": "object"
     }
   },
+  "deprecated": true,
   "properties": {
     "aind_behavior_services_pkg_version": {
       "default": "0.10.2",
@@ -23,8 +25,8 @@
       "type": "string"
     },
     "version": {
-      "const": "0.1.0",
-      "default": "0.1.0",
+      "const": "0.1.1",
+      "default": "0.1.1",
       "title": "Version",
       "type": "string"
     },

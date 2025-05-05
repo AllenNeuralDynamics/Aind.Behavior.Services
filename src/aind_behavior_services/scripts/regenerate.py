@@ -5,6 +5,7 @@ from pathlib import Path
 from .. import db_utils
 from ..calibration import aind_manipulator
 from ..data_types import DataTypes
+from ..message import MessageProtocol
 from ..session import AindBehaviorSessionModel
 from ..utils import (
     convert_pydantic_to_bonsai,
@@ -46,6 +47,7 @@ def main():
     convert_pydantic_to_bonsai(
         {"aind_behavior_subject_database": db_utils.SubjectDataBase}, schema_path=SCHEMA_ROOT, skip_sgen=True
     )
+    convert_pydantic_to_bonsai({"aind_behavior_message": MessageProtocol}, schema_path=SCHEMA_ROOT, skip_sgen=False)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,264 @@
+{
+  "definitions": {
+    "AnyMessage": {
+      "$ref": "#/definitions/BaseMessage_Any_",
+      "title": "AnyMessage"
+    },
+    "BaseMessage_Any_": {
+      "properties": {
+        "message_type": {
+          "$ref": "#/definitions/MessageType"
+        },
+        "protocol_version": {
+          "const": "0",
+          "default": "0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "The timestamp of the message",
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "payload": {
+          "description": "The payload of the message",
+          "title": "Payload"
+        },
+        "process_id": {
+          "description": "Process that created the message",
+          "title": "Process Id",
+          "type": "string"
+        },
+        "hostname": {
+          "description": "Hostname that created the message",
+          "title": "Hostname",
+          "type": "string"
+        },
+        "rig_name": {
+          "description": "Rig name that created the message",
+          "title": "Rig Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_type",
+        "timestamp",
+        "payload",
+        "process_id",
+        "hostname",
+        "rig_name"
+      ],
+      "title": "BaseMessage[Any]",
+      "type": "object"
+    },
+    "BaseMessage_Payload_": {
+      "properties": {
+        "message_type": {
+          "$ref": "#/definitions/MessageType"
+        },
+        "protocol_version": {
+          "const": "0",
+          "default": "0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "The timestamp of the message",
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/definitions/Payload",
+          "description": "The payload of the message"
+        },
+        "process_id": {
+          "description": "Process that created the message",
+          "title": "Process Id",
+          "type": "string"
+        },
+        "hostname": {
+          "description": "Hostname that created the message",
+          "title": "Hostname",
+          "type": "string"
+        },
+        "rig_name": {
+          "description": "Rig name that created the message",
+          "title": "Rig Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_type",
+        "timestamp",
+        "payload",
+        "process_id",
+        "hostname",
+        "rig_name"
+      ],
+      "title": "BaseMessage[Payload]",
+      "type": "object"
+    },
+    "KnownMessage": {
+      "$ref": "#/definitions/BaseMessage_Payload_",
+      "title": "KnownMessage"
+    },
+    "LogLevel": {
+      "description": "Log levels for the logging system.",
+      "enum": [
+        50,
+        40,
+        30,
+        20,
+        10,
+        0
+      ],
+      "title": "LogLevel",
+      "type": "integer",
+      "x-enumNames": [
+        "Critical",
+        "Error",
+        "Warning",
+        "Info",
+        "Debug",
+        "Notset"
+      ]
+    },
+    "LogPayload": {
+      "description": "A payload for a log message.",
+      "properties": {
+        "payload_type": {
+          "const": "log",
+          "default": "log",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/definitions/LogLevel",
+          "default": 10,
+          "description": "The level of the log message"
+        },
+        "message": {
+          "description": "The message of the log",
+          "title": "Message",
+          "type": "string"
+        },
+        "context": {
+          "description": "Additional context for the log message",
+          "title": "Context"
+        },
+        "application_version": {
+          "default": null,
+          "description": "The version of the application",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Application Version"
+        }
+      },
+      "required": [
+        "message",
+        "context"
+      ],
+      "title": "LogPayload",
+      "type": "object"
+    },
+    "MessageType": {
+      "enum": [
+        "request",
+        "reply",
+        "event"
+      ],
+      "title": "MessageType",
+      "type": "string"
+    },
+    "Payload": {
+      "discriminator": {
+        "mapping": {
+          "log": "#/definitions/LogPayload",
+          "start": "#/definitions/StartPayload",
+          "stop": "#/definitions/StopPayload"
+        },
+        "propertyName": "payload_type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/definitions/StartPayload"
+        },
+        {
+          "$ref": "#/definitions/LogPayload"
+        },
+        {
+          "$ref": "#/definitions/StopPayload"
+        }
+      ]
+    },
+    "StartPayload": {
+      "properties": {
+        "payload_type": {
+          "const": "start",
+          "default": "start",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "args": {
+          "default": null,
+          "description": "Arguments for the stop message",
+          "oneOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Args"
+        }
+      },
+      "title": "StartPayload",
+      "type": "object"
+    },
+    "StopPayload": {
+      "properties": {
+        "payload_type": {
+          "const": "stop",
+          "default": "stop",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "args": {
+          "default": null,
+          "description": "Arguments for the stop message",
+          "oneOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Args"
+        }
+      },
+      "title": "StopPayload",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "any_message": {
+      "$ref": "#/definitions/AnyMessage"
+    },
+    "known_message": {
+      "$ref": "#/definitions/KnownMessage"
+    }
+  },
+  "required": [
+    "any_message",
+    "known_message"
+  ],
+  "title": "MessageProtocol",
+  "type": "object",
+  "x-abstract": "True"
+}
