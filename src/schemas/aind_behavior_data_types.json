@@ -19,8 +19,8 @@
           "description": "The synchronization quad value",
           "oneOf": [
             {
-              "maximum": 1.0,
-              "minimum": 0.0,
+              "maximum": 1,
+              "minimum": 0,
               "type": "number"
             },
             {
@@ -48,7 +48,7 @@
           "description": "The timestamp of the frame",
           "oneOf": [
             {
-              "minimum": 0.0,
+              "minimum": 0,
               "type": "number"
             },
             {

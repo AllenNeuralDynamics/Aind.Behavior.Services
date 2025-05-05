@@ -5,7 +5,7 @@ from pathlib import Path
 from .. import db_utils
 from ..calibration import aind_manipulator
 from ..data_types import DataTypes
-from ..message import MessageProtocol
+from ..message_protocol import MessageProtocol
 from ..session import AindBehaviorSessionModel
 from ..utils import (
     convert_pydantic_to_bonsai,

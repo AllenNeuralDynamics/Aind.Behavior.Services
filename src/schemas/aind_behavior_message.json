@@ -1,9 +1,5 @@
 {
   "definitions": {
-    "AnyMessage": {
-      "$ref": "#/definitions/BaseMessage_Any_",
-      "title": "AnyMessage"
-    },
     "BaseMessage_Any_": {
       "properties": {
         "message_type": {
@@ -100,10 +96,6 @@
       "title": "BaseMessage[Payload]",
       "type": "object"
     },
-    "KnownMessage": {
-      "$ref": "#/definitions/BaseMessage_Payload_",
-      "title": "KnownMessage"
-    },
     "LogLevel": {
       "description": "Log levels for the logging system.",
       "enum": [
@@ -169,6 +161,10 @@
       "title": "LogPayload",
       "type": "object"
     },
+    "Message": {
+      "$ref": "#/definitions/BaseMessage_Any_",
+      "title": "Message"
+    },
     "MessageType": {
       "enum": [
         "request",
@@ -198,6 +194,10 @@
           "$ref": "#/definitions/StopPayload"
         }
       ]
+    },
+    "RegisteredMessage": {
+      "$ref": "#/definitions/BaseMessage_Payload_",
+      "title": "RegisteredMessage"
     },
     "StartPayload": {
       "properties": {
@@ -248,10 +248,10 @@
   },
   "properties": {
     "any_message": {
-      "$ref": "#/definitions/AnyMessage"
+      "$ref": "#/definitions/Message"
     },
     "known_message": {
-      "$ref": "#/definitions/KnownMessage"
+      "$ref": "#/definitions/RegisteredMessage"
     }
   },
   "required": [

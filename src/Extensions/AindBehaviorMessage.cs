@@ -12,7 +12,7 @@ namespace DataSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class AnyMessage
+    public partial class BaseMessageAny
     {
     
         private MessageType _messageType;
@@ -29,11 +29,11 @@ namespace DataSchema
     
         private string _rigName;
     
-        public AnyMessage()
+        public BaseMessageAny()
         {
         }
     
-        protected AnyMessage(AnyMessage other)
+        protected BaseMessageAny(BaseMessageAny other)
         {
             _messageType = other._messageType;
             _protocolVersion = other._protocolVersion;
@@ -158,14 +158,14 @@ namespace DataSchema
             }
         }
     
-        public System.IObservable<AnyMessage> Process()
+        public System.IObservable<BaseMessageAny> Process()
         {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new AnyMessage(this)));
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new BaseMessageAny(this)));
         }
     
-        public System.IObservable<AnyMessage> Process<TSource>(System.IObservable<TSource> source)
+        public System.IObservable<BaseMessageAny> Process<TSource>(System.IObservable<TSource> source)
         {
-            return System.Reactive.Linq.Observable.Select(source, _ => new AnyMessage(this));
+            return System.Reactive.Linq.Observable.Select(source, _ => new BaseMessageAny(this));
         }
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
@@ -718,7 +718,7 @@ namespace DataSchema
     public abstract partial class MessageProtocol
     {
     
-        private AnyMessage _anyMessage = new AnyMessage();
+        private BaseMessageAny _anyMessage = new BaseMessageAny();
     
         private BaseMessagePayload _knownMessage = new BaseMessagePayload();
     
@@ -734,7 +734,7 @@ namespace DataSchema
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("any_message", Required=Newtonsoft.Json.Required.Always)]
-        public AnyMessage AnyMessage
+        public BaseMessageAny AnyMessage
         {
             get
             {
@@ -976,9 +976,9 @@ namespace DataSchema
             return System.Reactive.Linq.Observable.Select(source, value => Newtonsoft.Json.JsonConvert.SerializeObject(value));
         }
 
-        public System.IObservable<string> Process(System.IObservable<AnyMessage> source)
+        public System.IObservable<string> Process(System.IObservable<BaseMessageAny> source)
         {
-            return Process<AnyMessage>(source);
+            return Process<BaseMessageAny>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<BaseMessagePayload> source)
@@ -1020,7 +1020,7 @@ namespace DataSchema
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of JSON strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AnyMessage>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BaseMessageAny>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BaseMessagePayload>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LogPayload>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Payload>))]
