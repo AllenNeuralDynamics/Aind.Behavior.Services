@@ -18,7 +18,7 @@ class Device(BaseModel):
     # We should consider removing this in the future.
     @model_validator(mode="after")
     def _set_name(self) -> Self:
-        if self.name is None:
+        if (name := self.name) is None:
             if self.calibration is not None:
                 name = getattr(self.calibration, "device_name", None)
             if name is None:
