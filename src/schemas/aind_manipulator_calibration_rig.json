@@ -156,6 +156,19 @@
           "title": "Device Type",
           "type": "string"
         },
+        "device_name": {
+          "default": null,
+          "description": "Device name",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Device Name"
+        },
         "additional_settings": {
           "default": null,
           "description": "Additional settings",
