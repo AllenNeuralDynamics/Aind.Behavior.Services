@@ -10,26 +10,15 @@ from aind_behavior_services.base import SchemaVersionedModel
 
 class Device(BaseModel):
     device_type: str = Field(..., description="Device type")
-    name: str = Field(..., description="Device name")
+    name: Optional[str] = Field(default=None, description="Device name", alias="device_name")
     additional_settings: Optional[BaseModel] = Field(default=None, description="Additional settings")
     calibration: Optional[BaseModel] = Field(default=None, description="Calibration")
 
     # For backward compatibility, we need to set the device name to the device type if it is not provided.
     # We should consider removing this in the future.
-    @model_validator(mode="before")
-    def _default_name(self):
-        if not hasattr(self, "name"):
-            if isinstance(self, dict):
-                self["name"] = "__INTERNAL__PLACEHOLDER__"
-            else:
-                self.name = "__INTERNAL__PLACEHOLDER__"
-        return self
-
     @model_validator(mode="after")
     def _set_name(self) -> Self:
-        name = self.name if self.name != "__INTERNAL__PLACEHOLDER__" else None
-
-        if name is None:
+        if self.name is None:
             if self.calibration is not None:
                 name = getattr(self.calibration, "device_name", None)
             if name is None:
