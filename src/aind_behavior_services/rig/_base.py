@@ -5,7 +5,7 @@ from typing import Optional, Self, TypeVar
 
 from pydantic import BaseModel, Field, model_validator
 
-from aind_behavior_services.base import SchemaVersionedModel
+from .. import SchemaVersionedModel
 
 
 class Device(BaseModel):

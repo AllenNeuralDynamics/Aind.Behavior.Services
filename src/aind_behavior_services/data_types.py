@@ -4,7 +4,7 @@ from typing import Any, Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
-from aind_behavior_services.base import SchemaVersionedModel
+from .base import SchemaVersionedModel
 
 logger = logging.getLogger(__name__)
 

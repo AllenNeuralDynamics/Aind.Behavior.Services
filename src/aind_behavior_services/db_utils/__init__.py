@@ -6,7 +6,7 @@ from typing import Dict, Literal, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import deprecated
 
-from aind_behavior_services.base import SchemaVersionedModel
+from ..base import SchemaVersionedModel
 
 logger = logging.getLogger(__name__)
 

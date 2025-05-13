@@ -4,10 +4,9 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from aind_behavior_services.rig import AindBehaviorRigModel
-from aind_behavior_services.rig.harp import HarpStepperDriver
-from aind_behavior_services.task_logic import AindBehaviorTaskLogicModel, TaskParameters
-
+from ..rig import AindBehaviorRigModel
+from ..rig.harp import HarpStepperDriver
+from ..task_logic import AindBehaviorTaskLogicModel, TaskParameters
 from ._base import Calibration
 
 logger = logging.getLogger(__name__)

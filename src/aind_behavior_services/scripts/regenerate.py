@@ -2,11 +2,12 @@ import inspect
 import logging
 from pathlib import Path
 
-from aind_behavior_services import db_utils
-from aind_behavior_services.calibration import aind_manipulator
-from aind_behavior_services.data_types import DataTypes
-from aind_behavior_services.session import AindBehaviorSessionModel
-from aind_behavior_services.utils import (
+from .. import db_utils
+from ..calibration import aind_manipulator
+from ..data_types import DataTypes
+from ..message_protocol import MessageProtocol
+from ..session import AindBehaviorSessionModel
+from ..utils import (
     convert_pydantic_to_bonsai,
     pascal_to_snake_case,
     snake_to_pascal_case,
@@ -46,6 +47,7 @@ def main():
     convert_pydantic_to_bonsai(
         {"aind_behavior_subject_database": db_utils.SubjectDataBase}, schema_path=SCHEMA_ROOT, skip_sgen=True
     )
+    convert_pydantic_to_bonsai({"aind_behavior_message": MessageProtocol}, schema_path=SCHEMA_ROOT, skip_sgen=False)
 
 
 if __name__ == "__main__":

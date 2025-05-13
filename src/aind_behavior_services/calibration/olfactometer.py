@@ -4,10 +4,9 @@ from typing import Dict, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from aind_behavior_services.rig.harp import (
+from ..rig.harp import (
     HarpOlfactometer,
 )
-
 from ._base import Calibration
 
 logger = logging.getLogger(__name__)
