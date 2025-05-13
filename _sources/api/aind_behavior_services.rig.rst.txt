@@ -1,0 +1,45 @@
+aind\_behavior\_services.rig package
+====================================
+
+Submodules
+----------
+
+aind\_behavior\_services.rig.cameras module
+-------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.cameras
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.harp module
+----------------------------------------
+
+.. automodule:: aind_behavior_services.rig.harp
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.network module
+-------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.network
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.visual\_stimulation module
+-------------------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.visual_stimulation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services.rig
+   :members:
+   :show-inheritance:
+   :undoc-members:
