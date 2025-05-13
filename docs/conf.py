@@ -11,23 +11,41 @@ import glob
 import os
 import sys
 
-import erdantic as erd
-from pydantic import BaseModel
-
 sys.path.insert(0, os.path.abspath("../src"))
+import subprocess
+
 import aind_behavior_services
 
 SOURCE_ROOT = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/tree/main/src/"
 
 
 project = "AIND Behavior Services"
-copyright = "2024, Allen Institute for Neural Dynamics"
+copyright = "2025, Allen Institute for Neural Dynamics"
 author = "Bruno Cruz"
 release = aind_behavior_services.__version__
 
+# -- Generate api docs --
+print("Generating API docs...")
+subprocess.run(
+    [
+        "sphinx-apidoc",
+        "-o",
+        "./api",
+        "../src/aind_behavior_services",
+        "-d",
+        "4",
+        "--tocfile",
+        "api",
+        "--remove-old",
+        "-t",
+        "./_templates-f",
+    ],
+    check=True,
+)
+
 
 # -- Generate jsons --------------------------------------------------------------
-
+print("Generating JSON schemas...")
 json_root_path = os.path.abspath("../src/schemas")
 json_files = glob.glob(os.path.join(json_root_path, "*.json"))
 rst_target_path = os.path.abspath("json_schemas")
@@ -70,9 +88,13 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 autosummary_generate = True
+autodoc_typehints = "description"
 
-autodoc_pydantic_model_show_json = False
 autodoc_pydantic_settings_show_json = False
+autodoc_pydantic_model_show_json = True
+autodoc_pydantic_model_show_field_summary = True
+autodoc_pydantic_model_show_config_summary = True
+autodoc_pydantic_model_undoc_members = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -102,15 +124,3 @@ def linkcode_resolve(domain, info):
         return None
     filename = info["module"].replace(".", "/")
     return f"{SOURCE_ROOT}/{filename}.py"
-
-
-# -- Class diagram generation
-
-
-def export_model_diagram(model: BaseModel, root: str = "_static") -> None:
-    diagram = erd.create(model)
-    diagram.draw(f"{root}/{model.__name__}.svg")
-
-
-_diagram_root = "_static"
-export_model_diagram(aind_behavior_services.session.AindBehaviorSessionModel, _diagram_root)
