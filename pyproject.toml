@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aind-behavior-services"
-description = "A library that defines AIND data schema and validates JSON files for behavior rig models."
+description = "A library for defining and maintaining behavior tasks."
 authors = [
     { name = "Bruno Cruz", email = "bruno.cruz@alleninstitute.org" },
 ]
@@ -14,13 +14,16 @@ requires-python = ">=3.11"
 dynamic = ["version", "readme"]
 classifiers = [
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: Microsoft :: Windows",
 ]
+
 dependencies = [
-    'pydantic>=2.7, <3.0',
+    'pydantic>=2.7',
     'harp-python>=0.2',
-    'aind-behavior-curriculum < 0.2',
-    'gitpython>=3.1, <4.0',
+    'aind-behavior-curriculum',
+    'gitpython',
     'scikit-learn',
     'semver',
 ]
