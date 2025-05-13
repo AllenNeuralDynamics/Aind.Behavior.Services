@@ -463,7 +463,6 @@ def get_fields_of_type(
     *,
     recursive: bool = True,
     stop_recursion_on_type: bool = True,
-    **kwargs,
 ) -> List[Tuple[Optional[str], T]]:
     _iterable: Iterable
     _is_type: bool
@@ -474,7 +473,7 @@ def get_fields_of_type(
     elif isinstance(searchable, list):
         _iterable = list(zip([None for _ in range(len(searchable))], searchable))
     elif isinstance(searchable, pydantic.BaseModel):
-        _iterable = {k: getattr(searchable, k) for k in searchable.model_fields.keys()}.items()
+        _iterable = {k: getattr(searchable, k) for k in type(searchable).model_fields.keys()}.items()
     else:
         raise ValueError(f"Unsupported model type: {type(searchable)}")
 
