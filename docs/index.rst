@@ -14,6 +14,7 @@ Welcome to AIND Behavior Services's documentation!
    :glob:
 
    self
+   architecture
    api
    json_schemas
    articles/*
