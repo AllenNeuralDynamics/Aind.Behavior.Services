@@ -49,7 +49,7 @@ generators = [
     ]
 
 docs = [
-    'Sphinx<7.3',
+    'Sphinx<8.4',
     'furo',
     'sphinx-jinja',
     'autodoc_pydantic[erdantic]',
