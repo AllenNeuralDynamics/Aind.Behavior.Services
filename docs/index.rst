@@ -1,23 +1,30 @@
-.. Aind.Behavior.Services documentation master file, created by
-   sphinx-quickstart on Thu Apr 25 11:48:33 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to AIND Behavior Services's documentation!
 ==================================================
 
 .. mdinclude:: ../README.md
 
+.. autosummary::
+
+   :toctree: _autosummary
+   :caption: API
+   :template: custom-module-template.rst
+   :show-inheritance:
+   :undoc-members:
+   :recursive:
+
+   aind_behavior_services
+
+
+
 .. toctree::
    :maxdepth: 4
    :caption: Contents:
-   :glob:
 
    self
    architecture
-   api
+   articles
+   _autosummary/aind_behavior_services
    json_schemas
-   articles/*
    GitHub Source Code <https://github.com/AllenNeuralDynamics/Aind.Behavior.Services>
 
 Indices and tables

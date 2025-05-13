@@ -1,4 +1,4 @@
-calibration
+Calibration
 -------------
 
 Calibration Module
@@ -51,11 +51,8 @@ An example of a sub-class of `Calibration` is provided below:
 
 .. toctree::
    :maxdepth: 4
+   :glob:
 
-   api.calibration/aind_manipulator
-   api.calibration/load_cells
-   api.calibration/olfactometer
-   api.calibration/water_valve
-   api.calibration/treadmill
+   calibration/*
 
 
