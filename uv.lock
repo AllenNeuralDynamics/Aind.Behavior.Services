@@ -57,15 +57,15 @@ generators = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aind-behavior-curriculum", specifier = "<0.2" },
+    { name = "aind-behavior-curriculum" },
     { name = "aind-behavior-services", extras = ["generators"], marker = "extra == 'dev'" },
     { name = "autodoc-pydantic", extras = ["erdantic"], marker = "extra == 'docs'" },
     { name = "codespell", marker = "extra == 'dev'" },
     { name = "furo", marker = "extra == 'docs'" },
-    { name = "gitpython", specifier = ">=3.1,<4.0" },
+    { name = "gitpython" },
     { name = "harp-python", specifier = ">=0.2" },
     { name = "jinja2", marker = "extra == 'generators'" },
-    { name = "pydantic", specifier = ">=2.7,<3.0" },
+    { name = "pydantic", specifier = ">=2.7" },
     { name = "pyyaml", marker = "extra == 'generators'" },
     { name = "requests", marker = "extra == 'generators'" },
     { name = "ruff", marker = "extra == 'dev'" },
