@@ -47,7 +47,9 @@ def main():
     convert_pydantic_to_bonsai(
         {"aind_behavior_subject_database": db_utils.SubjectDataBase}, schema_path=SCHEMA_ROOT, skip_sgen=True
     )
-    convert_pydantic_to_bonsai({"aind_behavior_message": MessageProtocol}, schema_path=SCHEMA_ROOT, skip_sgen=False)
+    convert_pydantic_to_bonsai({"aind_behavior_message_protocol": MessageProtocol}, schema_path=SCHEMA_ROOT, skip_sgen=False, namespace="AindBehaviorServices.MessageProtocol")
+
+
 
 
 if __name__ == "__main__":
