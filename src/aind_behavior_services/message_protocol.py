@@ -1,12 +1,17 @@
 import enum
-from typing import Annotated, Any, Dict, Generic, Literal, Optional, Type, TypeVar, Union, cast
+from typing import Annotated, Any, Generic, Literal, Optional, TypeVar, Union
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
 
 __version__ = "0.0.1"
 PROTOCOL_VERSION = __version__.split(".")[0]
+# From the point of view of a protocol API only the major version is relevant for de(serialization) as everything is expected to be backward compatible within the same major version.
 
-TPayload = TypeVar("TPayload", bound=Any)
+# ================================================================================
+# Core classes and types for the message protocol
+# ================================================================================
+
+TPayload = TypeVar("TPayload", bound=BaseModel)
 
 
 class MessageType(enum.StrEnum):
@@ -26,7 +31,7 @@ class MessageType(enum.StrEnum):
     EVENT = "event"
 
 
-class Message(BaseModel, Generic[TPayload]):
+class _Message(BaseModel, Generic[TPayload]):
     """
     A generic message container that can carry any payload type.
     While not marked as abstract, it is intended to be subclassed
@@ -43,7 +48,6 @@ class Message(BaseModel, Generic[TPayload]):
         rig_name: Name of the experimental rig that created the message
     """
 
-    cls_type: str = "Message"
     message_type: MessageType
     protocol_version: Literal[PROTOCOL_VERSION] = PROTOCOL_VERSION
     timestamp: Optional[AwareDatetime] = Field(description="The timestamp of the message")
@@ -53,156 +57,9 @@ class Message(BaseModel, Generic[TPayload]):
     rig_name: Optional[str] = Field(description="Rig name that created the message")
 
 
-class MessageProtocolBuilder:
-    """
-    A builder class for creating message protocols with registered payload types.
-
-    This class allows you to register payload classes using a decorator pattern
-    and then generate a complete message protocol that includes all registered
-    payload types with proper discriminated union support.
-
-    Examples:
-        ```python
-        builder = MessageProtocolBuilder()
-
-        # Register a payload class using the decorator
-        @builder.register
-        class MyPayload(BaseModel):
-            data: str
-
-        # Register a payload with function syntax
-        builder.register(MyPayload, override_name="CustomMessage")
-
-        protocol_type = builder.create_message_protocol()
-        # Now you can use protocol_type for validation
-        ```
-    """
-
-    def __init__(self):
-        """
-        Initialize a new MessageProtocolBuilder instance.
-
-        Creates an empty registry for payload types that will be populated
-        using the register decorator.
-        """
-        self._registered_payloads: Dict[str, Type[Any]] = {}
-
-    def register(self, payload_class: Type[TPayload], override_name: Optional[str] = None) -> Type[TPayload]:
-        """
-        Decorator to register a payload class with the protocol builder.
-
-        This method can be used as a decorator to automatically register
-        payload classes. The class name will be sanitized by replacing
-        'Payload' with 'Message' unless an override name is provided.
-
-        Args:
-            payload_class: The payload class to register
-            override_name: Optional custom name for the message type
-
-        Returns:
-            The same payload class (for use as decorator)
-
-        Raises:
-            ValueError: If a payload with the same name is already registered
-
-        Examples:
-            ```python
-            builder = MessageProtocolBuilder()
-
-            @builder.register
-            class StatusPayload(BaseModel):
-                status: str
-
-            @builder.register(override_name="CustomStatus")
-            class AnotherPayload(BaseModel):
-                value: int
-
-            builder.register(
-                AnotherPayload, override_name="CustomData")
-            ```
-        """
-
-        def _sanitize_payload_name(payload_name: str) -> str:
-            return payload_name.replace("Payload", "Message")
-
-        cls_name = override_name or _sanitize_payload_name(payload_class.__name__)
-        if cls_name in self._registered_payloads:
-            raise ValueError(f"Payload class '{cls_name}' is already registered. Use a different name or override.")
-        self._registered_payloads[cls_name] = payload_class
-        return payload_class
-
-    @staticmethod
-    def _register_payload(
-        payload: Type[TPayload],
-        name: str,
-    ) -> Type[Message[TPayload]]:
-        return create_model(
-            name,
-            cls_type=(Literal[name], Field(default=name)),
-            payload=(payload, Field(description=f"The payload for {name}.")),
-            __base__=Message[TPayload],
-        )
-
-    def create_message_protocol(self, model_name: str = "RegisteredMessage") -> Type[RootModel[Message]]:
-        """
-        Creates a discriminated union type from all registered payloads.
-
-        This method generates a Pydantic RootModel that can validate and serialize
-        any of the registered message types using discriminated unions based
-        on the cls_type field.
-
-        Args:
-            model_name: Name for the generated protocol model
-
-        Returns:
-            A RootModel type that can handle all registered message types
-
-        Raises:
-            ValueError: If no payloads have been registered
-
-        Examples:
-            ```python
-            builder = MessageProtocolBuilder()
-
-            @builder.register
-            class StatusPayload(BaseModel):
-                status: str
-
-            @builder.register
-            class DataPayload(BaseModel):
-                values: List[int]
-
-            ProtocolType = builder.create_message_protocol()
-            # ProtocolType can now validate StatusMessage or DataMessage instances
-            ```
-        """
-        if not self._registered_payloads:
-            raise ValueError("No payloads have been registered. Use the @register decorator on payload classes.")
-
-        registered_message_types = tuple(
-            self._register_payload(payload, name) for name, payload in self._registered_payloads.items()
-        )
-
-        _t = create_model(
-            model_name,
-            __base__=RootModel[
-                Annotated[
-                    Union[registered_message_types],
-                    Field(discriminator="cls_type"),
-                ]
-            ],
-            __config__=ConfigDict(json_schema_extra={"x-abstract": True}),
-        )
-
-        return cast(
-            Type[RootModel[Message]],
-            _t,
-        )
-
-
-protocol = MessageProtocolBuilder()
-
-
+# ================================================================================
+# Core payload types
+# ================================================================================
 class LogLevel(enum.IntEnum):
     """
     Enumeration of log levels for the logging system.
@@ -226,7 +83,6 @@ class LogLevel(enum.IntEnum):
     NOTSET = 0
 
 
-@protocol.register
 class LogPayload(BaseModel):
     """
     Payload for log messages containing logging information.
@@ -252,6 +108,7 @@ class LogPayload(BaseModel):
         ```
     """
 
+    payload_type: Literal["LogPayload"] = "LogPayload"
     message: str = Field(description="The message of the log")
     level: LogLevel = Field(default=LogLevel.DEBUG, description="The level of the log message")
     context: Optional[SerializeAsAny[Any]] = Field(default=None, description="Additional context for the log message")
@@ -279,7 +136,6 @@ class HeartbeatStatus(enum.IntEnum):
     CRITICAL = 3
 
 
-@protocol.register
 class HeartbeatPayload(BaseModel):
     """
     Payload for heartbeat messages indicating system health status.
@@ -307,13 +163,33 @@ class HeartbeatPayload(BaseModel):
         ```
     """
 
+    payload_type: Literal["HeartbeatPayload"] = "HeartbeatPayload"
     context: SerializeAsAny[Optional[Any]] = Field(
         default=None, description="Additional context for the heartbeat message."
     )
     status: HeartbeatStatus = Field(description="The status of the heartbeat message")
 
 
-RegisteredMessages: Type = protocol.create_message_protocol()
+# ================================================================================
+# Register payloads into the protocol
+# ================================================================================
+
+
+class RegisteredPayload(RootModel):
+    root: Annotated[
+        Union[LogPayload, HeartbeatPayload],
+        Field(discriminator="payload_type", json_schema_extra={"x-abstract": True}),
+    ]
+
+
+RegisteredMessages = create_model(
+    "RegisteredMessages",
+    __base__=_Message[RegisteredPayload],
+)
+
+
+class Message(RootModel):
+    root: _Message[Any]
 
 
 class MessageProtocol(BaseModel):
@@ -323,5 +199,5 @@ class MessageProtocol(BaseModel):
     """
 
     model_config = ConfigDict(json_schema_extra={"x-abstract": True})
-    registered_message: RegisteredMessages  # type: ignore
+    registered_message: RegisteredMessages
     message: Message
