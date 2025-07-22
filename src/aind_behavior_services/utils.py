@@ -261,6 +261,7 @@ def convert_pydantic_to_bonsai(
     cs_namespace: str = "DataSchema",
     cs_serializer: Optional[List[BonsaiSgenSerializers]] = None,
     json_schema_export_kwargs: Optional[Dict[str, Any]] = None,
+    root_element: Optional[str] = None,
 ) -> Optional[CompletedProcess]:
     def _write_json(schema_path: PathLike, output_model_name: str, model: BaseModel, **extra_kwargs) -> None:
         with open(os.path.join(schema_path, f"{output_model_name}.json"), "w", encoding="utf-8") as f:
@@ -276,7 +277,7 @@ def convert_pydantic_to_bonsai(
             output_path=Path(os.path.join(cs_output_dir, f"{snake_to_pascal_case(_model_name)}.Generated.cs")),
             namespace=cs_namespace,
             serializer=cs_serializer,
-            root_element="TODO",  # TODO to remove
+            root_element=root_element,
         )
         return cmd_return
 
