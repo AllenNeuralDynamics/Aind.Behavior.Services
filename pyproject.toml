@@ -20,8 +20,8 @@ classifiers = [
 ]
 
 dependencies = [
-    'pydantic>=2.7',
-    'harp-python>=0.2',
+    'pydantic',
+    'harp-python',
     'aind-behavior-curriculum',
     'gitpython',
     'scikit-learn',
