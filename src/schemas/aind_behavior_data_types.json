@@ -1,5 +1,5 @@
 {
-  "definitions": {
+  "$defs": {
     "DataType": {
       "enum": [
         "string",
@@ -83,7 +83,7 @@
           "title": "Timestamp"
         },
         "timestamp_source": {
-          "$ref": "#/definitions/TimestampSource",
+          "$ref": "#/$defs/TimestampSource",
           "default": "null",
           "description": "The source of the timestamp"
         },
@@ -126,7 +126,7 @@
           "title": "Data"
         },
         "dataType": {
-          "$ref": "#/definitions/DataType",
+          "$ref": "#/$defs/DataType",
           "default": "null",
           "description": "The data type of the event"
         },
@@ -160,31 +160,5 @@
       "type": "string"
     }
   },
-  "properties": {
-    "aind_behavior_services_pkg_version": {
-      "default": "0.11.0",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
-      "title": "aind_behavior_services package version",
-      "type": "string"
-    },
-    "version": {
-      "const": "0.1.1",
-      "default": "0.1.1",
-      "title": "Version",
-      "type": "string"
-    },
-    "software_event": {
-      "$ref": "#/definitions/SoftwareEvent"
-    },
-    "render_synch_state": {
-      "$ref": "#/definitions/RenderSynchState"
-    }
-  },
-  "required": [
-    "software_event",
-    "render_synch_state"
-  ],
-  "title": "DataTypes",
-  "type": "object",
   "x-abstract": "True"
 }

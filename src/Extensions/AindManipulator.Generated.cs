@@ -5,34 +5,38 @@
 //----------------------
 
 
-namespace AindBehaviorServices.AindManipulatorCalibrationRig
+namespace AindBehaviorServices.AindManipulator
 {
     #pragma warning disable // Disable all warnings
 
     /// <summary>
     /// Aind manipulator calibration class
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Aind manipulator calibration class")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class AindManipulatorCalibration
     {
     
-        private string _deviceName = "AindManipulator";
+        private string _deviceName;
     
-        private AindManipulatorCalibrationInput _input = new AindManipulatorCalibrationInput();
+        private AindManipulatorCalibrationInput _input;
     
-        private AindManipulatorCalibrationOutput _output = new AindManipulatorCalibrationOutput();
+        private AindManipulatorCalibrationOutput _output;
     
         private System.DateTimeOffset? _date;
     
-        private string _description = "Calibration of the load cells system";
+        private string _description;
     
         private string _notes;
     
         public AindManipulatorCalibration()
         {
+            _deviceName = "AindManipulator";
+            _input = new AindManipulatorCalibrationInput();
+            _output = new AindManipulatorCalibrationOutput();
+            _description = "Calibration of the load cells system";
         }
     
         protected AindManipulatorCalibration(AindManipulatorCalibration other)
@@ -166,7 +170,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class AindManipulatorCalibrationInput
@@ -174,14 +178,18 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     
         private ManipulatorPosition _fullStepToMm;
     
-        private System.Collections.Generic.List<AxisConfiguration> _axisConfiguration = new System.Collections.Generic.List<AxisConfiguration>();
+        private System.Collections.Generic.List<AxisConfiguration> _axisConfiguration;
     
-        private System.Collections.Generic.List<Axis> _homingOrder = new System.Collections.Generic.List<Axis>();
+        private System.Collections.Generic.List<Axis> _homingOrder;
     
         private ManipulatorPosition _initialPosition;
     
         public AindManipulatorCalibrationInput()
         {
+            _fullStepToMm = new ManipulatorPosition();
+            _axisConfiguration = new System.Collections.Generic.List<AxisConfiguration>();
+            _homingOrder = new System.Collections.Generic.List<Axis>();
+            _initialPosition = new ManipulatorPosition();
         }
     
         protected AindManipulatorCalibrationInput(AindManipulatorCalibrationInput other)
@@ -282,7 +290,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class AindManipulatorCalibrationOutput
@@ -326,13 +334,13 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class AindManipulatorDevice
     {
     
-        private string _deviceType = "StepperDriver";
+        private string _deviceType;
     
         private string _deviceName;
     
@@ -340,7 +348,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     
         private AindManipulatorCalibration _calibration;
     
-        private int _whoAmI = 1130;
+        private int _whoAmI;
     
         private string _serialNumber;
     
@@ -348,6 +356,8 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     
         public AindManipulatorDevice()
         {
+            _deviceType = "StepperDriver";
+            _whoAmI = 1130;
         }
     
         protected AindManipulatorDevice(AindManipulatorDevice other)
@@ -510,7 +520,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     /// <summary>
     /// Motor axis available
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     public enum Axis
     {
     
@@ -534,7 +544,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     /// <summary>
     /// Axis configuration
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Axis configuration")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
@@ -543,22 +553,29 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     
         private Axis _axis;
     
-        private int _stepAccelerationInterval = 100;
+        private int _stepAccelerationInterval;
     
-        private int _stepInterval = 100;
+        private int _stepInterval;
     
-        private MicrostepResolution _microstepResolution = AindBehaviorServices.AindManipulatorCalibrationRig.MicrostepResolution.Microstep8;
+        private MicrostepResolution _microstepResolution;
     
-        private int _maximumStepInterval = 2000;
+        private int _maximumStepInterval;
     
-        private MotorOperationMode _motorOperationMode = AindBehaviorServices.AindManipulatorCalibrationRig.MotorOperationMode.Quiet;
+        private MotorOperationMode _motorOperationMode;
     
-        private double _maxLimit = 25D;
+        private double _maxLimit;
     
-        private double _minLimit = -0.01D;
+        private double _minLimit;
     
         public AxisConfiguration()
         {
+            _stepAccelerationInterval = 100;
+            _stepInterval = 100;
+            _microstepResolution = AindBehaviorServices.AindManipulator.MicrostepResolution.Microstep8;
+            _maximumStepInterval = 2000;
+            _motorOperationMode = AindBehaviorServices.AindManipulator.MotorOperationMode.Quiet;
+            _maxLimit = 25D;
+            _minLimit = -0.01D;
         }
     
         protected AxisConfiguration(AxisConfiguration other)
@@ -726,7 +743,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class BaseModel
@@ -770,7 +787,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class ManipulatorPosition
@@ -882,7 +899,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     public enum MicrostepResolution
     {
     
@@ -900,7 +917,7 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     public enum MotorOperationMode
     {
     
@@ -912,148 +929,10 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
-    [Bonsai.CombinatorAttribute()]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class CalibrationRig
-    {
-    
-        private string _aindBehaviorServicesPkgVersion = "0.11.0";
-    
-        private string _version = "0.1.0";
-    
-        private string _computerName;
-    
-        private string _rigName;
-    
-        private AindManipulatorDevice _manipulator;
-    
-        public CalibrationRig()
-        {
-        }
-    
-        protected CalibrationRig(CalibrationRig other)
-        {
-            _aindBehaviorServicesPkgVersion = other._aindBehaviorServicesPkgVersion;
-            _version = other._version;
-            _computerName = other._computerName;
-            _rigName = other._rigName;
-            _manipulator = other._manipulator;
-        }
-    
-        [Newtonsoft.Json.JsonPropertyAttribute("aind_behavior_services_pkg_version")]
-        public string AindBehaviorServicesPkgVersion
-        {
-            get
-            {
-                return _aindBehaviorServicesPkgVersion;
-            }
-            set
-            {
-                _aindBehaviorServicesPkgVersion = value;
-            }
-        }
-    
-        [Newtonsoft.Json.JsonPropertyAttribute("version")]
-        public string Version
-        {
-            get
-            {
-                return _version;
-            }
-            set
-            {
-                _version = value;
-            }
-        }
-    
-        /// <summary>
-        /// Computer name
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("computer_name")]
-        [System.ComponentModel.DescriptionAttribute("Computer name")]
-        public string ComputerName
-        {
-            get
-            {
-                return _computerName;
-            }
-            set
-            {
-                _computerName = value;
-            }
-        }
-    
-        /// <summary>
-        /// Rig name
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("rig_name", Required=Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DescriptionAttribute("Rig name")]
-        public string RigName
-        {
-            get
-            {
-                return _rigName;
-            }
-            set
-            {
-                _rigName = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("manipulator")]
-        public AindManipulatorDevice Manipulator
-        {
-            get
-            {
-                return _manipulator;
-            }
-            set
-            {
-                _manipulator = value;
-            }
-        }
-    
-        public System.IObservable<CalibrationRig> Process()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CalibrationRig(this)));
-        }
-    
-        public System.IObservable<CalibrationRig> Process<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new CalibrationRig(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("aind_behavior_services_pkg_version = " + _aindBehaviorServicesPkgVersion + ", ");
-            stringBuilder.Append("version = " + _version + ", ");
-            stringBuilder.Append("computer_name = " + _computerName + ", ");
-            stringBuilder.Append("rig_name = " + _rigName + ", ");
-            stringBuilder.Append("manipulator = " + _manipulator);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
     /// <summary>
     /// Serializes a sequence of data model objects into JSON strings.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Serializes a sequence of data model objects into JSON strings.")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
@@ -1099,18 +978,13 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
         {
             return Process<ManipulatorPosition>(source);
         }
-
-        public System.IObservable<string> Process(System.IObservable<CalibrationRig> source)
-        {
-            return Process<CalibrationRig>(source);
-        }
     }
 
 
     /// <summary>
     /// Deserializes a sequence of JSON strings into data model objects.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of JSON strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
@@ -1121,13 +995,12 @@ namespace AindBehaviorServices.AindManipulatorCalibrationRig
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AxisConfiguration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BaseModel>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ManipulatorPosition>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CalibrationRig>))]
     public partial class DeserializeFromJson : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
         public DeserializeFromJson()
         {
-            Type = new Bonsai.Expressions.TypeMapping<CalibrationRig>();
+            Type = new Bonsai.Expressions.TypeMapping<AindManipulatorCalibration>();
         }
 
         public Bonsai.Expressions.TypeMapping Type { get; set; }

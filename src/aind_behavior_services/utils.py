@@ -8,8 +8,8 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from string import capwords
-from subprocess import CompletedProcess, run
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union, get_args
+from subprocess import CalledProcessError, CompletedProcess, run
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union, cast, get_args
 
 import pydantic
 from pydantic import BaseModel, PydanticInvalidForJsonSchema
@@ -18,7 +18,6 @@ from pydantic.json_schema import (
     JsonSchemaMode,
     JsonSchemaValue,
     _deduplicate_schemas,
-    models_json_schema,
 )
 from pydantic_core import PydanticOmit, core_schema, to_jsonable_python
 
@@ -178,25 +177,21 @@ class CustomGenerateJsonSchema(GenerateJsonSchema):
             return self.get_flattened_anyof(generated)
 
 
-ModelInputTypeSignature = Union[List[Type[BaseModel]] | Type[BaseModel]]
+TModel = TypeVar("TModel", bound=BaseModel)
 
 
 def export_schema(
-    model: ModelInputTypeSignature,
+    model: BaseModel,
     schema_generator: Type[GenerateJsonSchema] = CustomGenerateJsonSchema,
     mode: JsonSchemaMode = "serialization",
-    def_keyword: str = "definitions",
-    models_title: Optional[str] = None,
+    remove_root: bool = True,
 ):
     """Export the schema of a model to a json file"""
-    if not isinstance(model, list):
-        _model = model.model_json_schema(schema_generator=schema_generator, mode=mode)
-    else:
-        models = [(m, mode) for m in model]
-        _, _model = models_json_schema(models, schema_generator=schema_generator, title=models_title)
-    json_model = json.dumps(_model, indent=2)
-    json_model = json_model.replace("$defs", def_keyword)
-    return json_model
+    _model = model.model_json_schema(schema_generator=schema_generator, mode=mode)
+    if remove_root:
+        for to_remove in ["title", "description", "properties", "required", "type", "oneOf"]:
+            _model.pop(to_remove, None)
+    return json.dumps(_model, indent=2)
 
 
 class BonsaiSgenSerializers(Enum):
@@ -211,7 +206,6 @@ def bonsai_sgen(
     namespace: str = "DataSchema",
     root_element: Optional[str] = None,
     serializer: Optional[List[BonsaiSgenSerializers]] = None,
-    executable: PathLike | str = "dotnet tool run bonsai.sgen",
 ) -> CompletedProcess:
     """Runs Bonsai.SGen to generate a Bonsai-compatible schema from a json-schema model
     For more information run `bonsai.sgen --help` in the command line.
@@ -236,7 +230,17 @@ def bonsai_sgen(
     if serializer is None:
         serializer = [BonsaiSgenSerializers.JSON]
 
-    cmd_string = f'{executable} --schema "{schema_path}" --output "{output_path}"'
+    _restore_cmd = run("dotnet tool restore", shell=True, check=True, capture_output=True)
+    try:
+        _restore_cmd.check_returncode()
+    except CalledProcessError as e:
+        print(f"Error occurred while restoring tools: {e}")
+        print(
+            "Ensure you have the Bonsai.Sgen tool installed locally. See https://github.com/bonsai-rx/sgen?tab=readme-ov-file#getting-started for instructions."
+        )
+        raise
+
+    cmd_string = f'dotnet tool run bonsai.sgen --schema "{schema_path}" --output "{output_path}"'
     cmd_string += "" if namespace is None else f" --namespace {namespace}"
     cmd_string += "" if root_element is None else f" --root {root_element}"
 
@@ -249,35 +253,34 @@ def bonsai_sgen(
 
 
 def convert_pydantic_to_bonsai(
-    models: Dict[str, ModelInputTypeSignature],
-    namespace: str = "DataSchema",
-    schema_path: PathLike = Path("./src/DataSchemas/"),
-    output_path: PathLike = Path("./src/Extensions/"),
-    serializer: Optional[List[BonsaiSgenSerializers]] = None,
-    skip_sgen: bool = False,
-    export_schema_kwargs: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Optional[CompletedProcess]]:
-    def _write_json(
-        schema_path: PathLike, output_model_name: str, model: ModelInputTypeSignature, **extra_kwargs
-    ) -> None:
+    model: BaseModel,
+    *,
+    model_name: Optional[str] = None,
+    json_schema_output_dir: PathLike = Path("./src/DataSchemas/"),
+    cs_output_dir: Optional[PathLike] = Path("./src/Extensions/"),
+    cs_namespace: str = "DataSchema",
+    cs_serializer: Optional[List[BonsaiSgenSerializers]] = None,
+    json_schema_export_kwargs: Optional[Dict[str, Any]] = None,
+) -> Optional[CompletedProcess]:
+    def _write_json(schema_path: PathLike, output_model_name: str, model: BaseModel, **extra_kwargs) -> None:
         with open(os.path.join(schema_path, f"{output_model_name}.json"), "w", encoding="utf-8") as f:
             json_model = export_schema(model, **extra_kwargs)
             f.write(json_model)
 
-    ret_dict: Dict[str, Optional[CompletedProcess]] = {}
-    for output_model_name, model in models.items():
-        _write_json(schema_path, output_model_name, model, **(export_schema_kwargs or {}))
-        if not skip_sgen:
-            cmd_return = bonsai_sgen(
-                schema_path=Path(os.path.join(schema_path, f"{output_model_name}.json")),
-                output_path=Path(os.path.join(output_path, f"{snake_to_pascal_case(output_model_name)}.cs")),
-                namespace=namespace,
-                serializer=serializer,
-            )
-            ret_dict[output_model_name] = cmd_return
-        else:
-            ret_dict[output_model_name] = None
-    return ret_dict
+    _model_name = model_name or model.__class__.__name__
+    _write_json(json_schema_output_dir, _model_name, model, **(json_schema_export_kwargs or {}))
+
+    if cs_output_dir is not None:
+        cmd_return = bonsai_sgen(
+            schema_path=Path(os.path.join(json_schema_output_dir, f"{_model_name}.json")),
+            output_path=Path(os.path.join(cs_output_dir, f"{snake_to_pascal_case(_model_name)}.Generated.cs")),
+            namespace=cs_namespace,
+            serializer=cs_serializer,
+            root_element="TODO",  # TODO to remove
+        )
+        return cmd_return
+
+    return None
 
 
 def snake_to_pascal_case(s: str) -> str:
@@ -485,7 +488,7 @@ def get_fields_of_type(
         if recursive and isinstance(field, _ISearchableTypeChecker) and not (stop_recursion_on_type and _is_type):
             result.extend(
                 get_fields_of_type(
-                    field,
+                    cast(ISearchable, field),
                     target_type,
                     recursive=recursive,
                     stop_recursion_on_type=stop_recursion_on_type,

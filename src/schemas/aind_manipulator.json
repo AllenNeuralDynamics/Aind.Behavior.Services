@@ -1,5 +1,5 @@
 {
-  "definitions": {
+  "$defs": {
     "AindManipulatorCalibration": {
       "description": "Aind manipulator calibration class",
       "properties": {
@@ -10,11 +10,11 @@
           "type": "string"
         },
         "input": {
-          "$ref": "#/definitions/AindManipulatorCalibrationInput",
+          "$ref": "#/$defs/AindManipulatorCalibrationInput",
           "title": "Input of the calibration"
         },
         "output": {
-          "$ref": "#/definitions/AindManipulatorCalibrationOutput",
+          "$ref": "#/$defs/AindManipulatorCalibrationOutput",
           "title": "Output of the calibration."
         },
         "date": {
@@ -59,7 +59,7 @@
     "AindManipulatorCalibrationInput": {
       "properties": {
         "full_step_to_mm": {
-          "$ref": "#/definitions/ManipulatorPosition",
+          "$ref": "#/$defs/ManipulatorPosition",
           "default": {
             "x": 0.01,
             "y1": 0.01,
@@ -112,7 +112,7 @@
             }
           ],
           "items": {
-            "$ref": "#/definitions/AxisConfiguration"
+            "$ref": "#/$defs/AxisConfiguration"
           },
           "title": "Axes configuration. Only the axes that are configured will be enabled.",
           "type": "array"
@@ -125,13 +125,13 @@
             4
           ],
           "items": {
-            "$ref": "#/definitions/Axis"
+            "$ref": "#/$defs/Axis"
           },
           "title": "Homing order",
           "type": "array"
         },
         "initial_position": {
-          "$ref": "#/definitions/ManipulatorPosition",
+          "$ref": "#/$defs/ManipulatorPosition",
           "default": {
             "x": 0.0,
             "y1": 0.0,
@@ -174,7 +174,7 @@
           "description": "Additional settings",
           "oneOf": [
             {
-              "$ref": "#/definitions/BaseModel"
+              "$ref": "#/$defs/BaseModel"
             },
             {
               "type": "null"
@@ -185,7 +185,7 @@
           "default": null,
           "oneOf": [
             {
-              "$ref": "#/definitions/AindManipulatorCalibration"
+              "$ref": "#/$defs/AindManipulatorCalibration"
             },
             {
               "type": "null"
@@ -247,7 +247,7 @@
       "description": "Axis configuration",
       "properties": {
         "axis": {
-          "$ref": "#/definitions/Axis",
+          "$ref": "#/$defs/Axis",
           "title": "Axis to be configured"
         },
         "step_acceleration_interval": {
@@ -267,7 +267,7 @@
           "type": "integer"
         },
         "microstep_resolution": {
-          "$ref": "#/definitions/MicrostepResolution",
+          "$ref": "#/$defs/MicrostepResolution",
           "default": 0,
           "title": "Microstep resolution"
         },
@@ -279,7 +279,7 @@
           "type": "integer"
         },
         "motor_operation_mode": {
-          "$ref": "#/definitions/MotorOperationMode",
+          "$ref": "#/$defs/MotorOperationMode",
           "default": 0,
           "title": "Motor operation mode"
         },
@@ -361,39 +361,5 @@
         "Dynamic"
       ]
     }
-  },
-  "properties": {
-    "aind_behavior_services_pkg_version": {
-      "default": "0.11.0",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
-      "title": "aind_behavior_services package version",
-      "type": "string"
-    },
-    "version": {
-      "const": "0.1.0",
-      "default": "0.1.0",
-      "title": "Version",
-      "type": "string"
-    },
-    "computer_name": {
-      "description": "Computer name",
-      "title": "Computer Name",
-      "type": "string"
-    },
-    "rig_name": {
-      "description": "Rig name",
-      "title": "Rig Name",
-      "type": "string"
-    },
-    "manipulator": {
-      "$ref": "#/definitions/AindManipulatorDevice",
-      "default": null,
-      "title": "Manipulator device"
-    }
-  },
-  "required": [
-    "rig_name"
-  ],
-  "title": "CalibrationRig",
-  "type": "object"
+  }
 }

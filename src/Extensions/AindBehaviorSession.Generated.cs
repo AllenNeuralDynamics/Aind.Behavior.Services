@@ -9,19 +9,19 @@ namespace AindBehaviorServices.AindBehaviorSession
 {
     #pragma warning disable // Disable all warnings
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class AindBehaviorSessionModel
+    public partial class TODO
     {
     
-        private string _aindBehaviorServicesPkgVersion = "0.11.0";
+        private string _aindBehaviorServicesPkgVersion;
     
-        private string _version = "0.3.1";
+        private string _version;
     
         private string _experiment;
     
-        private System.Collections.Generic.List<string> _experimenter = new System.Collections.Generic.List<string>();
+        private System.Collections.Generic.List<string> _experimenter;
     
         private System.DateTimeOffset _date;
     
@@ -37,15 +37,20 @@ namespace AindBehaviorServices.AindBehaviorSession
     
         private string _commitHash;
     
-        private bool _allowDirtyRepo = false;
+        private bool _allowDirtyRepo;
     
-        private bool _skipHardwareValidation = false;
+        private bool _skipHardwareValidation;
     
-        public AindBehaviorSessionModel()
+        public TODO()
         {
+            _aindBehaviorServicesPkgVersion = "0.11.0";
+            _version = "0.3.1";
+            _experimenter = new System.Collections.Generic.List<string>();
+            _allowDirtyRepo = false;
+            _skipHardwareValidation = false;
         }
     
-        protected AindBehaviorSessionModel(AindBehaviorSessionModel other)
+        protected TODO(TODO other)
         {
             _aindBehaviorServicesPkgVersion = other._aindBehaviorServicesPkgVersion;
             _version = other._version;
@@ -277,14 +282,14 @@ namespace AindBehaviorServices.AindBehaviorSession
             }
         }
     
-        public System.IObservable<AindBehaviorSessionModel> Process()
+        public System.IObservable<TODO> Process()
         {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new AindBehaviorSessionModel(this)));
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new TODO(this)));
         }
     
-        public System.IObservable<AindBehaviorSessionModel> Process<TSource>(System.IObservable<TSource> source)
+        public System.IObservable<TODO> Process<TSource>(System.IObservable<TSource> source)
         {
-            return System.Reactive.Linq.Observable.Select(source, _ => new AindBehaviorSessionModel(this));
+            return System.Reactive.Linq.Observable.Select(source, _ => new TODO(this));
         }
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
@@ -323,7 +328,7 @@ namespace AindBehaviorServices.AindBehaviorSession
     /// <summary>
     /// Serializes a sequence of data model objects into JSON strings.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Serializes a sequence of data model objects into JSON strings.")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
@@ -335,9 +340,9 @@ namespace AindBehaviorServices.AindBehaviorSession
             return System.Reactive.Linq.Observable.Select(source, value => Newtonsoft.Json.JsonConvert.SerializeObject(value));
         }
 
-        public System.IObservable<string> Process(System.IObservable<AindBehaviorSessionModel> source)
+        public System.IObservable<string> Process(System.IObservable<TODO> source)
         {
-            return Process<AindBehaviorSessionModel>(source);
+            return Process<TODO>(source);
         }
     }
 
@@ -345,11 +350,11 @@ namespace AindBehaviorServices.AindBehaviorSession
     /// <summary>
     /// Deserializes a sequence of JSON strings into data model objects.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.5.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of JSON strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AindBehaviorSessionModel>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<TODO>))]
     public partial class DeserializeFromJson : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
