@@ -20,6 +20,7 @@ from pydantic.json_schema import (
     _deduplicate_schemas,
 )
 from pydantic_core import PydanticOmit, core_schema, to_jsonable_python
+from semver import Version
 
 logger = logging.getLogger(__name__)
 
@@ -196,14 +197,14 @@ def export_schema(
 
 class BonsaiSgenSerializers(Enum):
     NONE = "None"
-    JSON = "NewtonsoftJson"
-    YAML = "YamlDotNet"
+    JSON = "json"
+    YAML = "yaml"
 
 
 def bonsai_sgen(
     schema_path: PathLike,
     output_path: PathLike,
-    namespace: str = "DataSchema",
+    namespace: Optional[str] = None,
     root_element: Optional[str] = None,
     serializer: Optional[List[BonsaiSgenSerializers]] = None,
 ) -> CompletedProcess:
@@ -240,9 +241,15 @@ def bonsai_sgen(
         )
         raise
 
-    cmd_string = f'dotnet tool run bonsai.sgen --schema "{schema_path}" --output "{output_path}"'
-    cmd_string += "" if namespace is None else f" --namespace {namespace}"
-    cmd_string += "" if root_element is None else f" --root {root_element}"
+    version = _check_bonsai_sgen_version()
+    if version < Version.parse("0.6.0"):
+        raise RuntimeError("Version of Bonsai.Sgen must be at least 0.6.0, found: " + str(version))
+
+    cmd_string = (
+        f'dotnet tool run bonsai.sgen "{schema_path}" -o "{Path(output_path).parent}" -n {Path(output_path).name}'
+    )
+    cmd_string += f" --namespace {namespace}" if namespace is not None else ""
+    cmd_string += f" --root {root_element}" if root_element is not None else ""
 
     if len(serializer) == 0 or BonsaiSgenSerializers.NONE in serializer:
         cmd_string += " --serializer none"
@@ -250,6 +257,13 @@ def bonsai_sgen(
         cmd_string += " --serializer"
         cmd_string += " ".join([f" {sr.value}" for sr in serializer])
     return run(cmd_string, shell=True, check=True)
+
+
+def _check_bonsai_sgen_version() -> Version:
+    """Check the version of the Bonsai.SGen tool."""
+    result = run("dotnet tool run bonsai.sgen --version", shell=True, check=True, capture_output=True)
+    version_str = result.stdout.strip()
+    return Version.parse(version_str)
 
 
 def convert_pydantic_to_bonsai(
