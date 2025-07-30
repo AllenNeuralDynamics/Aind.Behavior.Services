@@ -17,8 +17,7 @@ jobs:
         runs-on: ubuntu-latest
 
   aind-behavior-framework-testing:
-    uses: AllenNeuralDynamics/Aind.Behavior.GitHubActions/.github/workflows/test-aind-behavior-framework.yml@main
+    uses: AllenNeuralDynamics/Aind.Behavior.GitHubActions/.github/workflows/python-unit-test.yml@main
     with:
         python-version-path: .python-version
-        run-coverage: false
-        run-schema: true
+        runs-on: ubuntu-latest

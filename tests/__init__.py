@@ -1,8 +1,12 @@
 import glob
 import importlib.util
 import logging
+import os
 from pathlib import Path
 from types import ModuleType
+
+# Set up test environment variables
+os.environ.setdefault("COMPUTERNAME", "UNIT_TEST_PC")
 
 EXAMPLES_DIR = Path(__file__).parents[1] / "examples"
 
