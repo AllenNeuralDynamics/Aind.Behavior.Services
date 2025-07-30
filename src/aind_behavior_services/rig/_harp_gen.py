@@ -33,6 +33,11 @@ def _assert_unique_output_channels(outputs: List[ConnectedClockOutput]) -> List[
     return outputs
 
 
+class HarpHobgoblin(_HarpDeviceBase):
+    device_type: Literal["Hobgoblin"] = "Hobgoblin"
+    who_am_i: Literal[123] = 123
+
+
 class HarpUSBHub(_HarpDeviceBase):
     device_type: Literal["USBHub"] = "USBHub"
     who_am_i: Literal[256] = 256
@@ -259,6 +264,7 @@ class HarpCuttlefishfip(_HarpDeviceBase):
 
 _HarpDevice = Union[
     HarpDeviceGeneric,
+    HarpHobgoblin,
     HarpUSBHub,
     HarpPoke,
     HarpMultiPwmGenerator,
@@ -312,6 +318,7 @@ else:
 __all__ = [
     "ConnectedClockOutput",
     "HarpDeviceGeneric",
+    "HarpHobgoblin",
     "HarpUSBHub",
     "HarpPoke",
     "HarpMultiPwmGenerator",

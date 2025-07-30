@@ -45,7 +45,7 @@ dev = [
 generators = [
     'jinja2',
     'requests',
-    'pyyaml'
+    'pyyaml',
     ]
 
 docs = [
@@ -59,8 +59,7 @@ docs = [
 ]
 
 [project.scripts]
-regenerate = "aind_behavior_services.scripts.regenerate:main"
-generate-python = "_generators:main"
+generate = "_generators:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
