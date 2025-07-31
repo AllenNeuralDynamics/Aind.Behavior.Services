@@ -8,6 +8,7 @@
 
 
 import glob
+import logging
 import os
 import sys
 
@@ -15,6 +16,17 @@ sys.path.insert(0, os.path.abspath("../src"))
 import subprocess
 
 import aind_behavior_services
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('sphinx_build.log')
+    ]
+)
+logger = logging.getLogger(__name__)
 
 SOURCE_ROOT = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/tree/main/src/"
 
@@ -24,31 +36,40 @@ copyright = "2025, Allen Institute for Neural Dynamics"
 author = "Bruno Cruz"
 release = aind_behavior_services.__version__
 
+logger.info(f"Building documentation for {project} version {release}")
+
 # -- Generate api docs --
-print("Generating API docs...")
-subprocess.run(
-    [
-        "sphinx-apidoc",
-        "-o",
-        "./api",
-        "../src/aind_behavior_services",
-        "-d",
-        "4",
-        "--tocfile",
-        "api",
-        "--remove-old",
-        "-t",
-        "./_templates-f",
-    ],
-    check=True,
-)
+logger.info("Generating API docs...")
+try:
+    subprocess.run(
+        [
+            "sphinx-apidoc",
+            "-o",
+            "./api",
+            "../src/aind_behavior_services",
+            "-d",
+            "4",
+            "--tocfile",
+            "api",
+            "--remove-old",
+            "-t",
+            "./_templates-f",
+        ],
+        check=True,
+    )
+    logger.info("API docs generated successfully")
+except subprocess.CalledProcessError as e:
+    logger.error(f"Failed to generate API docs: {e}")
+    raise
 
 
 # -- Generate jsons --------------------------------------------------------------
-print("Generating JSON schemas...")
+logger.info("Generating JSON schemas...")
 json_root_path = os.path.abspath("../src/schemas")
 json_files = glob.glob(os.path.join(json_root_path, "*.json"))
-rst_target_path = os.path.abspath("json_schemas")
+rst_target_path = os.path.abspath("./json_schemas")
+
+logger.info(f"Found {len(json_files)} JSON schema files")
 
 leaf_template = """
 {json_file_name}
@@ -64,9 +85,18 @@ leaf_template = """
 
 for json_file in json_files:
     json_file_name = os.path.basename(json_file)
-    with open(os.path.join(rst_target_path, f"{json_file_name.replace('.json', '')}.rst"), "w") as f:
-        f.write(leaf_template.format(json_file_name=json_file_name.replace(".json", "")))
+    rst_file_path = os.path.join(rst_target_path, f"{json_file_name.replace('.json', '')}.rst")
+    logger.debug(f"Processing {json_file_name} -> {rst_file_path}")
+    
+    try:
+        with open(rst_file_path, "w") as f:
+            f.write(leaf_template.format(json_file_name=json_file_name.replace(".json", "")))
+        logger.debug(f"Successfully wrote {rst_file_path}")
+    except Exception as e:
+        logger.error(f"Failed to write {rst_file_path}: {e}")
+        raise
 
+logger.info("JSON schema documentation generated successfully")
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
