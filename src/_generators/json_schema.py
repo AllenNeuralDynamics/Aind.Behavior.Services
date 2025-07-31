@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import logging
 import os
 from pathlib import Path
@@ -21,16 +22,22 @@ def _write_json(schema_path: os.PathLike, output_model_name: str, model: BaseMod
         f.write(json_model)
 
 
-def main():
-    models = {
-        "AindManipulator": aind_manipulator.CalibrationRig,
-        "AindBehaviorSessionModel": AindBehaviorSessionModel,
-        "DataTypes": DataTypes,
-        "MessageProtocol": MessageProtocol,
-    }
+@dataclass
+class ToGenerateJsonSchema:
+    model_name: str
+    model: BaseModel
+    remove_root: bool = True
 
-    for model_name, model in models.items():
-        _write_json(SCHEMA_ROOT, pascal_to_snake_case(model_name), model)
+def main():
+    models = (
+        ToGenerateJsonSchema(model_name="AindBehaviorSessionModel", model=AindBehaviorSessionModel, remove_root=False),
+        ToGenerateJsonSchema(model_name="DataTypes", model=DataTypes, remove_root=True),
+        ToGenerateJsonSchema(model_name="MessageProtocol", model=MessageProtocol, remove_root=True),
+        ToGenerateJsonSchema(model_name="AindManipulator", model=aind_manipulator.CalibrationRig, remove_root=False),
+    )
+
+    for m in models:
+        _write_json(SCHEMA_ROOT, pascal_to_snake_case(m.model_name), m.model, remove_root=m.remove_root)
 
 
 if __name__ == "__main__":
