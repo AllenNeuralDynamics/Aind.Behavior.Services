@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import logging
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -27,6 +27,7 @@ class ToGenerateJsonSchema:
     model_name: str
     model: BaseModel
     remove_root: bool = True
+
 
 def main():
     models = (
