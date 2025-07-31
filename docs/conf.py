@@ -82,6 +82,8 @@ leaf_template = """
 
 """
 
+os.makedirs(rst_target_path, exist_ok=True)
+
 for json_file in json_files:
     json_file_name = os.path.basename(json_file)
     rst_file_path = os.path.join(rst_target_path, f"{json_file_name.replace('.json', '')}.rst")
