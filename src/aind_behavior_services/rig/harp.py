@@ -1,3 +1,5 @@
+from typing import TypeAlias
+
 from typing_extensions import deprecated
 
 from aind_behavior_services.utils import get_fields_of_type
@@ -5,6 +7,8 @@ from aind_behavior_services.utils import get_fields_of_type
 from ._base import TRig
 from ._harp_gen import *  # noqa
 from ._harp_gen import ConnectedClockOutput, HarpLicketySplit, HarpTimestampGeneratorGen3, _HarpDeviceBase
+
+HarpDeviceBase: TypeAlias = _HarpDeviceBase
 
 
 def validate_harp_clock_output(rig: TRig) -> TRig:
