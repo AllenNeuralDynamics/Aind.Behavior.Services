@@ -1,15 +1,8 @@
-# Import core types
-from __future__ import annotations
-
-import logging
 from enum import Enum
-from typing import Annotated, List, Literal, Optional, Self, Union
+from typing import Annotated, Any, List, Literal, Optional, Self, Union
 
-# Import aind-datas-schema types
-from pydantic import BaseModel, Field, NonNegativeFloat, field_validator, model_validator
+from pydantic import BaseModel, BeforeValidator, Field, NonNegativeFloat, field_validator, model_validator
 from typing_extensions import TypeAliasType
-
-logger = logging.getLogger(__name__)
 
 
 class TruncationParameters(BaseModel):
@@ -42,7 +35,7 @@ class DistributionParametersBase(BaseModel):
 
 class DistributionBase(BaseModel):
     family: DistributionFamily = Field(..., description="Family of the distribution")
-    distribution_parameters: DistributionParameters = Field(..., description="Parameters of the distribution")
+    distribution_parameters: "DistributionParameters" = Field(..., description="Parameters of the distribution")
     truncation_parameters: Optional[TruncationParameters] = Field(
         default=None, description="Truncation parameters of the distribution"
     )
@@ -195,6 +188,14 @@ class PdfDistribution(DistributionBase):
     )
 
 
+def _numeric_to_scalar(value: Any) -> Scalar | Any:
+    try:
+        value = float(value)
+        return Scalar(distribution_parameters=ScalarDistributionParameter(value=value))
+    except (TypeError, ValueError):
+        return value
+
+
 Distribution = TypeAliasType(
     "Distribution",
     Annotated[
@@ -211,6 +212,7 @@ Distribution = TypeAliasType(
             PdfDistribution,
         ],
         Field(discriminator="family", title="Distribution", description="Available distributions"),
+        BeforeValidator(_numeric_to_scalar),
     ],
 )
 
