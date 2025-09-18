@@ -48,7 +48,7 @@ One of the core principles of this repository is the strict adherence to [json-s
 
 ## Regenerating schemas
 
-Once a Pydantic model is updated, updates to all downstream dependencies must be made to ensure that the ground-truth data schemas (and all dependent interoperability tools) are also updated. This can be achieved by running the `regenerate` command from the root of the repository.
+Once a Pydantic model is updated, updates to all downstream dependencies must be made to ensure that the ground-truth data schemas (and all dependent interoperability tools) are also updated. This can be achieved by running `uv run ./src/_generators/<__init__.py>` from the root of the repository.
 This script will regenerate all `json-schemas` along with `C#` code (`./scr/Extensions`) used by the Bonsai environment.
 
 ---
@@ -95,7 +95,7 @@ classDiagram
         +Ecosystem documentation
     }
 
-    class aind_behavior_experiment_launcher {
+    class clabe {
         +Launch experiment
         +Interfaces with external applications (e.g. Bonsai)
         +Interfaces with aind-services
@@ -114,7 +114,7 @@ classDiagram
         +Analysis code for some task
     }
 
-    class aind_behavior_core_analysis {
+    class contraqctor {
         +Data ingestion
         +Data contract definition
         +Core analysis primitives
@@ -124,10 +124,10 @@ classDiagram
     aind_behavior_curriculum --|> aind_behavior_services : Subclasses Task
     aind_behavior_services --|> aind_behavior_some_task 
     aind_behavior_some_task --|> aind_behavior_some_task_analysis : Analysis
-    aind_behavior_core_analysis --|> aind_behavior_some_task_analysis : Imports core analysis methods
+    contraqctor --|> aind_behavior_some_task_analysis : Imports core analysis methods
     aind_behavior_some_task_analysis --|> aind_behavior_curriculum : Metrics[Task]
     
-    aind_behavior_experiment_launcher --|> aind_behavior_some_task : Launches
+    clabe --|> aind_behavior_some_task : Launches
 
 ```
 

@@ -1,4 +1,4 @@
-from . import json_schema, rig_harp
+from _generators import json_schema, rig_harp
 
 
 def main():

@@ -20,11 +20,8 @@ import aind_behavior_services
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('sphinx_build.log')
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(), logging.FileHandler("sphinx_build.log")],
 )
 logger = logging.getLogger(__name__)
 SOURCE_ROOT = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/tree/main/src/"
@@ -88,7 +85,7 @@ for json_file in json_files:
     json_file_name = os.path.basename(json_file)
     rst_file_path = os.path.join(rst_target_path, f"{json_file_name.replace('.json', '')}.rst")
     logger.debug(f"Processing {json_file_name} -> {rst_file_path}")
-    
+
     try:
         with open(rst_file_path, "w") as f:
             f.write(leaf_template.format(json_file_name=json_file_name.replace(".json", "")))
