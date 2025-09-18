@@ -1,0 +1,21 @@
+aind\_behavior\_services.task\_logic package
+============================================
+
+Submodules
+----------
+
+aind\_behavior\_services.task\_logic.distributions module
+---------------------------------------------------------
+
+.. automodule:: aind_behavior_services.task_logic.distributions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services.task_logic
+   :members:
+   :show-inheritance:
+   :undoc-members:

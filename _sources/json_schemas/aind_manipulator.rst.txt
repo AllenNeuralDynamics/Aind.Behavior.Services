@@ -1,0 +1,10 @@
+
+aind_manipulator
+----------------------------------------------------
+
+`Download Schema <https://raw.githubusercontent.com/AllenNeuralDynamics/Aind.Behavior.Services/main/src/schemas/aind_manipulator.json>`_
+
+.. jsonschema:: https://raw.githubusercontent.com/AllenNeuralDynamics/Aind.Behavior.Services/main/src/schemas/aind_manipulator.json
+   :lift_definitions:
+   :auto_reference:
+
