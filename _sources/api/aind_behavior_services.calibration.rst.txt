@@ -1,0 +1,61 @@
+aind\_behavior\_services.calibration package
+============================================
+
+Submodules
+----------
+
+aind\_behavior\_services.calibration.aind\_manipulator module
+-------------------------------------------------------------
+
+.. automodule:: aind_behavior_services.calibration.aind_manipulator
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.calibration.load\_cells module
+-------------------------------------------------------
+
+.. automodule:: aind_behavior_services.calibration.load_cells
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.calibration.olfactometer module
+--------------------------------------------------------
+
+.. automodule:: aind_behavior_services.calibration.olfactometer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.calibration.treadmill module
+-----------------------------------------------------
+
+.. automodule:: aind_behavior_services.calibration.treadmill
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.calibration.utils module
+-------------------------------------------------
+
+.. automodule:: aind_behavior_services.calibration.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.calibration.water\_valve module
+--------------------------------------------------------
+
+.. automodule:: aind_behavior_services.calibration.water_valve
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services.calibration
+   :members:
+   :show-inheritance:
+   :undoc-members:
