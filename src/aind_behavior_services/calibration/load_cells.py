@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 from typing import Annotated, List, Literal, Optional
 
@@ -41,6 +39,20 @@ class LoadCellCalibrationInput(BaseModel):
         title="Load cell weight calibration data",
         validate_default=True,
     )
+
+
+class LoadCellsCalibrationOutput(BaseModel):
+    channels: List["LoadCellCalibrationOutput"] = Field(
+        default=[], title="Load cells calibration output", validate_default=True
+    )
+
+    @field_validator("channels", mode="after")
+    @classmethod
+    def ensure_unique_channels(cls, values: List["LoadCellCalibrationOutput"]) -> List["LoadCellCalibrationOutput"]:
+        channels = [c.channel for c in values]
+        if len(channels) != len(set(channels)):
+            raise ValueError("Channels must be unique.")
+        return values
 
 
 class LoadCellCalibrationOutput(BaseModel):
@@ -97,20 +109,6 @@ class LoadCellsCalibrationInput(BaseModel):
 
     def calibrate_output(self) -> LoadCellsCalibrationOutput:
         return LoadCellsCalibrationOutput(channels=[self.calibrate_loadcell_output(c) for c in self.channels])
-
-
-class LoadCellsCalibrationOutput(BaseModel):
-    channels: List[LoadCellCalibrationOutput] = Field(
-        default=[], title="Load cells calibration output", validate_default=True
-    )
-
-    @field_validator("channels", mode="after")
-    @classmethod
-    def ensure_unique_channels(cls, values: List[LoadCellCalibrationOutput]) -> List[LoadCellCalibrationOutput]:
-        channels = [c.channel for c in values]
-        if len(channels) != len(set(channels)):
-            raise ValueError("Channels must be unique.")
-        return values
 
 
 class LoadCellsCalibration(Calibration):

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 from typing import Annotated, Dict, List, Literal, Optional
 
@@ -42,7 +40,7 @@ class Measurement(BaseModel):
 class WaterValveCalibrationInput(BaseModel):
     measurements: List[Measurement] = Field(default=[], description="List of measurements")
 
-    def calibrate_output(self, input: Optional[WaterValveCalibrationInput] = None) -> WaterValveCalibrationOutput:
+    def calibrate_output(self, input: Optional["WaterValveCalibrationInput"] = None) -> "WaterValveCalibrationOutput":
         """Calibrate the water valve delivery system by populating the output field"""
         # Calculate average volume per each measurement
         if input is None:
