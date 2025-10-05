@@ -160,6 +160,12 @@ jobs:
           git commit -m "Set version" || echo "No changes to commit"
           git push origin main
 
+      - name: Build
+        run: uv build
+
+      - name: Publish
+        run: uv publish --token ${{ secrets.AIND_PYPI_TOKEN }}
+
   # ╔─────────────────────────╗
   # │   ____                  │
   # │  |  _ \  ___   ___ ___  │
