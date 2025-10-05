@@ -3,9 +3,9 @@ from typing import Annotated, Dict, List, Literal, Optional
 
 import numpy as np
 from pydantic import BaseModel, Field
-from sklearn.linear_model import LinearRegression
 
 from ._base import Calibration
+from .utils import LinearRegression
 
 logger = logging.getLogger(__name__)
 
