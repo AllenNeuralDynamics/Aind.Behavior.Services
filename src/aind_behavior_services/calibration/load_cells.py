@@ -5,11 +5,11 @@ from typing import Annotated, List, Literal, Optional
 
 import numpy as np
 from pydantic import BaseModel, Field, field_validator
-from sklearn.linear_model import LinearRegression
 
 from aind_behavior_services.rig.harp import HarpLoadCells
 
 from ._base import Calibration
+from .utils import LinearRegression
 
 logger = logging.getLogger(__name__)
 
