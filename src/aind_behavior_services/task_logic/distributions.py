@@ -6,6 +6,13 @@ from typing_extensions import TypeAliasType
 
 
 class TruncationParameters(BaseModel):
+    """
+    Parameters for truncating a distribution to a specified range. Truncation should
+    be applied after sampling and scaling.
+
+    Used to constrain sampled values within minimum and maximum bounds.
+    """
+
     min: float = Field(default=0, description="Minimum value of the sampled distribution")
     max: float = Field(default=0, description="Maximum value of the sampled distribution")
 
