@@ -4,12 +4,8 @@ from typing import List, Literal, Optional, Self
 from pydantic import Field, model_validator
 
 import aind_behavior_services.utils
+from aind_behavior_services import __version__
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
-
-__version__ = "0.3.1"
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class AindBehaviorSessionModel(SchemaVersionedModel):

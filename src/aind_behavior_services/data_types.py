@@ -1,23 +1,20 @@
-import logging
 from enum import StrEnum
 from typing import Any, Generic, Literal, Optional, TypeVar
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
+from aind_behavior_services import __version__
 from aind_behavior_services.base import SchemaVersionedModel
-
-logger = logging.getLogger(__name__)
-
-__version__ = "0.1.1"
 
 
 class DataType(StrEnum):
     STRING = "string"
     NUMBER = "number"
-    BOOLEAL = "boolean"
+    BOOLEAL = "boolean"  # For backward compatibility
     OBJECT = "object"
     ARRAY = "array"
     NULL = "null"
+    BOOLEAN = "boolean"
 
 
 class TimestampSource(StrEnum):
@@ -40,8 +37,15 @@ class SoftwareEvent(BaseModel, Generic[TData]):
     frame_index: Optional[int] = Field(default=None, ge=0, description="The frame index of the event")
     frame_timestamp: Optional[float] = Field(default=None, description="The timestamp of the frame")
     data: Optional[TData] = Field(default=None, description="The data of the event")
-    data_type: DataType = Field(default=DataType.NULL, alias="dataType", description="The data type of the event")
+    data_type: DataType = Field(default=DataType.NULL, description="The data type of the event")
     data_type_hint: Optional[str] = Field(default=None, description="The data type hint of the event")
+
+    @field_validator("data_type", mode="after")
+    @classmethod
+    def _fix_typoed_boolean(cls, v: DataType) -> DataType:
+        if v == DataType.BOOLEAL:
+            return DataType.BOOLEAN
+        return v
 
 
 class RenderSynchState(BaseModel):
