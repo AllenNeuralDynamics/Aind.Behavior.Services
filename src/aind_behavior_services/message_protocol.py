@@ -3,8 +3,7 @@ from typing import Annotated, Any, Generic, Literal, Optional, TypeVar, Union
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
 
-__version__ = "0.0.1"
-PROTOCOL_VERSION = __version__.split(".")[0]
+PROTOCOL_VERSION = 0
 # From the point of view of a protocol API only the major version is relevant for de(serialization) as everything is expected to be backward compatible within the same major version.
 
 # ================================================================================
