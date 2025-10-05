@@ -30,7 +30,7 @@ SOURCE_ROOT = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/tre
 project = "AIND Behavior Services"
 copyright = "2025, Allen Institute for Neural Dynamics"
 author = "Bruno Cruz"
-release = aind_behavior_services.__version__
+release = aind_behavior_services.__semver__
 
 logger.info(f"Building documentation for {project} version {release}")
 
