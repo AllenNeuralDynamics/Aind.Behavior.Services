@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import IntEnum, auto
 from typing import TYPE_CHECKING, Annotated, Any, Dict, Generic, Literal, Optional, TypeVar, Union
 
@@ -16,6 +14,35 @@ FFMPEG_OUTPUT_16BIT = '-vf "scale=out_color_matrix=bt709:out_range=full,format=r
 
 FFMPEG_INPUT = "-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear"
 """ Default input arguments """
+
+
+class VideoWriterFfmpeg(BaseModel):
+    video_writer_type: Literal["FFMPEG"] = Field(default="FFMPEG")
+    frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
+    container_extension: str = Field(default="mp4", description="Container extension")
+    output_arguments: str = Field(
+        default=FFMPEG_OUTPUT_8BIT,
+        description="Output arguments",
+    )
+    input_arguments: str = Field(
+        default=FFMPEG_INPUT,
+        description="Input arguments",
+    )
+
+
+class VideoWriterOpenCv(BaseModel):
+    video_writer_type: Literal["OPENCV"] = Field(default="OPENCV")
+    frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
+    container_extension: str = Field(default="avi", description="Container extension")
+    four_cc: str = Field(default="FMP4", description="Four character code")
+
+
+if TYPE_CHECKING:
+    VideoWriter = Union[VideoWriterFfmpeg, VideoWriterOpenCv]
+else:
+    VideoWriter = TypeAliasType(
+        "VideoWriter", Annotated[Union[VideoWriterFfmpeg, VideoWriterOpenCv], Field(discriminator="video_writer_type")]
+    )
 
 
 class VideoWriterFfmpegFactory:
@@ -46,35 +73,6 @@ class VideoWriterFfmpegFactory:
         return video_writer.model_copy(
             update={"output_arguments": self._output_arguments, "input_arguments": self._input_arguments}
         )
-
-
-class VideoWriterFfmpeg(BaseModel):
-    video_writer_type: Literal["FFMPEG"] = Field(default="FFMPEG")
-    frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
-    container_extension: str = Field(default="mp4", description="Container extension")
-    output_arguments: str = Field(
-        default=FFMPEG_OUTPUT_8BIT,
-        description="Output arguments",
-    )
-    input_arguments: str = Field(
-        default=FFMPEG_INPUT,
-        description="Input arguments",
-    )
-
-
-class VideoWriterOpenCv(BaseModel):
-    video_writer_type: Literal["OPENCV"] = Field(default="OPENCV")
-    frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
-    container_extension: str = Field(default="avi", description="Container extension")
-    four_cc: str = Field(default="FMP4", description="Four character code")
-
-
-if TYPE_CHECKING:
-    VideoWriter = Union[VideoWriterFfmpeg, VideoWriterOpenCv]
-else:
-    VideoWriter = TypeAliasType(
-        "VideoWriter", Annotated[Union[VideoWriterFfmpeg, VideoWriterOpenCv], Field(discriminator="video_writer_type")]
-    )
 
 
 class WebCamera(Device):
