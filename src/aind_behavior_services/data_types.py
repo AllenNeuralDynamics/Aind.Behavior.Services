@@ -3,7 +3,7 @@ from typing import Any, Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
-from aind_behavior_services import __version__
+from aind_behavior_services import __semver__
 from aind_behavior_services.base import SchemaVersionedModel
 
 
@@ -55,7 +55,7 @@ class RenderSynchState(BaseModel):
 
 
 class DataTypes(SchemaVersionedModel):
-    version: Literal[__version__] = __version__
+    version: Literal[__semver__] = __semver__
     software_event: SoftwareEvent
     render_synch_state: RenderSynchState
 

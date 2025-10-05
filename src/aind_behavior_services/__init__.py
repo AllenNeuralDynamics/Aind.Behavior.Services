@@ -1,11 +1,12 @@
-__version__ = "0.12.1"
-
 import logging
 
+from ._version import __semver__, __version__
 from .base import DefaultAwareDatetime, SchemaVersionedModel
 from .rig import AindBehaviorRigModel
 from .session import AindBehaviorSessionModel
 from .task_logic import AindBehaviorTaskLogicModel
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "AindBehaviorRigModel",
@@ -13,6 +14,6 @@ __all__ = [
     "AindBehaviorTaskLogicModel",
     "SchemaVersionedModel",
     "DefaultAwareDatetime",
+    "__version__",
+    "__semver__",
 ]
-
-logger = logging.getLogger(__name__)

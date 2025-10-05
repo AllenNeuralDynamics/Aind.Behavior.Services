@@ -1,6 +1,6 @@
 # aind-behavior-services
 
-![CI](https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/actions/workflows/aind-behavior-services-cicd.yml/badge.svg)
 [![PyPI - Version](https://img.shields.io/pypi/v/aind-behavior-services)](https://pypi.org/project/aind-behavior-services/)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 [![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)

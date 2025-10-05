@@ -4,12 +4,12 @@ from typing import List, Literal, Optional, Self
 from pydantic import Field, model_validator
 
 import aind_behavior_services.utils
-from aind_behavior_services import __version__
+from aind_behavior_services import __semver__
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
 
 
 class AindBehaviorSessionModel(SchemaVersionedModel):
-    version: Literal[__version__] = __version__
+    version: Literal[__semver__] = __semver__
     experiment: Optional[str] = Field(default=None, description="Name of the experiment")
     experimenter: List[str] = Field(default=[], description="Name of the experimenter")
     date: DefaultAwareDatetime = Field(
