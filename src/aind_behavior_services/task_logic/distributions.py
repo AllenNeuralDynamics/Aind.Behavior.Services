@@ -10,6 +10,13 @@ class TruncationParameters(BaseModel):
     min: float = Field(default=0, description="Minimum value of the sampled distribution")
     max: float = Field(default=0, description="Maximum value of the sampled distribution")
 
+    @model_validator(mode="after")
+    def validate_min_less_than_max(self) -> Self:
+        """Ensures that min is less than max when truncation is enabled"""
+        if self.min > self.max:
+            raise ValueError("Truncation min must be less than truncation max")
+        return self
+
 
 class ScalingParameters(BaseModel):
     scale: float = Field(default=1, description="Scaling factor to apply on the sampled distribution")
