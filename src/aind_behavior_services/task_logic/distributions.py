@@ -6,7 +6,6 @@ from typing_extensions import TypeAliasType
 
 
 class TruncationParameters(BaseModel):
-    is_truncated: bool = Field(default=False, description="Whether the distribution is truncated")
     min: float = Field(default=0, description="Minimum value of the sampled distribution")
     max: float = Field(default=0, description="Maximum value of the sampled distribution")
 
