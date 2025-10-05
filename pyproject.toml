@@ -1,23 +1,22 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.8.22"]
+build-backend = "uv_build"
 
 [project]
 name = "aind-behavior-services"
 description = "A library for defining and maintaining behavior tasks."
-authors = [
-    { name = "Bruno Cruz", email = "bruno.cruz@alleninstitute.org" },
-]
+authors = [{ name = "Bruno Cruz", email = "bruno.cruz@alleninstitute.org" }]
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"
-dynamic = ["version", "readme"]
+readme = { file = "README.md", content-type = "text/markdown" }
 classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Operating System :: Microsoft :: Windows",
 ]
+version = "0.12.1"
 
 dependencies = [
     'pydantic',
@@ -33,19 +32,9 @@ Repository = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/"
 Issues = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/issues"
 Changelog = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/releases"
 
-[project.optional-dependencies]
+[dependency-groups]
 
-dev = [
-    'ruff',
-    'codespell',
-    'aind-behavior-services[generators]'
-]
-
-generators = [
-    'jinja2',
-    'requests',
-    'pyyaml',
-    ]
+dev = ['ruff', 'codespell', 'jinja2', 'requests', 'pyyaml']
 
 docs = [
     'Sphinx<8.4',
@@ -58,17 +47,7 @@ docs = [
 ]
 
 [project.scripts]
-generate = "_generators:main"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-aind_behavior_services = ["py.typed"]
-
-[tool.setuptools.dynamic]
-version = {attr = "aind_behavior_services.__version__"}
-readme = {file = "README.md", content-type = "text/markdown"}
+generate = "aind_behavior_services.generators:main"
 
 [tool.ruff]
 line-length = 120
@@ -83,3 +62,7 @@ pydocstyle = { convention = 'google' }
 [tool.codespell]
 skip = '.git,*.pdf,*.svg,./bonsai,*.bonsai,./docs/_build,uv.lock'
 ignore-words-list = 'nd, assertIn'
+
+[tool.uv]
+default-groups = ['dev']
+required-version = '>=0.8.4'

@@ -4,7 +4,7 @@ from typing import Literal, Optional
 import aind_behavior_curriculum.task as curriculum_task
 from pydantic import Field, field_validator
 
-from aind_behavior_services import __version__
+from aind_behavior_services import __semver__
 from aind_behavior_services.base import SEMVER_REGEX, coerce_schema_version
 
 logger = logging.getLogger(__name__)
@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 class TaskParameters(curriculum_task.TaskParameters):
     rng_seed: Optional[float] = Field(default=None, description="Seed of the random number generator")
-    aind_behavior_services_pkg_version: Literal[__version__] = Field(
-        default=__version__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
+    aind_behavior_services_pkg_version: Literal[__semver__] = Field(
+        default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
     )
 
     @field_validator("aind_behavior_services_pkg_version", mode="before", check_fields=False)

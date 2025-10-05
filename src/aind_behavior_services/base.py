@@ -26,14 +26,14 @@ from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 from semver import Version
 
-from aind_behavior_services import __version__
+from aind_behavior_services import __semver__
 
 logger = logging.getLogger(__name__)
 
 
 class SchemaVersionedModel(BaseModel):
-    aind_behavior_services_pkg_version: Literal[__version__] = Field(
-        default=__version__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
+    aind_behavior_services_pkg_version: Literal[__semver__] = Field(
+        default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
     )
     version: str = Field(..., pattern=SEMVER_REGEX, description="schema version", title="Version", frozen=True)
 
