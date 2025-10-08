@@ -47,7 +47,7 @@ docs = [
 ]
 
 [project.scripts]
-generate = "aind_behavior_services.generators:main"
+generate = "_generators:main"
 
 [tool.ruff]
 line-length = 120
