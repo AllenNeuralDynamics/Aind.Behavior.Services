@@ -139,10 +139,10 @@
           "$ref": "#/$defs/MessageType"
         },
         "protocol_version": {
-          "const": "0",
-          "default": "0",
+          "const": 0,
+          "default": 0,
           "title": "Protocol Version",
-          "type": "string"
+          "type": "integer"
         },
         "timestamp": {
           "description": "The timestamp of the message",
@@ -234,10 +234,10 @@
           "$ref": "#/$defs/MessageType"
         },
         "protocol_version": {
-          "const": "0",
-          "default": "0",
+          "const": 0,
+          "default": 0,
           "title": "Protocol Version",
-          "type": "string"
+          "type": "integer"
         },
         "timestamp": {
           "description": "The timestamp of the message",

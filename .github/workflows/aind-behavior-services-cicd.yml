@@ -50,6 +50,14 @@ jobs:
       - name: Run python unit tests
         run: uv run python -m unittest
 
+      - name: Regenerate json-schema
+        run: uv run ./src/_generators/json_schema.py
+
+      - name: Check for uncommitted changes
+        run: |
+          git config --global core.safecrlf false
+          git diff --exit-code || (echo "Untracked changes found" && exit 1)
+
   # ╔───────────────────────────────────────────────────────────╗
   # │    ____ ___ ____ ____    ____      _                      │
   # │   / ___|_ _/ ___|  _ \  |  _ \ ___| | ___  __ _ ___  ___  │
@@ -86,6 +94,9 @@ jobs:
           else
             uv version --bump rc --bump patch
           fi
+
+      - name: Regenerate json-schema
+        run: uv run ./src/_generators/json_schema.py
 
       - name: Commit version
         run: |
@@ -152,6 +163,9 @@ jobs:
       - name: Update package version
         run: uv version ${{ steps.get_version.outputs.version }}
 
+      - name: Regenerate json-schema
+        run: uv run ./src/_generators/json_schema.py
+        
       - name: Commit version changes
         run: |
           git config --global user.name "github-actions[bot]"
