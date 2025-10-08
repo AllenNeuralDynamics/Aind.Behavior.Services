@@ -51,7 +51,7 @@ jobs:
         run: uv run python -m unittest
 
       - name: Regenerate json-schema
-        run: uv run .\src\_generators\json_schema.py
+        run: uv run ./src/_generators/json_schema.py
 
       - name: Check for uncommitted changes
         run: |
@@ -96,7 +96,7 @@ jobs:
           fi
 
       - name: Regenerate json-schema
-        run: uv run .\src\_generators\json_schema.py
+        run: uv run ./src/_generators/json_schema.py
 
       - name: Commit version
         run: |
@@ -164,7 +164,7 @@ jobs:
         run: uv version ${{ steps.get_version.outputs.version }}
 
       - name: Regenerate json-schema
-        run: uv run .\src\_generators\json_schema.py
+        run: uv run ./src/_generators/json_schema.py
         
       - name: Commit version changes
         run: |
