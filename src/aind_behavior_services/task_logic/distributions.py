@@ -10,9 +10,15 @@ class TruncationParameters(BaseModel):
     Parameters for truncating a distribution to a specified range. Truncation should
     be applied after sampling and scaling.
 
+    The truncation_mode determines how out-of-bounds values are handled:
+    - "exclude": Resample until a value within [min, max] is obtained.
+    If after a certain number of attempts no valid value is found, it
+    will use the average of sampled values and pick the closest bound.
+    - "clamp": Clamp values to the nearest bound within [min, max].
     Used to constrain sampled values within minimum and maximum bounds.
     """
 
+    truncation_mode: Literal["exclude", "clamp"] = Field(default="exclude", description="Mode of truncation to apply")
     min: float = Field(default=0, description="Minimum value of the sampled distribution")
     max: float = Field(default=0, description="Maximum value of the sampled distribution")
 
