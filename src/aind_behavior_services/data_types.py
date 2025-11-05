@@ -1,7 +1,7 @@
 from enum import StrEnum
 from typing import Any, Generic, Literal, Optional, TypeVar
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from aind_behavior_services import __semver__
 from aind_behavior_services.base import SchemaVersionedModel
@@ -58,8 +58,8 @@ class DataTypes(SchemaVersionedModel):
     version: Literal[__semver__] = __semver__
     software_event: SoftwareEvent
     render_synch_state: RenderSynchState
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "x-abstract": "True",
         }
+    )
