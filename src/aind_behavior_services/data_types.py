@@ -10,7 +10,6 @@ from aind_behavior_services.base import SchemaVersionedModel
 class DataType(StrEnum):
     STRING = "string"
     NUMBER = "number"
-    BOOLEAL = "boolean"  # For backward compatibility
     OBJECT = "object"
     ARRAY = "array"
     NULL = "null"

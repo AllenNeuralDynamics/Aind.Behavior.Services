@@ -4,7 +4,6 @@
       "enum": [
         "string",
         "number",
-        "boolean",
         "object",
         "array",
         "null",
