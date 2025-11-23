@@ -21,6 +21,7 @@ FFMPEG_INPUT = "-colorspace bt709 -color_primaries bt709 -color_range full -colo
 
 class VideoWriterFfmpeg(BaseModel):
     """FFMPEG video writer configuration."""
+
     video_writer_type: Literal["FFMPEG"] = Field(default="FFMPEG")
     frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
     container_extension: str = Field(default="mp4", description="Container extension")
@@ -36,6 +37,7 @@ class VideoWriterFfmpeg(BaseModel):
 
 class VideoWriterOpenCv(BaseModel):
     """OpenCV video writer configuration."""
+
     video_writer_type: Literal["OPENCV"] = Field(default="OPENCV")
     frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
     container_extension: str = Field(default="avi", description="Container extension")
