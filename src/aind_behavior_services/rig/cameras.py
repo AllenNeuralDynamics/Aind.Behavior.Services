@@ -1,9 +1,12 @@
 from enum import IntEnum, auto
-from typing import TYPE_CHECKING, Annotated, Any, Dict, Generic, Literal, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Annotated, Dict, Generic, Literal, Optional, TypeVar, Union
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import TypeAliasType
 
+from ..common import Circle as Circle
+from ..common import Point2f as Point2f
+from ..common import Rect as Rect
 from ._base import Device
 
 FFMPEG_OUTPUT_8BIT = '-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M'
@@ -17,6 +20,7 @@ FFMPEG_INPUT = "-colorspace bt709 -color_primaries bt709 -color_range full -colo
 
 
 class VideoWriterFfmpeg(BaseModel):
+    """FFMPEG video writer configuration."""
     video_writer_type: Literal["FFMPEG"] = Field(default="FFMPEG")
     frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
     container_extension: str = Field(default="mp4", description="Container extension")
@@ -31,6 +35,7 @@ class VideoWriterFfmpeg(BaseModel):
 
 
 class VideoWriterOpenCv(BaseModel):
+    """OpenCV video writer configuration."""
     video_writer_type: Literal["OPENCV"] = Field(default="OPENCV")
     frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
     container_extension: str = Field(default="avi", description="Container extension")
@@ -45,68 +50,27 @@ else:
     )
 
 
-class VideoWriterFfmpegFactory:
-    def __init__(self, bit_depth: Literal[8, 16] = 8, video_writer_ffmpeg_kwargs: Dict[str, Any] = None):
-        self._bit_depth = bit_depth
-        self.video_writer_ffmpeg_kwargs = video_writer_ffmpeg_kwargs or {}
-        self._output_arguments: str
-        self._input_arguments: str
-        self._solve_strings()
-
-    def _solve_strings(self):
-        if self._bit_depth == 8:
-            self._output_arguments = FFMPEG_OUTPUT_8BIT
-        elif self._bit_depth == 16:
-            self._output_arguments = FFMPEG_OUTPUT_16BIT
-        else:
-            raise ValueError(f"Bit depth {self._bit_depth} not supported")
-        self._input_arguments = FFMPEG_INPUT
-
-    def construct_video_writer_ffmpeg(self) -> VideoWriterFfmpeg:
-        return VideoWriterFfmpeg(
-            output_arguments=self._output_arguments,
-            input_arguments=self._input_arguments,
-            **self.video_writer_ffmpeg_kwargs,
-        )
-
-    def update_video_writer_ffmpeg_kwargs(self, video_writer: VideoWriterFfmpeg):
-        return video_writer.model_copy(
-            update={"output_arguments": self._output_arguments, "input_arguments": self._input_arguments}
-        )
-
-
 class WebCamera(Device):
-    device_type: Literal["WebCamera"] = Field(default="WebCamera", description="Device type")
+    """Web camera device configuration."""
+
+    device_type: Literal["WebCamera"] = Field(default="WebCamera")
     index: int = Field(default=0, ge=0, description="Camera index")
     video_writer: Optional[VideoWriter] = Field(
         default=None, description="Video writer. If not provided, no video will be saved."
     )
 
 
-class Point2f(BaseModel):
-    x: float = Field(description="X coordinate of the point (px)")
-    y: float = Field(description="Y coordinate of the point (px)")
-
-
-class Rect(BaseModel):
-    x: int = Field(default=0, ge=0, description="X coordinate of the top-left corner")
-    y: int = Field(default=0, ge=0, description="Y coordinate of the top-left corner")
-    width: int = Field(default=0, ge=0, description="Width of the rectangle")
-    height: int = Field(default=0, ge=0, description="Height of the rectangle")
-
-
-class Circle(BaseModel):
-    center: Point2f = Field(default=Point2f(x=0, y=0), description="Center of the circle (px)", validate_default=True)
-    radius: float = Field(default=1, ge=0, description="Radius of the circle (px)")
-
-
 class SpinnakerCameraAdcBitDepth(IntEnum):
+    """ADC bit depth options for Spinnaker cameras."""
+
     ADC8BIT = 0
     ADC10BIT = 1
     ADC12BIT = 2
 
 
 class SpinnakerCameraPixelFormat(IntEnum):
+    """Pixel format options for Spinnaker cameras."""
+
     MONO8 = 0
     MONO16 = auto()
     RGB8PACKED = auto()
@@ -254,8 +218,10 @@ class SpinnakerCameraPixelFormat(IntEnum):
 
 
 class SpinnakerCamera(Device):
-    device_type: Literal["SpinnakerCamera"] = Field(default="SpinnakerCamera", description="Device type")
-    serial_number: str = Field(..., description="Camera serial number")
+    """Spinnaker camera device configuration."""
+
+    device_type: Literal["SpinnakerCamera"] = Field(default="SpinnakerCamera")
+    serial_number: str = Field(description="Camera serial number")
     binning: int = Field(default=1, ge=1, description="Binning")
     color_processing: Literal["Default", "NoColorProcessing"] = Field(default="Default", description="Color processing")
     exposure: int = Field(default=1000, ge=100, description="Exposure time")
@@ -267,7 +233,9 @@ class SpinnakerCamera(Device):
     pixel_format: Optional[SpinnakerCameraPixelFormat] = Field(
         default=SpinnakerCameraPixelFormat.MONO8, description="Pixel format. If None will be left as default."
     )
-    region_of_interest: Rect = Field(default=Rect(), description="Region of interest", validate_default=True)
+    region_of_interest: Rect = Field(
+        default=Rect(height=0, width=0, x=0, y=0), description="Region of interest", validate_default=True
+    )
     video_writer: Optional[VideoWriter] = Field(
         default=None, description="Video writer. If not provided, no video will be saved."
     )
@@ -286,6 +254,10 @@ TCamera = TypeVar("TCamera", bound=CameraTypes)
 
 
 class CameraController(Device, Generic[TCamera]):
+    """Camera controller device configuration.
+    Manages multiple cameras of the same type.
+    """
+
     device_type: Literal["CameraController"] = "CameraController"
-    cameras: Dict[str, TCamera] = Field(..., description="Cameras to be instantiated")
+    cameras: Dict[str, TCamera] = Field(description="Cameras to be instantiated")
     frame_rate: Optional[int] = Field(default=30, ge=0, description="Frame rate of the trigger to all cameras")
