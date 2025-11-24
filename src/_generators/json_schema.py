@@ -3,11 +3,11 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from aind_behavior_services.calibration import aind_manipulator
 from pydantic import BaseModel
 
 from aind_behavior_services.data_types import DataTypes
 from aind_behavior_services.message_protocol import MessageProtocol
+from aind_behavior_services.rig.aind_manipulator import AindManipulator
 from aind_behavior_services.session import AindBehaviorSessionModel
 from aind_behavior_services.utils import export_schema, pascal_to_snake_case
 
@@ -34,7 +34,7 @@ def main():
         ToGenerateJsonSchema(model_name="AindBehaviorSessionModel", model=AindBehaviorSessionModel, remove_root=False),
         ToGenerateJsonSchema(model_name="DataTypes", model=DataTypes, remove_root=True),
         ToGenerateJsonSchema(model_name="MessageProtocol", model=MessageProtocol, remove_root=True),
-        ToGenerateJsonSchema(model_name="AindManipulator", model=aind_manipulator.CalibrationRig, remove_root=False),
+        ToGenerateJsonSchema(model_name="AindManipulator", model=AindManipulator, remove_root=False),
     )
 
     for m in models:
