@@ -17,6 +17,8 @@ class Axis(IntEnum):
 
 
 class ManipulatorPosition(BaseModel):
+    """Represents a position in the manipulator coordinate system"""
+
     x: float = Field(title="X coordinate")
     y1: float = Field(title="Y1 coordinate")
     y2: float = Field(title="Y2 coordinate")
@@ -24,6 +26,8 @@ class ManipulatorPosition(BaseModel):
 
 
 class MicrostepResolution(IntEnum):
+    """Microstep resolution available"""
+
     MICROSTEP8 = 0
     MICROSTEP16 = 1
     MICROSTEP32 = 2
@@ -31,6 +35,8 @@ class MicrostepResolution(IntEnum):
 
 
 class MotorOperationMode(IntEnum):
+    """Motor operation mode"""
+
     QUIET = 0
     DYNAMIC = 1
 
@@ -64,6 +70,8 @@ class AxisConfiguration(BaseModel):
 
 
 class AindManipulatorCalibration(BaseModel):
+    """AindManipulator calibration class"""
+
     description: Literal["AindManipulator calibration and settings"] = "AindManipulator calibration and settings"
     full_step_to_mm: ManipulatorPosition = Field(
         default=(ManipulatorPosition(x=0.010, y1=0.010, y2=0.010, z=0.010)),
