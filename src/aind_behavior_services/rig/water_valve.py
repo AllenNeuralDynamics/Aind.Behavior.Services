@@ -59,7 +59,7 @@ class WaterValveCalibration(BaseModel):
     )
 
 
-def calibrate(measurements: list[Measurement]) -> WaterValveCalibration:
+def calibrate_water_valves(measurements: list[Measurement]) -> WaterValveCalibration:
     """Calibrate the water valve delivery system by populating the output field"""
     _x_times = []
     _y_weight = []
