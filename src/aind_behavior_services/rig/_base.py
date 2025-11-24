@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseModel, Field, SerializeAsAny, model_validator
+from pydantic import BaseModel, Field, SerializeAsAny
 
 from aind_behavior_services.base import SchemaVersionedModel
 
@@ -14,21 +14,7 @@ class Device(BaseModel):
 
     device_type: str = Field(description="Device type")
     name: str = Field(description="Device name")
-    settings: Optional[SerializeAsAny[BaseModel]] = Field(default=None, description="Device settings")
-    additional_settings: Optional[SerializeAsAny[BaseModel]] = Field(
-        default=None, description="Additional settings", deprecated="Use *settings* field instead."
-    )
-    calibration: Optional[SerializeAsAny[BaseModel]] = Field(
-        default=None, description="Calibration", deprecated="Use *settings* field instead."
-    )
-
-    @model_validator(mode="after")
-    def ensure_settings_synched(self):
-        if "additional_settings" or "calibration" in self.model_fields_set:
-            raise ValueError(
-                "The fields 'additional_settings' and 'calibration' are deprecated. Please use the 'settings' field instead."
-            )
-        self.additional_settings = self.calibration = self.settings
+    calibration: Optional[SerializeAsAny[BaseModel]] = Field(default=None, description="Calibration for the device.")
 
 
 class AindBehaviorRigModel(SchemaVersionedModel):

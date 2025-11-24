@@ -24,7 +24,7 @@ class TaskParameters(curriculum_task.TaskParameters):
 
 # This class should be inherited from but do not add extra parameters. Instead, add them to TaskParameters
 class AindBehaviorTaskLogicModel(curriculum_task.Task):
-    task_parameters: TaskParameters = Field(..., description="Parameters of the task logic", validate_default=True)
+    task_parameters: TaskParameters = Field(description="Parameters of the task logic", validate_default=True)
     version: str = Field(..., pattern=curriculum_task.SEMVER_REGEX, description="task schema version")
 
     @field_validator("version", mode="before", check_fields=False)

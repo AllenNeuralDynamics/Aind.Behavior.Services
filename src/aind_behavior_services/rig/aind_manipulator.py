@@ -1,15 +1,12 @@
-import logging
 from enum import IntEnum
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
-from aind_behavior_services.rig import AindBehaviorRigModel
 from aind_behavior_services.rig.harp import HarpStepperDriver
-from aind_behavior_services.task_logic import AindBehaviorTaskLogicModel, TaskParameters
 
-
-logger = logging.getLogger(__name__)
+from ._base import Device
+from ._harp_gen import HarpStepperDriver
 
 
 class Axis(IntEnum):
@@ -69,7 +66,7 @@ class AxisConfiguration(BaseModel):
     min_limit: float = Field(default=-0.01, title="Minimum limit in SI units. A value of 0 disables this limit.")
 
 
-class AindManipulatorCalibration(DeviceCalibration):
+class AindManipulatorCalibration(BaseModel):
     description: Literal["AindManipulator calibration and settings"] = "AindManipulator calibration and settings"
     full_step_to_mm: ManipulatorPosition = Field(
         default=(ManipulatorPosition(x=0.010, y1=0.010, y2=0.010, z=0.010)),
@@ -93,20 +90,11 @@ class AindManipulatorCalibration(DeviceCalibration):
     )
 
 
-class CalibrationParameters(TaskParameters):
-    pass
+class AindManipulator(Device):
+    """AindManipulator device definition"""
 
-
-class CalibrationLogic(AindBehaviorTaskLogicModel):
-    name: str = Field(default="AindManipulatorCalibrationLogic", title="Task name")
-    version: Literal[TASK_LOGIC_VERSION] = TASK_LOGIC_VERSION
-    task_parameters: CalibrationParameters = Field(..., title="Task parameters", validate_default=True)
-
-
-class AindManipulatorDevice(HarpStepperDriver):
-    calibration: Optional[AindManipulatorCalibration] = Field(default=None, title="Calibration of the manipulator")
-
-
-class CalibrationRig(AindBehaviorRigModel):
-    version: Literal[RIG_VERSION] = RIG_VERSION
-    manipulator: AindManipulatorDevice = Field(default=None, title="Manipulator device")
+    harp_device: HarpStepperDriver = Field(description="Harp stepper driver used to drive the manipulator")
+    device_type: Literal["AindManipulator"] = "AindManipulator"
+    calibration: AindManipulatorCalibration = Field(
+        default=AindManipulatorCalibration(), description="Calibration for the device.", validate_default=True
+    )
