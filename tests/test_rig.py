@@ -39,8 +39,8 @@ class TestHarpClockOutput(unittest.TestCase):
         harp_device_array: List[HarpDevice] = Field(default_factory=list)
 
     def setUp(self):
-        self.generic_harp = HarpDeviceGeneric(port_name="COM1")
-        self.write_rabbit = HarpWhiteRabbit(port_name="COM2")
+        self.generic_harp = HarpDeviceGeneric(port_name="COM1", name="GenericHarp")
+        self.write_rabbit = HarpWhiteRabbit(port_name="COM2", name="WhiteRabbit")
 
     @staticmethod
     def _add_clk_out(white_rabbit: HarpWhiteRabbit, n: int) -> HarpWhiteRabbit:

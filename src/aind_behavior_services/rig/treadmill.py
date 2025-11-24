@@ -22,7 +22,7 @@ class TreadmillCalibration(BaseModel):
     pulses_per_revolution: int = Field(default=28800, ge=1, description="Pulses per revolution")
     invert_direction: bool = Field(default=False, description="Invert direction")
     brake_lookup_calibration: List[ValuePair] = Field(
-        default=[],
+        default=[[0, 0], [1, 65535]],
         validate_default=True,
         min_length=2,
         description="Brake lookup calibration. Each pair of values define (input [torque], output [brake set-point U16])",

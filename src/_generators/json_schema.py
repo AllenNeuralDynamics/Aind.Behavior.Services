@@ -3,9 +3,9 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+from aind_behavior_services.calibration import aind_manipulator
 from pydantic import BaseModel
 
-from aind_behavior_services.calibration import aind_manipulator
 from aind_behavior_services.data_types import DataTypes
 from aind_behavior_services.message_protocol import MessageProtocol
 from aind_behavior_services.session import AindBehaviorSessionModel
