@@ -3,9 +3,6 @@ from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
-from aind_behavior_services.rig.harp import HarpStepperDriver
-
-from ._base import Device
 from ._harp_gen import HarpStepperDriver
 
 
@@ -90,11 +87,9 @@ class AindManipulatorCalibration(BaseModel):
     )
 
 
-class AindManipulator(Device):
+class AindManipulator(HarpStepperDriver):
     """AindManipulator device definition"""
 
-    harp_device: HarpStepperDriver = Field(description="Harp stepper driver used to drive the manipulator")
-    device_type: Literal["AindManipulator"] = "AindManipulator"
     calibration: AindManipulatorCalibration = Field(
         default=AindManipulatorCalibration(), description="Calibration for the device.", validate_default=True
     )
