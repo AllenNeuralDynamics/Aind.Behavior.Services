@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic import ValidationError
 
-from aind_behavior_services.calibration.water_valve import (
+from aind_behavior_services.rig.water_valve import (
     Measurement,
     WaterValveCalibration,
     WaterValveCalibrationInput,
