@@ -238,11 +238,6 @@
       "title": "Device Type",
       "type": "string"
     },
-    "name": {
-      "description": "Device name",
-      "title": "Name",
-      "type": "string"
-    },
     "calibration": {
       "$ref": "#/$defs/AindManipulatorCalibration",
       "default": {
@@ -336,7 +331,6 @@
     }
   },
   "required": [
-    "name",
     "port_name"
   ],
   "title": "AindManipulator",
