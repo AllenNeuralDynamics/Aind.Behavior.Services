@@ -13,7 +13,6 @@ class Device(BaseModel):
     """
 
     device_type: str = Field(description="Device type")
-    name: str = Field(description="Device name")
     calibration: Optional[SerializeAsAny[BaseModel]] = Field(default=None, description="Calibration for the device.")
 
 
