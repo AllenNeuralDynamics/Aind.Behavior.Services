@@ -10,7 +10,6 @@ from ._base import Device
 
 class _HarpDeviceBase(Device):
     who_am_i: Optional[int] = Field(default=None, le=9999, ge=0, description="Device WhoAmI")
-    device_type: str
     serial_number: Optional[str] = Field(default=None, description="Device serial number")
     port_name: str = Field(..., description="Device port name")
 
