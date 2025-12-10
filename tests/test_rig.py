@@ -6,13 +6,6 @@ from pydantic import Field
 from aind_behavior_services.rig import (
     AindBehaviorRigModel,
 )
-from aind_behavior_services.rig.cameras import (
-    FFMPEG_INPUT,
-    FFMPEG_OUTPUT_8BIT,
-    FFMPEG_OUTPUT_16BIT,
-    VideoWriterFfmpeg,
-    VideoWriterFfmpegFactory,
-)
 from aind_behavior_services.rig.harp import (
     ConnectedClockOutput,
     HarpDevice,
@@ -22,60 +15,22 @@ from aind_behavior_services.rig.harp import (
 )
 
 
-class TestVideoWriterFfmpegFactory(unittest.TestCase):
-    def test_initialization(self):
-        factory = VideoWriterFfmpegFactory(bit_depth=8)
-        self.assertEqual(factory._bit_depth, 8)
-        self.assertEqual(factory.video_writer_ffmpeg_kwargs, {})
-
-        factory = VideoWriterFfmpegFactory(bit_depth=16, video_writer_ffmpeg_kwargs={"frame_rate": 60})
-        self.assertEqual(factory._bit_depth, 16)
-        self.assertEqual(factory.video_writer_ffmpeg_kwargs, {"frame_rate": 60})
-
-    def test_solve_strings_8bit(self):
-        factory = VideoWriterFfmpegFactory(bit_depth=8)
-        self.assertEqual(factory._output_arguments, FFMPEG_OUTPUT_8BIT)
-        self.assertEqual(factory._input_arguments, FFMPEG_INPUT)
-
-    def test_solve_strings_16bit(self):
-        factory = VideoWriterFfmpegFactory(bit_depth=16)
-        self.assertEqual(factory._output_arguments, FFMPEG_OUTPUT_16BIT)
-        self.assertEqual(factory._input_arguments, FFMPEG_INPUT)
-
-    def test_construct_video_writer_ffmpeg(self):
-        factory = VideoWriterFfmpegFactory(bit_depth=8)
-        video_writer = factory.construct_video_writer_ffmpeg()
-        self.assertIsInstance(video_writer, VideoWriterFfmpeg)
-        self.assertEqual(video_writer.output_arguments, factory._output_arguments)
-        self.assertEqual(video_writer.input_arguments, factory._input_arguments)
-
-    def test_update_video_writer_ffmpeg_kwargs(self):
-        factory = VideoWriterFfmpegFactory(bit_depth=8)
-        video_writer = factory.construct_video_writer_ffmpeg()
-        updated_video_writer = factory.update_video_writer_ffmpeg_kwargs(video_writer)
-        self.assertEqual(updated_video_writer.output_arguments, factory._output_arguments)
-        self.assertEqual(updated_video_writer.input_arguments, factory._input_arguments)
-
-    def test_video_writer_ffmpeg_obj_equality(self):
-        factory = VideoWriterFfmpegFactory(bit_depth=8)
-        video_writer = VideoWriterFfmpeg(output_arguments=FFMPEG_OUTPUT_8BIT, input_arguments=FFMPEG_INPUT)
-        video_writer_from_factory = factory.construct_video_writer_ffmpeg()
-        self.assertEqual(video_writer, video_writer_from_factory)
-
-
 class TestHarpClockOutput(unittest.TestCase):
     class ZeroHarpDevice(AindBehaviorRigModel):
+        data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
 
     class OneHarpDevice(AindBehaviorRigModel):
+        data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
         harp_device: Optional[HarpDevice]
 
     class NHarpDevice(AindBehaviorRigModel):
+        data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
@@ -84,8 +39,8 @@ class TestHarpClockOutput(unittest.TestCase):
         harp_device_array: List[HarpDevice] = Field(default_factory=list)
 
     def setUp(self):
-        self.generic_harp = HarpDeviceGeneric(port_name="COM1")
-        self.write_rabbit = HarpWhiteRabbit(port_name="COM2")
+        self.generic_harp = HarpDeviceGeneric(port_name="COM1", name="GenericHarp")
+        self.write_rabbit = HarpWhiteRabbit(port_name="COM2", name="WhiteRabbit")
 
     @staticmethod
     def _add_clk_out(white_rabbit: HarpWhiteRabbit, n: int) -> HarpWhiteRabbit:

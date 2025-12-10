@@ -1,63 +1,14 @@
 {
   "$defs": {
     "AindManipulatorCalibration": {
-      "description": "Aind manipulator calibration class",
+      "description": "AindManipulator calibration class",
       "properties": {
-        "device_name": {
-          "default": "AindManipulator",
-          "description": "Must match a device name in rig/instrument",
-          "title": "Device name",
-          "type": "string"
-        },
-        "input": {
-          "$ref": "#/$defs/AindManipulatorCalibrationInput",
-          "title": "Input of the calibration"
-        },
-        "output": {
-          "$ref": "#/$defs/AindManipulatorCalibrationOutput",
-          "title": "Output of the calibration."
-        },
-        "date": {
-          "default": null,
-          "oneOf": [
-            {
-              "format": "date-time",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Date"
-        },
         "description": {
-          "const": "Calibration of the load cells system",
-          "default": "Calibration of the load cells system",
+          "const": "AindManipulator calibration and settings",
+          "default": "AindManipulator calibration and settings",
           "title": "Description",
           "type": "string"
         },
-        "notes": {
-          "default": null,
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Notes"
-        }
-      },
-      "required": [
-        "input",
-        "output"
-      ],
-      "title": "AindManipulatorCalibration",
-      "type": "object"
-    },
-    "AindManipulatorCalibrationInput": {
-      "properties": {
         "full_step_to_mm": {
           "$ref": "#/$defs/ManipulatorPosition",
           "default": {
@@ -140,88 +91,7 @@
           }
         }
       },
-      "title": "AindManipulatorCalibrationInput",
-      "type": "object"
-    },
-    "AindManipulatorCalibrationOutput": {
-      "properties": {},
-      "title": "AindManipulatorCalibrationOutput",
-      "type": "object"
-    },
-    "AindManipulatorDevice": {
-      "properties": {
-        "device_type": {
-          "const": "StepperDriver",
-          "default": "StepperDriver",
-          "title": "Device Type",
-          "type": "string"
-        },
-        "device_name": {
-          "default": null,
-          "description": "Device name",
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Device Name"
-        },
-        "additional_settings": {
-          "default": null,
-          "description": "Additional settings",
-          "oneOf": [
-            {
-              "$ref": "#/$defs/BaseModel"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "calibration": {
-          "default": null,
-          "oneOf": [
-            {
-              "$ref": "#/$defs/AindManipulatorCalibration"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Calibration of the manipulator"
-        },
-        "who_am_i": {
-          "const": 1130,
-          "default": 1130,
-          "title": "Who Am I",
-          "type": "integer"
-        },
-        "serial_number": {
-          "default": null,
-          "description": "Device serial number",
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Serial Number"
-        },
-        "port_name": {
-          "description": "Device port name",
-          "title": "Port Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "port_name"
-      ],
-      "title": "AindManipulatorDevice",
+      "title": "AindManipulatorCalibration",
       "type": "object"
     },
     "Axis": {
@@ -300,12 +170,8 @@
       "title": "AxisConfiguration",
       "type": "object"
     },
-    "BaseModel": {
-      "properties": {},
-      "title": "BaseModel",
-      "type": "object"
-    },
     "ManipulatorPosition": {
+      "description": "Represents a position in the manipulator coordinate system",
       "properties": {
         "x": {
           "title": "X coordinate",
@@ -334,6 +200,7 @@
       "type": "object"
     },
     "MicrostepResolution": {
+      "description": "Microstep resolution available",
       "enum": [
         0,
         1,
@@ -350,6 +217,7 @@
       ]
     },
     "MotorOperationMode": {
+      "description": "Motor operation mode",
       "enum": [
         0,
         1
@@ -362,38 +230,109 @@
       ]
     }
   },
+  "description": "AindManipulator device definition",
   "properties": {
-    "aind_behavior_services_pkg_version": {
-      "default": "0.12.5",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
-      "title": "aind_behavior_services package version",
+    "device_type": {
+      "const": "StepperDriver",
+      "default": "StepperDriver",
+      "title": "Device Type",
       "type": "string"
     },
-    "version": {
-      "const": "0.1.0",
-      "default": "0.1.0",
-      "title": "Version",
-      "type": "string"
+    "calibration": {
+      "$ref": "#/$defs/AindManipulatorCalibration",
+      "default": {
+        "description": "AindManipulator calibration and settings",
+        "full_step_to_mm": {
+          "x": 0.01,
+          "y1": 0.01,
+          "y2": 0.01,
+          "z": 0.01
+        },
+        "axis_configuration": [
+          {
+            "axis": 2,
+            "max_limit": 25.0,
+            "maximum_step_interval": 2000,
+            "microstep_resolution": 0,
+            "min_limit": -0.01,
+            "motor_operation_mode": 0,
+            "step_acceleration_interval": 100,
+            "step_interval": 100
+          },
+          {
+            "axis": 3,
+            "max_limit": 25.0,
+            "maximum_step_interval": 2000,
+            "microstep_resolution": 0,
+            "min_limit": -0.01,
+            "motor_operation_mode": 0,
+            "step_acceleration_interval": 100,
+            "step_interval": 100
+          },
+          {
+            "axis": 1,
+            "max_limit": 25.0,
+            "maximum_step_interval": 2000,
+            "microstep_resolution": 0,
+            "min_limit": -0.01,
+            "motor_operation_mode": 0,
+            "step_acceleration_interval": 100,
+            "step_interval": 100
+          },
+          {
+            "axis": 4,
+            "max_limit": 25.0,
+            "maximum_step_interval": 2000,
+            "microstep_resolution": 0,
+            "min_limit": -0.01,
+            "motor_operation_mode": 0,
+            "step_acceleration_interval": 100,
+            "step_interval": 100
+          }
+        ],
+        "homing_order": [
+          2,
+          3,
+          1,
+          4
+        ],
+        "initial_position": {
+          "x": 0.0,
+          "y1": 0.0,
+          "y2": 0.0,
+          "z": 0.0
+        }
+      },
+      "description": "Calibration for the device."
     },
-    "computer_name": {
-      "description": "Computer name",
-      "title": "Computer Name",
-      "type": "string"
+    "who_am_i": {
+      "const": 1130,
+      "default": 1130,
+      "title": "Who Am I",
+      "type": "integer"
     },
-    "rig_name": {
-      "description": "Rig name",
-      "title": "Rig Name",
-      "type": "string"
-    },
-    "manipulator": {
-      "$ref": "#/$defs/AindManipulatorDevice",
+    "serial_number": {
       "default": null,
-      "title": "Manipulator device"
+      "description": "Device serial number",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Serial Number"
+    },
+    "port_name": {
+      "description": "Device port name",
+      "title": "Port Name",
+      "type": "string"
     }
   },
   "required": [
-    "rig_name"
+    "port_name"
   ],
-  "title": "CalibrationRig",
+  "title": "AindManipulator",
   "type": "object"
 }

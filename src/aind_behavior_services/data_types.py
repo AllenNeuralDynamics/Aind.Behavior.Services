@@ -1,7 +1,7 @@
 from enum import StrEnum
 from typing import Any, Generic, Literal, Optional, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, SerializeAsAny
 
 from aind_behavior_services import __semver__
 from aind_behavior_services.base import SchemaVersionedModel
@@ -35,16 +35,9 @@ class SoftwareEvent(BaseModel, Generic[TData]):
     timestamp_source: TimestampSource = Field(default=TimestampSource.NULL, description="The source of the timestamp")
     frame_index: Optional[int] = Field(default=None, ge=0, description="The frame index of the event")
     frame_timestamp: Optional[float] = Field(default=None, description="The timestamp of the frame")
-    data: Optional[TData] = Field(default=None, description="The data of the event")
+    data: SerializeAsAny[Optional[TData]] = Field(default=None, description="The data of the event")
     data_type: DataType = Field(default=DataType.NULL, description="The data type of the event")
     data_type_hint: Optional[str] = Field(default=None, description="The data type hint of the event")
-
-    @field_validator("data_type", mode="after")
-    @classmethod
-    def _fix_typoed_boolean(cls, v: DataType) -> DataType:
-        if v == DataType.BOOLEAL:
-            return DataType.BOOLEAN
-        return v
 
 
 class RenderSynchState(BaseModel):

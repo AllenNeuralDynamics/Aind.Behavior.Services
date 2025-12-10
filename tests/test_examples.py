@@ -1,5 +1,3 @@
-"""testing examples"""
-
 import glob
 import unittest
 
