@@ -1,4 +1,4 @@
-from . import cameras, harp, network, visual_stimulation
+from . import cameras, harp, visual_stimulation
 from ._base import AindBehaviorRigModel, Device
 
 __all__ = [
@@ -7,5 +7,4 @@ __all__ = [
     "cameras",
     "harp",
     "visual_stimulation",
-    "network",
 ]
