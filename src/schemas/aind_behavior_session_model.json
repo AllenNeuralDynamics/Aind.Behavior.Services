@@ -1,14 +1,14 @@
 {
   "properties": {
     "aind_behavior_services_pkg_version": {
-      "default": "0.12.5",
+      "default": "0.13.0-rc0",
       "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
       "title": "aind_behavior_services package version",
       "type": "string"
     },
     "version": {
-      "const": "0.12.5",
-      "default": "0.12.5",
+      "const": "0.13.0-rc0",
+      "default": "0.13.0-rc0",
       "title": "Version",
       "type": "string"
     },
@@ -40,11 +40,6 @@
       "title": "Date",
       "type": "string"
     },
-    "root_path": {
-      "description": "Root path where data will be logged",
-      "title": "Root Path",
-      "type": "string"
-    },
     "session_name": {
       "default": null,
       "description": "Name of the session. This will be used to create a folder in the root path. If not provided, it will be generated using subject and date.",
@@ -61,13 +56,6 @@
     "subject": {
       "description": "Name of the subject",
       "title": "Subject",
-      "type": "string"
-    },
-    "experiment_version": {
-      "default": "",
-      "deprecated": true,
-      "description": "Version of the experiment",
-      "title": "Experiment Version",
       "type": "string"
     },
     "notes": {
@@ -110,7 +98,6 @@
     }
   },
   "required": [
-    "root_path",
     "subject"
   ],
   "title": "AindBehaviorSessionModel",

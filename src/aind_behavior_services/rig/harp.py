@@ -1,17 +1,17 @@
-from typing import TypeAlias
+from typing import TypeAlias, TypeVar
 
-from typing_extensions import deprecated
-
-from aind_behavior_services.utils import get_fields_of_type
-
-from ._base import TRig
+from ..rig._base import AindBehaviorRigModel
+from ..utils import get_fields_of_type
 from ._harp_gen import *  # noqa
-from ._harp_gen import ConnectedClockOutput, HarpLicketySplit, HarpTimestampGeneratorGen3, _HarpDeviceBase
+from ._harp_gen import ConnectedClockOutput, _HarpDeviceBase
 
 HarpDeviceBase: TypeAlias = _HarpDeviceBase
 
+TRig = TypeVar("TRig", bound=AindBehaviorRigModel)
+
 
 def validate_harp_clock_output(rig: TRig) -> TRig:
+    """Validates that the number of Harp devices in the rig configuration matches the number of connected clock outputs."""
     harp_devices = get_fields_of_type(rig, _HarpDeviceBase)
     if len(harp_devices) < 2:
         return rig
@@ -20,16 +20,3 @@ def validate_harp_clock_output(rig: TRig) -> TRig:
     if len(clock_outputs) != n_clock_targets:
         raise ValueError(f"Expected {n_clock_targets} clock outputs, got {len(clock_outputs)}")
     return rig
-
-
-# For backwards compatibility
-
-
-@deprecated("Use HarpTimestampGeneratorGen3 instead.")
-class HarpClockGenerator(HarpTimestampGeneratorGen3):
-    pass
-
-
-@deprecated("Use HarpLicketySplit instead.")
-class HarpLickometer(HarpLicketySplit):
-    pass

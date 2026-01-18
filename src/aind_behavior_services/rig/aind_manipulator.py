@@ -1,19 +1,9 @@
-import logging
 from enum import IntEnum
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
-from aind_behavior_services.rig import AindBehaviorRigModel
-from aind_behavior_services.rig.harp import HarpStepperDriver
-from aind_behavior_services.task_logic import AindBehaviorTaskLogicModel, TaskParameters
-
-from ._base import Calibration
-
-logger = logging.getLogger(__name__)
-
-TASK_LOGIC_VERSION = "0.2.0"
-RIG_VERSION = "0.1.0"
+from ._harp_gen import HarpStepperDriver
 
 
 class Axis(IntEnum):
@@ -27,13 +17,17 @@ class Axis(IntEnum):
 
 
 class ManipulatorPosition(BaseModel):
-    x: float = Field(..., title="X coordinate")
-    y1: float = Field(..., title="Y1 coordinate")
-    y2: float = Field(..., title="Y2 coordinate")
-    z: float = Field(..., title="Z coordinate")
+    """Represents a position in the manipulator coordinate system"""
+
+    x: float = Field(title="X coordinate")
+    y1: float = Field(title="Y1 coordinate")
+    y2: float = Field(title="Y2 coordinate")
+    z: float = Field(title="Z coordinate")
 
 
 class MicrostepResolution(IntEnum):
+    """Microstep resolution available"""
+
     MICROSTEP8 = 0
     MICROSTEP16 = 1
     MICROSTEP32 = 2
@@ -41,6 +35,8 @@ class MicrostepResolution(IntEnum):
 
 
 class MotorOperationMode(IntEnum):
+    """Motor operation mode"""
+
     QUIET = 0
     DYNAMIC = 1
 
@@ -48,7 +44,7 @@ class MotorOperationMode(IntEnum):
 class AxisConfiguration(BaseModel):
     """Axis configuration"""
 
-    axis: Axis = Field(..., title="Axis to be configured")
+    axis: Axis = Field(title="Axis to be configured")
     step_acceleration_interval: int = Field(
         default=100,
         title="Acceleration",
@@ -73,7 +69,10 @@ class AxisConfiguration(BaseModel):
     min_limit: float = Field(default=-0.01, title="Minimum limit in SI units. A value of 0 disables this limit.")
 
 
-class AindManipulatorCalibrationInput(BaseModel):
+class AindManipulatorCalibration(BaseModel):
+    """AindManipulator calibration class"""
+
+    description: Literal["AindManipulator calibration and settings"] = "AindManipulator calibration and settings"
     full_step_to_mm: ManipulatorPosition = Field(
         default=(ManipulatorPosition(x=0.010, y1=0.010, y2=0.010, z=0.010)),
         title="Full step to mm. Used to convert steps to SI Units",
@@ -96,35 +95,9 @@ class AindManipulatorCalibrationInput(BaseModel):
     )
 
 
-class AindManipulatorCalibrationOutput(BaseModel):
-    pass
+class AindManipulator(HarpStepperDriver):
+    """AindManipulator device definition"""
 
-
-class AindManipulatorCalibration(Calibration):
-    """Aind manipulator calibration class"""
-
-    device_name: str = Field(
-        default="AindManipulator", title="Device name", description="Must match a device name in rig/instrument"
+    calibration: AindManipulatorCalibration = Field(
+        default=AindManipulatorCalibration(), description="Calibration for the device.", validate_default=True
     )
-    description: Literal["Calibration of the load cells system"] = "Calibration of the load cells system"
-    input: AindManipulatorCalibrationInput = Field(default=..., title="Input of the calibration")
-    output: AindManipulatorCalibrationOutput = Field(default=..., title="Output of the calibration.")
-
-
-class CalibrationParameters(TaskParameters):
-    pass
-
-
-class CalibrationLogic(AindBehaviorTaskLogicModel):
-    name: str = Field(default="AindManipulatorCalibrationLogic", title="Task name")
-    version: Literal[TASK_LOGIC_VERSION] = TASK_LOGIC_VERSION
-    task_parameters: CalibrationParameters = Field(..., title="Task parameters", validate_default=True)
-
-
-class AindManipulatorDevice(HarpStepperDriver):
-    calibration: Optional[AindManipulatorCalibration] = Field(default=None, title="Calibration of the manipulator")
-
-
-class CalibrationRig(AindBehaviorRigModel):
-    version: Literal[RIG_VERSION] = RIG_VERSION
-    manipulator: AindManipulatorDevice = Field(default=None, title="Manipulator device")

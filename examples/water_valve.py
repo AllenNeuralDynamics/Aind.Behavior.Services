@@ -1,5 +1,4 @@
-from aind_behavior_services.calibration import water_valve as wv
-from aind_behavior_services.utils import utcnow
+from aind_behavior_services.rig import water_valve as wv
 
 
 def linear_model(time, slope, offset):
@@ -16,20 +15,4 @@ _inputs = [
     for t in zip(_delta_times, _water_weights)
 ]
 
-
-_outputs = wv.WaterValveCalibrationOutput(
-    interval_average={interval: volume for interval, volume in zip(_delta_times, _water_weights)},
-    slope=_slope,
-    offset=_offset,
-    r2=1.0,
-    valid_domain=[value for value in _delta_times],
-)
-
-input = wv.WaterValveCalibrationInput(measurements=_inputs)
-
-calibration = wv.WaterValveCalibration(
-    input=input,
-    output=input.calibrate_output(),
-    device_name="WaterValve",
-    date=utcnow(),
-)
+calibration = wv.calibrate_water_valves(_inputs)
