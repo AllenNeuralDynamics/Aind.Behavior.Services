@@ -182,7 +182,7 @@ TModel = TypeVar("TModel", bound=BaseModel)
 
 
 def export_schema(
-    model: BaseModel,
+    model: Type[BaseModel],
     schema_generator: Type[GenerateJsonSchema] = CustomGenerateJsonSchema,
     mode: JsonSchemaMode = "serialization",
     remove_root: bool = True,
@@ -267,7 +267,7 @@ def _check_bonsai_sgen_version() -> Version:
 
 
 def convert_pydantic_to_bonsai(
-    model: BaseModel,
+    model: Type[BaseModel],
     *,
     model_name: Optional[str] = None,
     json_schema_output_dir: PathLike = Path("./src/DataSchemas/"),
@@ -277,12 +277,12 @@ def convert_pydantic_to_bonsai(
     json_schema_export_kwargs: Optional[Dict[str, Any]] = None,
     root_element: Optional[str] = None,
 ) -> Optional[CompletedProcess]:
-    def _write_json(schema_path: PathLike, output_model_name: str, model: BaseModel, **extra_kwargs) -> None:
+    def _write_json(schema_path: PathLike, output_model_name: str, model: Type[BaseModel], **extra_kwargs) -> None:
         with open(os.path.join(schema_path, f"{output_model_name}.json"), "w", encoding="utf-8") as f:
             json_model = export_schema(model, **extra_kwargs)
             f.write(json_model)
 
-    _model_name = model_name or model.__class__.__name__
+    _model_name = model_name or model.__name__
     _write_json(json_schema_output_dir, _model_name, model, **(json_schema_export_kwargs or {}))
 
     if cs_output_dir is not None:

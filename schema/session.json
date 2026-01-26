@@ -100,6 +100,6 @@
   "required": [
     "subject"
   ],
-  "title": "AindBehaviorSessionModel",
+  "title": "Session",
   "type": "object"
 }
