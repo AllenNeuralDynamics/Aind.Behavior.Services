@@ -1,6 +1,6 @@
-from ._base import AindBehaviorRigModel, Device
+from ._base import Device, Rig
 
 __all__ = [
-    "AindBehaviorRigModel",
+    "Rig",
     "Device",
 ]

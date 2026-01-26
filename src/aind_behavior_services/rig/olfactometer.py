@@ -1,4 +1,3 @@
-import logging
 from enum import Enum, IntEnum
 from typing import Dict, Literal, Optional
 
@@ -7,8 +6,6 @@ from pydantic import BaseModel, Field
 from ._harp_gen import (
     HarpOlfactometer,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class OlfactometerChannel(IntEnum):
@@ -30,7 +27,7 @@ class OlfactometerChannelType(str, Enum):
 class OlfactometerChannelConfig(BaseModel):
     """Configuration for a single olfactometer channel"""
 
-    channel_index: int = Field(title="Channel index")
+    channel_index: int = Field(title="Odor channel index")
     channel_type: OlfactometerChannelType = Field(
         default=OlfactometerChannelType.ODOR, title="Olfactometer channel type"
     )

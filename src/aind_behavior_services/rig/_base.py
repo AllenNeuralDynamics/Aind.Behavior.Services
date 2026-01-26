@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -16,9 +15,9 @@ class Device(BaseModel):
     calibration: Optional[SerializeAsAny[BaseModel]] = Field(default=None, description="Calibration for the device.")
 
 
-class AindBehaviorRigModel(SchemaVersionedModel):
+class Rig(SchemaVersionedModel):
     """Base model for rig configuration. All rig configurations should derive from this base class."""
 
-    computer_name: str = Field(default_factory=lambda: os.environ["COMPUTERNAME"], description="Computer name")
+    computer_name: str = Field(description="Computer name")
     rig_name: str = Field(description="Rig name")
     data_directory: Path = Field(description="Directory where data will be saved to")
