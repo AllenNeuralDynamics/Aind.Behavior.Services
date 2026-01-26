@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from aind_behavior_services.data_types import DataTypes
 from aind_behavior_services.message_protocol import MessageProtocol
 from aind_behavior_services.rig.aind_manipulator import AindManipulator
-from aind_behavior_services.session import AindBehaviorSessionModel
+from aind_behavior_services.session import Session
 from aind_behavior_services.utils import export_schema, pascal_to_snake_case
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class ToGenerateJsonSchema:
 
 def main():
     models = (
-        ToGenerateJsonSchema(model_name="AindBehaviorSessionModel", model=AindBehaviorSessionModel, remove_root=False),
+        ToGenerateJsonSchema(model_name="AindBehaviorSessionModel", model=Session, remove_root=False),
         ToGenerateJsonSchema(model_name="DataTypes", model=DataTypes, remove_root=True),
         ToGenerateJsonSchema(model_name="MessageProtocol", model=MessageProtocol, remove_root=True),
         ToGenerateJsonSchema(model_name="AindManipulator", model=AindManipulator, remove_root=False),

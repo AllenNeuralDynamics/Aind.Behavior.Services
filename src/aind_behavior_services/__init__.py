@@ -4,14 +4,14 @@ from ._version import __semver__, __version__
 from .base import DefaultAwareDatetime, SchemaVersionedModel
 from .rig import Rig
 from .schema import BonsaiSgenSerializers, convert_pydantic_to_bonsai
-from .session import AindBehaviorSessionModel
+from .session import Session
 from .task_logic import Task
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "Rig",
-    "AindBehaviorSessionModel",
+    "Session",
     "Task",
     "SchemaVersionedModel",
     "DefaultAwareDatetime",
