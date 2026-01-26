@@ -31,7 +31,7 @@ Datasets will generally following the following structure:
     │       ├───<DataStreamFoo>
     |       ├───session_input.json
     │       ├───rig_input.json
-    │       └───Task_input.json
+    │       └───task_input.json
     └───<Modality>
         ├───<DataStream1>
         └───<DataStream2>
