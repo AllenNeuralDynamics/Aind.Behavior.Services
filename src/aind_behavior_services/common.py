@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field
 
 
 class Point2f(BaseModel):
@@ -36,8 +36,4 @@ class Vector3(BaseModel):
 
 ValuePair = Annotated[List[float], Field(min_length=2, max_length=2)]
 
-
-class LookUpTable(RootModel):
-    """A lookup table consisting of pairs of float values."""
-
-    root: List[ValuePair] = Field(validate_default=True, min_length=2)
+LookUpTable = Annotated[List[ValuePair], Field(min_length=2)]

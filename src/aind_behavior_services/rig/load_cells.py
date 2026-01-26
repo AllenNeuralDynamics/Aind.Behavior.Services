@@ -39,7 +39,7 @@ class LoadCellsCalibration(BaseModel):
         return values
 
 
-class LoadCells(HarpLoadCells[LoadCellsCalibration]):
+class LoadCells(HarpLoadCells):
     """Load cells device"""
 
     calibration: LoadCellsCalibration = Field(

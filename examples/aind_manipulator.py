@@ -1,9 +1,8 @@
 import os
 
-from aind_behavior_services.base import get_commit_hash
 from aind_behavior_services.rig import aind_manipulator as m
 from aind_behavior_services.session import Session
-from aind_behavior_services.utils import utcnow
+from aind_behavior_services.utils import get_commit_hash, utcnow
 
 calibration_data = m.AindManipulatorCalibration(
     full_step_to_mm=m.ManipulatorPosition(x=0.01, y1=0.01, y2=0.01, z=0.01),
