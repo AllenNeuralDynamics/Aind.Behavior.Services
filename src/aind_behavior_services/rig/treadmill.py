@@ -3,7 +3,7 @@ from typing import ClassVar, List
 
 from pydantic import BaseModel, Field, field_validator
 
-from aind_behavior_services.patterns import ValuePair
+from aind_behavior_services.common import ValuePair
 
 from ._harp_gen import HarpTreadmill
 
