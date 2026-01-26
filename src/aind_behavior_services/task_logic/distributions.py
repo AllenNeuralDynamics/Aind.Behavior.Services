@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Annotated, Any, List, Literal, Optional, Self, Union
+from typing import TYPE_CHECKING, Annotated, Any, List, Literal, Optional, Self, Union
 
 from pydantic import BaseModel, BeforeValidator, Field, NonNegativeFloat, field_validator, model_validator
 from typing_extensions import TypeAliasType
@@ -379,29 +379,22 @@ def _numeric_to_scalar(value: Any) -> Scalar | Any:
         return value
 
 
-Distribution = TypeAliasType(
-    "Distribution",
-    Annotated[
-        Union[
-            Scalar,
-            NormalDistribution,
-            LogNormalDistribution,
-            ExponentialDistribution,
-            UniformDistribution,
-            PoissonDistribution,
-            BinomialDistribution,
-            BetaDistribution,
-            GammaDistribution,
-            PdfDistribution,
-        ],
-        Field(discriminator="family", title="Distribution", description="Available distributions"),
-        BeforeValidator(_numeric_to_scalar),
-    ],
-)
+if TYPE_CHECKING:
+    Distribution = Union[
+        float,  # we add float here since we convert numeric to Scalar
+        Scalar,
+        NormalDistribution,
+        LogNormalDistribution,
+        ExponentialDistribution,
+        UniformDistribution,
+        PoissonDistribution,
+        BinomialDistribution,
+        BetaDistribution,
+        GammaDistribution,
+        PdfDistribution,
+    ]
 
-DistributionParameters = TypeAliasType(
-    "DistributionParameters",
-    Annotated[
+    DistributionParameters = (
         Union[
             ScalarDistributionParameter,
             NormalDistributionParameters,
@@ -414,6 +407,43 @@ DistributionParameters = TypeAliasType(
             GammaDistributionParameters,
             PdfDistributionParameters,
         ],
-        Field(discriminator="family", title="DistributionParameters", description="Parameters of the distribution"),
-    ],
-)
+    )
+else:
+    Distribution = TypeAliasType(
+        "Distribution",
+        Annotated[
+            Union[
+                Scalar,
+                NormalDistribution,
+                LogNormalDistribution,
+                ExponentialDistribution,
+                UniformDistribution,
+                PoissonDistribution,
+                BinomialDistribution,
+                BetaDistribution,
+                GammaDistribution,
+                PdfDistribution,
+            ],
+            Field(discriminator="family", title="Distribution", description="Available distributions"),
+            BeforeValidator(_numeric_to_scalar),
+        ],
+    )
+
+    DistributionParameters = TypeAliasType(
+        "DistributionParameters",
+        Annotated[
+            Union[
+                ScalarDistributionParameter,
+                NormalDistributionParameters,
+                LogNormalDistributionParameters,
+                ExponentialDistributionParameters,
+                UniformDistributionParameters,
+                PoissonDistributionParameters,
+                BinomialDistributionParameters,
+                BetaDistributionParameters,
+                GammaDistributionParameters,
+                PdfDistributionParameters,
+            ],
+            Field(discriminator="family", title="DistributionParameters", description="Parameters of the distribution"),
+        ],
+    )
