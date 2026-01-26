@@ -231,3 +231,14 @@ def get_fields_of_type(
                 )
             )
     return result
+
+
+def get_commit_hash(repository: Optional[PathLike] = None) -> str:
+    """Get the commit hash of the repository."""
+    import git
+
+    if repository is None:
+        repo = git.Repo(search_parent_directories=True)
+    else:
+        repo = git.Repo(repository)
+    return repo.head.commit.hexsha
