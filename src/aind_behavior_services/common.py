@@ -34,10 +34,10 @@ class Vector3(BaseModel):
     z: float = Field(default=0, description="Z coordinate of the vector")
 
 
-
 ValuePair = Annotated[List[float], Field(min_length=2, max_length=2)]
 
 
 class LookUpTable(RootModel):
     """A lookup table consisting of pairs of float values."""
+
     root: List[ValuePair] = Field(validate_default=True, min_length=2)

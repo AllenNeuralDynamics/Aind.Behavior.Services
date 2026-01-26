@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import Field, TypeAdapter
 
-from aind_behavior_services import AindBehaviorTaskLogicModel
+from aind_behavior_services import Task
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
 from aind_behavior_services.task_logic import TaskParameters
 from aind_behavior_services.utils import format_datetime
@@ -38,17 +38,17 @@ class DefaultAwareDatetimeTest(unittest.TestCase):
 
 
 class SchemaVersionCoercionTest(unittest.TestCase):
-    class AindBehaviorTaskLogicModelPre(AindBehaviorTaskLogicModel):
+    class AindBehaviorTaskLogicModelPre(Task):
         version: Literal["0.0.1"] = "0.0.1"
         name: str = Field(default="Pre")
         task_parameters: TaskParameters = Field(default=TaskParameters(), validate_default=True)
 
-    class AindBehaviorTaskLogicModelPost(AindBehaviorTaskLogicModel):
+    class AindBehaviorTaskLogicModelPost(Task):
         version: Literal["0.0.2"] = "0.0.2"
         name: str = Field(default="Post")
         task_parameters: TaskParameters = Field(default=TaskParameters(), validate_default=True)
 
-    class AindBehaviorTaskLogicModelMajorPost(AindBehaviorTaskLogicModel):
+    class AindBehaviorTaskLogicModelMajorPost(Task):
         version: Literal["0.1.0"] = "0.1.0"
         name: str = Field(default="Post")
         task_parameters: TaskParameters = Field(default=TaskParameters(), validate_default=True)

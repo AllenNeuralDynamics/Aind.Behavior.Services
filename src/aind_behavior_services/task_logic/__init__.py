@@ -1,4 +1,3 @@
-import logging
 from typing import Literal, Optional
 
 import aind_behavior_curriculum.task as curriculum_task
@@ -7,10 +6,10 @@ from pydantic import Field, field_validator
 from aind_behavior_services import __semver__
 from aind_behavior_services.base import SEMVER_REGEX, coerce_schema_version
 
-logger = logging.getLogger(__name__)
-
 
 class TaskParameters(curriculum_task.TaskParameters):
+    """Base class for storing parameters for task logic."""
+
     rng_seed: Optional[float] = Field(default=None, description="Seed of the random number generator")
     aind_behavior_services_pkg_version: Literal[__semver__] = Field(
         default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
@@ -22,10 +21,11 @@ class TaskParameters(curriculum_task.TaskParameters):
         return coerce_schema_version(cls, v, ctx.field_name)
 
 
-# This class should be inherited from but do not add extra parameters. Instead, add them to TaskParameters
-class AindBehaviorTaskLogicModel(curriculum_task.Task):
+class Task(curriculum_task.Task):
+    """Base class for task logic schemas."""
+
     task_parameters: TaskParameters = Field(description="Parameters of the task logic", validate_default=True)
-    version: str = Field(..., pattern=curriculum_task.SEMVER_REGEX, description="task schema version")
+    version: str = Field(pattern=curriculum_task.SEMVER_REGEX, description="task schema version")
 
     @field_validator("version", mode="before", check_fields=False)
     @classmethod

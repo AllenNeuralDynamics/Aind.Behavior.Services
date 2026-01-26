@@ -37,7 +37,7 @@ class SchemaVersionedModel(BaseModel):
         return coerce_schema_version(cls, v, ctx.field_name)
 
 
-def coerce_schema_version(cls: type[SchemaVersionedModel], v: str, version_string: str = "version") -> str:
+def coerce_schema_version(cls: type[BaseModel], v: str, version_string: str = "version") -> str:
     semver = Version.parse(v)
 
     try:  # Get the default schema version from the model literal field
