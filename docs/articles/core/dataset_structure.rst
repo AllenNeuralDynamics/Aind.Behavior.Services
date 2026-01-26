@@ -43,4 +43,4 @@ where:
 - ``<Datetime>`` is the date and time of the session in the format specified in  :ref:`datetime <datetime_target>`.
 - ``<Modality>`` is the type of data being stored and MUST be one of the modalities defined by `aind-data-schema-models <https://github.com/AllenNeuralDynamics/aind-data-schema-models/tree/main>`_
 - ``<DataStreamN>`` is a data stream whose format should be specified in :doc:`Data formats </articles/data_standards>`
-- ``<Modality>/Metadata/*_input.json`` are the serialized input files for the session, rig, and task logic respectively.
+- ``<Modality>/Metadata/*_input.json`` are the serialized input files for the session, rig, and task respectively.

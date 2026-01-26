@@ -8,7 +8,7 @@ from aind_behavior_services.base import SEMVER_REGEX, coerce_schema_version
 
 
 class TaskParameters(curriculum_task.TaskParameters):
-    """Base class for storing parameters for task logic."""
+    """Base class for storing parameters for the task."""
 
     rng_seed: Optional[float] = Field(default=None, description="Seed of the random number generator")
     aind_behavior_services_pkg_version: Literal[__semver__] = Field(
@@ -22,9 +22,9 @@ class TaskParameters(curriculum_task.TaskParameters):
 
 
 class Task(curriculum_task.Task):
-    """Base class for task logic schemas."""
+    """Base class for task schemas."""
 
-    task_parameters: TaskParameters = Field(description="Parameters of the task logic", validate_default=True)
+    task_parameters: TaskParameters = Field(description="Parameters of the task", validate_default=True)
     version: str = Field(pattern=curriculum_task.SEMVER_REGEX, description="task schema version")
 
     @field_validator("version", mode="before", check_fields=False)

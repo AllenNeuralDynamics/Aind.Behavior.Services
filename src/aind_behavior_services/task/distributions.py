@@ -47,7 +47,7 @@ class DistributionFamily(str, Enum):
     Enumeration of supported probability distribution families.
 
     Defines all available statistical distributions that can be used
-    for sampling random values in the task logic system.
+    for sampling random values in the task implementation.
     """
 
     SCALAR = "Scalar"
