@@ -6,7 +6,7 @@ from pydantic import Field, TypeAdapter
 
 from aind_behavior_services import Task
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
-from aind_behavior_services.task_logic import TaskParameters
+from aind_behavior_services.task import TaskParameters
 from aind_behavior_services.utils import format_datetime
 
 
@@ -38,17 +38,17 @@ class DefaultAwareDatetimeTest(unittest.TestCase):
 
 
 class SchemaVersionCoercionTest(unittest.TestCase):
-    class AindBehaviorTaskLogicModelPre(Task):
+    class AindBehaviorTaskModelPre(Task):
         version: Literal["0.0.1"] = "0.0.1"
         name: str = Field(default="Pre")
         task_parameters: TaskParameters = Field(default=TaskParameters(), validate_default=True)
 
-    class AindBehaviorTaskLogicModelPost(Task):
+    class AindBehaviorTaskModelPost(Task):
         version: Literal["0.0.2"] = "0.0.2"
         name: str = Field(default="Post")
         task_parameters: TaskParameters = Field(default=TaskParameters(), validate_default=True)
 
-    class AindBehaviorTaskLogicModelMajorPost(Task):
+    class AindBehaviorTaskModelMajorPost(Task):
         version: Literal["0.1.0"] = "0.1.0"
         name: str = Field(default="Post")
         task_parameters: TaskParameters = Field(default=TaskParameters(), validate_default=True)
@@ -66,19 +66,19 @@ class SchemaVersionCoercionTest(unittest.TestCase):
         aind_behavior_services_pkg_version: Literal["1.1.0"] = "1.1.0"
 
     def test_version_update_forwards_coercion(self):
-        pre_instance = self.AindBehaviorTaskLogicModelPre()
-        post_instance = self.AindBehaviorTaskLogicModelPost()
+        pre_instance = self.AindBehaviorTaskModelPre()
+        post_instance = self.AindBehaviorTaskModelPost()
         with self.assertLogs(None, level="WARNING") as cm:
-            pre_updated = self.AindBehaviorTaskLogicModelPost.model_validate_json(pre_instance.model_dump_json())
+            pre_updated = self.AindBehaviorTaskModelPost.model_validate_json(pre_instance.model_dump_json())
             self.assertIn("Deserialized versioned field 0.0.1, expected 0.0.2. Will attempt to coerce.", cm.output[0])
             self.assertEqual(pre_updated.version, post_instance.version, "Schema version was not coerced correctly.")
 
     def test_version_update_backwards_coercion(self):
-        post_instance = self.AindBehaviorTaskLogicModelPost()
+        post_instance = self.AindBehaviorTaskModelPost()
         with self.assertLogs(None, level="WARNING") as cm:
             self.assertEqual(
-                self.AindBehaviorTaskLogicModelPre.model_validate_json(post_instance.model_dump_json()).version,
-                self.AindBehaviorTaskLogicModelPre().version,
+                self.AindBehaviorTaskModelPre.model_validate_json(post_instance.model_dump_json()).version,
+                self.AindBehaviorTaskModelPre().version,
             )
             self.assertIn("Deserialized versioned field 0.0.2, expected 0.0.1. Will attempt to coerce.", cm.output[0])
 

@@ -5,7 +5,7 @@ from .base import DefaultAwareDatetime, SchemaVersionedModel
 from .rig import Rig
 from .schema import BonsaiSgenSerializers, convert_pydantic_to_bonsai
 from .session import Session
-from .task_logic import Task
+from .task import Task
 
 logger = logging.getLogger(__name__)
 
