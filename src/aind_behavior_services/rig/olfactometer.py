@@ -3,6 +3,7 @@ from typing import Dict, Literal, Optional
 
 from pydantic import BaseModel, Field
 
+from ._base import DatedCalibration
 from ._harp_gen import (
     HarpOlfactometer,
 )
@@ -39,7 +40,7 @@ class OlfactometerChannelConfig(BaseModel):
     odorant_dilution: Optional[float] = Field(default=None, title="Odorant dilution (%v/v)")
 
 
-class OlfactometerCalibration(BaseModel):
+class OlfactometerCalibration(DatedCalibration):
     """Olfactometer device configuration model"""
 
     channel_config: Dict[OlfactometerChannel, OlfactometerChannelConfig] = Field(

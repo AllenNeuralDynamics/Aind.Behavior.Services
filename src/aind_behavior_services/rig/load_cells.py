@@ -2,6 +2,7 @@ from typing import Annotated, List
 
 from pydantic import BaseModel, Field, field_validator
 
+from ._base import DatedCalibration
 from ._harp_gen import HarpLoadCells
 
 LoadCellChannel = Annotated[int, Field(ge=0, le=7, description="Load cell channel number available")]
@@ -23,7 +24,7 @@ class LoadCellChannelCalibration(BaseModel):
     )
 
 
-class LoadCellsCalibration(BaseModel):
+class LoadCellsCalibration(DatedCalibration):
     """Load cells calibration"""
 
     channels: List[LoadCellChannelCalibration] = Field(

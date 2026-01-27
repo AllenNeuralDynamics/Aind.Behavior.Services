@@ -1,16 +1,17 @@
 import logging
 from typing import ClassVar, List
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field, field_validator
 
 from aind_behavior_services.common import ValuePair
 
+from ._base import DatedCalibration
 from ._harp_gen import HarpTreadmill
 
 logger = logging.getLogger(__name__)
 
 
-class TreadmillCalibration(BaseModel):
+class TreadmillCalibration(DatedCalibration):
     """Treadmill calibration class"""
 
     _BRAKE_OUTPUT_MAX: ClassVar[float] = 65535
