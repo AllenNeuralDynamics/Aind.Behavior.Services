@@ -1,14 +1,14 @@
 {
   "properties": {
     "aind_behavior_services_pkg_version": {
-      "default": "0.13.0-rc1",
+      "default": "0.13.0-rc2",
       "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
       "title": "aind_behavior_services package version",
       "type": "string"
     },
     "version": {
-      "const": "0.13.0-rc1",
-      "default": "0.13.0-rc1",
+      "const": "0.13.0-rc2",
+      "default": "0.13.0-rc2",
       "title": "Version",
       "type": "string"
     },
@@ -100,6 +100,6 @@
   "required": [
     "subject"
   ],
-  "title": "AindBehaviorSessionModel",
+  "title": "Session",
   "type": "object"
 }

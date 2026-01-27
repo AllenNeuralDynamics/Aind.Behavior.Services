@@ -4,6 +4,7 @@ from typing import Annotated, Dict, List, Optional
 import numpy as np
 from pydantic import BaseModel, Field
 
+from ._base import DatedCalibration
 from .utils import LinearRegression
 
 logger = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ class Measurement(BaseModel):
     repeat_count: int = Field(ge=0, description="Number of times the valve opened.", title="Repeat count")
 
 
-class WaterValveCalibration(BaseModel):
+class WaterValveCalibration(DatedCalibration):
     """Represents a water valve calibration."""
 
     measurements: List[Measurement] = Field(default=[], description="List of measurements")

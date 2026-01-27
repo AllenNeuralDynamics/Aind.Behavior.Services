@@ -33,20 +33,20 @@ As with most things, there is no free lunch. The main drawback of this approach 
 To help with this process, the `aind_behavior_services` framework adopts standard `json-schema <https://json-schema.org/>`_ schemas and uses `pydantic <https://docs.pydantic.dev/>`_ to compile Python classes into these.
 
 
-`Rig`, `Session` and `TaskLogic`
+`Rig`, `Session` and `Task`
 -----------------------------------------------------
 
 How are these parameters used in practice? In theory, one could define a single `schema` that contains all possible parameters for the experiment. In practice, this is not ideal since it would lead to a monolithic schema that is hard to maintain and understand. Instead, we define a set of three schemas that generally model the way we interact with experiments:
 
    - `Rig`: Is concerned with the hardware configuration of the experiment. Examples include: Device's :py:class:`~aind_behavior_services.calibration.Calibration`, COM ports expected to be used, socket endpoints, etc.
-   - `TaskLogic`: Is concerned with settings that are specific to the behavior experiment. These parameters are usually set by the experiment to control the behavior software but are abstracted from hardware details. Examples include: the delay between two stimuli, the parameterization of a distribution to draw reward amounts from, etc.
+   - `Task`: Is concerned with settings that are specific to the behavior experiment. These parameters are usually set by the experiment to control the behavior software but are abstracted from hardware details. Examples include: the delay between two stimuli, the parameterization of a distribution to draw reward amounts from, etc.
    - `Session`: Is concerned with metadata necessary to run a single experiment instance. While the previous two instances are expected to be reused across several different experimental sessions, the `Session` instance is expected to be unique to a single experiment. It keeps track of metadata associated with the experiment such as date, subject ID, experimenter name, etc.
 
-These three schemas are materialized in the `aind_behavior_services` framework as three classes: :py:class:`~aind_behavior_services.rig.AindBehaviorRigModel`, :py:class:`~aind_behavior_services.task_logic.AindBehaviorTaskLogicModel` and :py:class:`~aind_behavior_services.session.AindBehaviorSessionModel`.
+These three schemas are materialized in the `aind_behavior_services` framework as three classes: :py:class:`~aind_behavior_services.rig.Rig`, :py:class:`~aind_behavior_services.task.Task` and :py:class:`~aind_behavior_services.session.Session`.
 
 Currently, we approach the use of these three classes in distinct ways:
 
-   - `Rig` and `TaskLogic` are meant to provide a thin base class that is to be modified to model different experiments. This is necessary as distinct experiments will likely validate against distinct respective schemas;
+   - `Rig` and `Task` are meant to provide a thin base class that is to be modified to model different experiments. This is necessary as distinct experiments will likely validate against distinct respective schemas;
    - `Session` is used to store metadata associated with the experiment. While in theory it can be subclassed and extended, in practice we have found little need to do so and simply use the base class.
 
 Inheriting from these base classes ensures that basic functionality can be provided across tasks and rigs, especially when interacting with databases for parameter storage and retrieval.

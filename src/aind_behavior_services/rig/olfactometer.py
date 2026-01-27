@@ -1,14 +1,12 @@
-import logging
 from enum import Enum, IntEnum
 from typing import Dict, Literal, Optional
 
 from pydantic import BaseModel, Field
 
+from ._base import DatedCalibration
 from ._harp_gen import (
     HarpOlfactometer,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class OlfactometerChannel(IntEnum):
@@ -30,7 +28,7 @@ class OlfactometerChannelType(str, Enum):
 class OlfactometerChannelConfig(BaseModel):
     """Configuration for a single olfactometer channel"""
 
-    channel_index: int = Field(title="Channel index")
+    channel_index: int = Field(title="Odor channel index")
     channel_type: OlfactometerChannelType = Field(
         default=OlfactometerChannelType.ODOR, title="Olfactometer channel type"
     )
@@ -42,7 +40,7 @@ class OlfactometerChannelConfig(BaseModel):
     odorant_dilution: Optional[float] = Field(default=None, title="Odorant dilution (%v/v)")
 
 
-class OlfactometerCalibration(BaseModel):
+class OlfactometerCalibration(DatedCalibration):
     """Olfactometer device configuration model"""
 
     channel_config: Dict[OlfactometerChannel, OlfactometerChannelConfig] = Field(

@@ -105,7 +105,7 @@ classDiagram
         +Concrete implementation of a task
         +Rig (Subclasses for some task)
         +Session
-        +Task Logic (Subclasses for some task)
+        +Task (Subclasses for some task)
         +Maintains a task data-schema
         +Saves data in standard format
     }

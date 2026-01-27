@@ -4,7 +4,7 @@ from typing import List, Literal, Optional
 from pydantic import Field
 
 from aind_behavior_services.rig import (
-    AindBehaviorRigModel,
+    Rig,
 )
 from aind_behavior_services.rig.harp import (
     ConnectedClockOutput,
@@ -16,20 +16,20 @@ from aind_behavior_services.rig.harp import (
 
 
 class TestHarpClockOutput(unittest.TestCase):
-    class ZeroHarpDevice(AindBehaviorRigModel):
+    class ZeroHarpDevice(Rig):
         data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
 
-    class OneHarpDevice(AindBehaviorRigModel):
+    class OneHarpDevice(Rig):
         data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
         harp_device: Optional[HarpDevice]
 
-    class NHarpDevice(AindBehaviorRigModel):
+    class NHarpDevice(Rig):
         data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"

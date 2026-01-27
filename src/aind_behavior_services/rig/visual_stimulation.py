@@ -76,7 +76,7 @@ class ScreenAssembly(Device):
     target_render_frequency: float = Field(default=60, description="Target render frequency")
     target_update_frequency: float = Field(default=120, description="Target update frequency")
     texture_assets_directory: str = Field(default="Textures", description="Calibration directory")
-    settings: ScreenAssemblyCalibration = Field(
+    calibration: ScreenAssemblyCalibration = Field(
         default=ScreenAssemblyCalibration(),
         description="Screen assembly calibration",
         validate_default=True,

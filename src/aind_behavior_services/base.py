@@ -1,29 +1,24 @@
 import datetime
 import logging
-from os import PathLike
 from typing import (
     TYPE_CHECKING,
     Annotated,
     Any,
-    Callable,
     Literal,
-    Optional,
     get_args,
+    get_origin,
 )
 
-import git
 from aind_behavior_curriculum.task import SEMVER_REGEX
 from pydantic import (
     AwareDatetime,
     BaseModel,
     Field,
-    GetJsonSchemaHandler,
     ValidatorFunctionWrapHandler,
     WrapValidator,
     field_validator,
 )
-from pydantic.json_schema import JsonSchemaValue
-from pydantic_core import core_schema
+from pydantic_core import PydanticUndefined
 from semver import Version
 
 from aind_behavior_services import __semver__
@@ -43,52 +38,27 @@ class SchemaVersionedModel(BaseModel):
         return coerce_schema_version(cls, v, ctx.field_name)
 
 
-class SemVerAnnotation:
-    """A class representing semantic version annotations."""
+def coerce_schema_version(cls: type[BaseModel], v: str, version_string: str = "version") -> str:
+    semver = Version.parse(v)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        _source_type: Any,
-        _handler: Callable[[Any], core_schema.CoreSchema],
-    ) -> core_schema.CoreSchema:
-        def validate_from_str(value: str) -> Version:
-            return Version.parse(value)
+    _default_schema_version: Version | None = None
 
-        from_str_schema = core_schema.chain_schema(
-            [
-                core_schema.str_schema(),
-                core_schema.no_info_plain_validator_function(validate_from_str),
-            ]
-        )
-
-        return core_schema.json_or_python_schema(
-            json_schema=from_str_schema,
-            python_schema=core_schema.union_schema(
-                [
-                    core_schema.is_instance_schema(Version),
-                    from_str_schema,
-                ]
-            ),
-            serialization=core_schema.to_string_ser_schema(),
-        )
-
-    @classmethod
-    def __get_pydantic_json_schema__(
-        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ) -> JsonSchemaValue:
-        return handler(core_schema.str_schema())
-
-
-def coerce_schema_version(
-    cls: type[SchemaVersionedModel], v: str, version_string: str = "version", check_compatibility: bool = True
-) -> str:
     try:  # Get the default schema version from the model literal field
-        _default_schema_version = Version.parse(get_args(cls.model_fields[version_string].annotation)[0])
+        annotation = cls.model_fields[version_string].annotation
+        if get_origin(annotation) is Literal:
+            _default_schema_version = Version.parse(get_args(annotation)[0])
     except IndexError:  # This handles the case where the base class does not define a literal schema_version value
         return v
 
-    semver = Version.parse(v)
+    if _default_schema_version is None:  # Fallback to getting the default value from the field
+        default = cls.model_fields[version_string].default
+        if default is PydanticUndefined:
+            return v
+        else:
+            _default_schema_version = Version.parse(cls.model_fields[version_string].default)
+
+    assert _default_schema_version is not None
+
     if semver != _default_schema_version:
         logger.warning(
             "Deserialized versioned field %s, expected %s. Will attempt to coerce. "
@@ -97,18 +67,6 @@ def coerce_schema_version(
             _default_schema_version,
         )
     return str(_default_schema_version)
-
-
-def get_commit_hash(repository: Optional[PathLike] = None) -> str:
-    """Get the commit hash of the repository."""
-    try:
-        if repository is None:
-            repo = git.Repo(search_parent_directories=True)
-        else:
-            repo = git.Repo(repository)
-        return repo.head.commit.hexsha
-    except git.InvalidGitRepositoryError as e:
-        raise e("Not a git repository. Please run from the root of the repository.") from e
 
 
 if TYPE_CHECKING:

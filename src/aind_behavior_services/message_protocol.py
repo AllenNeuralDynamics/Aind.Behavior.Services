@@ -1,5 +1,5 @@
 import enum
-from typing import Annotated, Any, Generic, Literal, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, Optional, TypeVar, Union
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
 
@@ -173,12 +173,16 @@ class HeartbeatPayload(BaseModel):
 # Register payloads into the protocol
 # ================================================================================
 
+if TYPE_CHECKING:
+    RegisteredPayload = Union[LogPayload, HeartbeatPayload]
 
-class RegisteredPayload(RootModel):
-    root: Annotated[
-        Union[LogPayload, HeartbeatPayload],
-        Field(discriminator="payload_type", json_schema_extra={"x-abstract": True}),
-    ]
+else:
+
+    class RegisteredPayload(RootModel):
+        root: Annotated[
+            Union[LogPayload, HeartbeatPayload],
+            Field(discriminator="payload_type", json_schema_extra={"x-abstract": True}),
+        ]
 
 
 RegisteredMessages = create_model(

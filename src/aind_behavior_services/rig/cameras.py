@@ -4,9 +4,7 @@ from typing import TYPE_CHECKING, Annotated, Dict, Generic, Literal, Optional, T
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import TypeAliasType
 
-from ..common import Circle as Circle
-from ..common import Point2f as Point2f
-from ..common import Rect as Rect
+from ..common import Rect
 from ._base import Device
 
 FFMPEG_OUTPUT_8BIT = '-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M'

@@ -1,11 +1,9 @@
-import logging
 from typing import Annotated, List
 
 from pydantic import BaseModel, Field, field_validator
 
+from ._base import DatedCalibration
 from ._harp_gen import HarpLoadCells
-
-logger = logging.getLogger(__name__)
 
 LoadCellChannel = Annotated[int, Field(ge=0, le=7, description="Load cell channel number available")]
 
@@ -18,7 +16,7 @@ class LoadCellChannelCalibration(BaseModel):
         weight (g) = slope * (adc_units_corrected_by_offset_resistor - adc_units_baseline)
     """
 
-    channel: LoadCellChannel
+    channel: LoadCellChannel = Field(title="Load cell channel number")
     offset: LoadCellOffset = Field(default=0, title="Load cell offset applied to the wheatstone bridge circuit")
     baseline: float = Field(default=0.0, title="Load cell baseline that will be DSP subtracted to the raw adc output.")
     slope: float = Field(
@@ -26,16 +24,16 @@ class LoadCellChannelCalibration(BaseModel):
     )
 
 
-class LoadCellsCalibration(BaseModel):
+class LoadCellsCalibration(DatedCalibration):
     """Load cells calibration"""
 
-    channels: List["LoadCellChannelCalibration"] = Field(
+    channels: List[LoadCellChannelCalibration] = Field(
         default=[], title="Load cells calibration", validate_default=True
     )
 
     @field_validator("channels", mode="after")
     @classmethod
-    def ensure_unique_channels(cls, values: List["LoadCellChannelCalibration"]) -> List["LoadCellChannelCalibration"]:
+    def ensure_unique_channels(cls, values: List[LoadCellChannelCalibration]) -> List[LoadCellChannelCalibration]:
         channels = [c.channel for c in values]
         if len(channels) != len(set(channels)):
             raise ValueError("Channels must be unique.")
