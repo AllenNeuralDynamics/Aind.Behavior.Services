@@ -18,6 +18,7 @@ from pydantic import (
     WrapValidator,
     field_validator,
 )
+from pydantic_core import PydanticUndefined
 from semver import Version
 
 from aind_behavior_services import __semver__
@@ -40,14 +41,23 @@ class SchemaVersionedModel(BaseModel):
 def coerce_schema_version(cls: type[BaseModel], v: str, version_string: str = "version") -> str:
     semver = Version.parse(v)
 
+    _default_schema_version: Version | None = None
+
     try:  # Get the default schema version from the model literal field
         annotation = cls.model_fields[version_string].annotation
         if get_origin(annotation) is Literal:
             _default_schema_version = Version.parse(get_args(annotation)[0])
-        else:
-            _default_schema_version = Version.parse(cls.model_fields[version_string].default)
     except IndexError:  # This handles the case where the base class does not define a literal schema_version value
         return v
+
+    if _default_schema_version is None:  # Fallback to getting the default value from the field
+        default = cls.model_fields[version_string].default
+        if default is PydanticUndefined:
+            return v
+        else:
+            _default_schema_version = Version.parse(cls.model_fields[version_string].default)
+
+    assert _default_schema_version is not None
 
     if semver != _default_schema_version:
         logger.warning(
