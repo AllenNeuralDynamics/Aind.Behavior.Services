@@ -1,0 +1,7 @@
+aind_behavior_services
+======================
+
+.. toctree::
+   :maxdepth: 4
+
+   aind_behavior_services

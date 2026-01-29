@@ -1,0 +1,21 @@
+aind\_behavior\_services.task package
+=====================================
+
+Submodules
+----------
+
+aind\_behavior\_services.task.distributions module
+--------------------------------------------------
+
+.. automodule:: aind_behavior_services.task.distributions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services.task
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,85 @@
+aind\_behavior\_services.rig package
+====================================
+
+Submodules
+----------
+
+aind\_behavior\_services.rig.aind\_manipulator module
+-----------------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.aind_manipulator
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.cameras module
+-------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.cameras
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.harp module
+----------------------------------------
+
+.. automodule:: aind_behavior_services.rig.harp
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.load\_cells module
+-----------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.load_cells
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.olfactometer module
+------------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.olfactometer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.treadmill module
+---------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.treadmill
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.utils module
+-----------------------------------------
+
+.. automodule:: aind_behavior_services.rig.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.visual\_stimulation module
+-------------------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.visual_stimulation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.rig.water\_valve module
+------------------------------------------------
+
+.. automodule:: aind_behavior_services.rig.water_valve
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services.rig
+   :members:
+   :show-inheritance:
+   :undoc-members:
