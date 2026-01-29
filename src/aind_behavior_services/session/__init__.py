@@ -8,7 +8,7 @@ from aind_behavior_services import __semver__
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
 
 
-class AindBehaviorSessionModel(SchemaVersionedModel):
+class Session(SchemaVersionedModel):
     version: Literal[__semver__] = __semver__
     experiment: Optional[str] = Field(default=None, description="Name of the experiment")
     experimenter: List[str] = Field(default=[], description="Name of the experimenter")
@@ -19,7 +19,7 @@ class AindBehaviorSessionModel(SchemaVersionedModel):
         default=None,
         description="Name of the session. This will be used to create a folder in the root path. If not provided, it will be generated using subject and date.",
     )
-    subject: str = Field(..., description="Name of the subject")
+    subject: str = Field(description="Name of the subject")
     notes: Optional[str] = Field(default=None, description="Notes about the experiment")
     commit_hash: Optional[str] = Field(default=None, description="Commit hash of the repository")
     allow_dirty_repo: bool = Field(default=False, description="Allow running from a dirty repository")

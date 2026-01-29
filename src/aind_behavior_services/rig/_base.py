@@ -1,10 +1,10 @@
-import os
 from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel, Field, SerializeAsAny
 
-from aind_behavior_services.base import SchemaVersionedModel
+from aind_behavior_services import utils
+from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
 
 
 class Device(BaseModel):
@@ -16,9 +16,17 @@ class Device(BaseModel):
     calibration: Optional[SerializeAsAny[BaseModel]] = Field(default=None, description="Calibration for the device.")
 
 
-class AindBehaviorRigModel(SchemaVersionedModel):
+class DatedCalibration(BaseModel):
+    """Base model for dated calibrations."""
+
+    date: DefaultAwareDatetime = Field(
+        default_factory=utils.utcnow, description="Date of the calibration", validate_default=True
+    )
+
+
+class Rig(SchemaVersionedModel):
     """Base model for rig configuration. All rig configurations should derive from this base class."""
 
-    computer_name: str = Field(default_factory=lambda: os.environ["COMPUTERNAME"], description="Computer name")
+    computer_name: str = Field(description="Computer name")
     rig_name: str = Field(description="Rig name")
     data_directory: Path = Field(description="Directory where data will be saved to")

@@ -10,7 +10,6 @@ Welcome to AIND Behavior Services's documentation!
    self
    architecture
    articles
-   json_schemas
    api/api
    GitHub Source Code <https://github.com/AllenNeuralDynamics/Aind.Behavior.Services>
 

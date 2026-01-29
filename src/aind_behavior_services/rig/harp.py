@@ -1,13 +1,13 @@
 from typing import TypeAlias, TypeVar
 
-from ..rig._base import AindBehaviorRigModel
+from ..rig._base import Rig
 from ..utils import get_fields_of_type
-from ._harp_gen import *  # noqa
+from ._harp_gen import *  # noqa # We re-export all auto-generated Harp devices here
 from ._harp_gen import ConnectedClockOutput, _HarpDeviceBase
 
 HarpDeviceBase: TypeAlias = _HarpDeviceBase
 
-TRig = TypeVar("TRig", bound=AindBehaviorRigModel)
+TRig = TypeVar("TRig", bound=Rig)
 
 
 def validate_harp_clock_output(rig: TRig) -> TRig:
