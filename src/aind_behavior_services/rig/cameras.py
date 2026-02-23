@@ -7,11 +7,17 @@ from typing_extensions import TypeAliasType
 from ..common import Rect
 from ._base import Device
 
-FFMPEG_OUTPUT_8BIT = '-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M'
-""" Default output arguments for 8-bit video encoding """
+FFMPEG_OUTPUT_8BIT = '-vf "scale=out_range=full,setparams=range=full:colorspace=bt709:color_primaries=bt709:color_trc=linear" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p3 -rc vbr -cq 18 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M -f matroska -write_crc32 0'
+""" Default output arguments for online 8-bit video encoding (mkv). Tested with monochrome videos with raw pixel format `gray`. """
 
-FFMPEG_OUTPUT_16BIT = '-vf "scale=out_color_matrix=bt709:out_range=full,format=rgb48le,scale=out_range=full" -c:v hevc_nvenc -pix_fmt p010le -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M'
-""" Default output arguments for 16-bit video encoding """
+FFMPEG_OUTPUT_16BIT = '-vf "format=yuv420p10le,scale=out_range=full,setparams=range=full:colorspace=bt709:color_primaries=bt709:color_trc=linear" -c:v hevc_nvenc -pix_fmt p010le -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M -f matroska -write_crc32 0'
+""" Default output arguments for online higher bit-depth (10-bit) video encoding (mkv). """
+
+FFMPEG_OUTPUT_8BIT_OFFLINE = '-vf "scale=out_color_matrix=bt709:out_range=full:sws_dither=none,format=yuv420p10le,colorspace=ispace=bt709:all=bt709:dither=none,scale=out_range=tv:sws_dither=none,format=yuv420p" -c:v libx264 -preset veryslow -crf 18 -pix_fmt yuv420p -metadata author="Allen Institute for Neural Dynamics" -movflags +faststart+write_colr'
+""" Default output arguments for offline 8-bit re-encoding to mp4 (optimized for quality and size). """
+
+FFMPEG_OUTPUT_16BIT_OFFLINE = '-vf "colorspace=ispace=bt709:all=bt709:dither=none,scale=out_range=tv:sws_dither=none,format=yuv420p10le" -c:v libx264 -preset veryslow -crf 18 -pix_fmt yuv420p10le -metadata author="Allen Institute for Neural Dynamics" -movflags +faststart+write_colr'
+""" Default output arguments for offline higher bit-depth (10-bit) re-encoding to mp4 (optimized for quality and size). """
 
 FFMPEG_INPUT = "-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear"
 """ Default input arguments """
@@ -22,7 +28,7 @@ class VideoWriterFfmpeg(BaseModel):
 
     video_writer_type: Literal["FFMPEG"] = Field(default="FFMPEG")
     frame_rate: int = Field(default=30, ge=0, description="Encoding frame rate")
-    container_extension: str = Field(default="mp4", description="Container extension")
+    container_extension: str = Field(default="mkv", description="Container extension")
     output_arguments: str = Field(
         default=FFMPEG_OUTPUT_8BIT,
         description="Output arguments",
