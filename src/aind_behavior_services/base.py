@@ -81,4 +81,4 @@ else:
                 dt = dt.astimezone()
         return dt
 
-    DefaultAwareDatetime = Annotated[AwareDatetime, WrapValidator(_add_default_tz), Field(validate_default=True)]
+    DefaultAwareDatetime = Annotated[AwareDatetime, WrapValidator(_add_default_tz)]
