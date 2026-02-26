@@ -1,10 +1,9 @@
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field, SerializeAsAny, model_validator
+from pydantic import BaseModel, Field, SerializeAsAny
 
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
-from aind_behavior_services.utils import utcnow
 
 
 class Device(BaseModel):
