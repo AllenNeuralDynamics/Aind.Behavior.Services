@@ -19,15 +19,7 @@ class Device(BaseModel):
 class DatedCalibration(BaseModel):
     """Base model for dated calibrations."""
 
-    date: DefaultAwareDatetime = Field(description="Date of the calibration")
-
-    @model_validator(mode="before")
-    @classmethod
-    def _default_date_now(cls, values: Any) -> Any:
-        """If no date is provided, use the current date and time."""
-        if isinstance(values, Dict) and "date" not in values:
-            values["date"] = utcnow()
-        return values
+    date: Optional[DefaultAwareDatetime] = Field(default=None, description="Date of the calibration")
 
 
 class Rig(SchemaVersionedModel):
