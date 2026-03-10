@@ -6,9 +6,10 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from subprocess import CalledProcessError, CompletedProcess, run
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
 
-from pydantic import BaseModel, PydanticInvalidForJsonSchema
+from pydantic import BaseModel, ConfigDict, PydanticInvalidForJsonSchema, create_model
+from pydantic._internal._model_construction import ModelMetaclass as _ModelMetaclass
 from pydantic.json_schema import (
     GenerateJsonSchema,
     JsonSchemaMode,
@@ -178,9 +179,6 @@ class CustomGenerateJsonSchema(GenerateJsonSchema):
             return self.get_flattened_anyof(generated)
 
 
-TModel = TypeVar("TModel", bound=BaseModel)
-
-
 def export_schema(
     model: Type[BaseModel],
     schema_generator: Type[GenerateJsonSchema] = CustomGenerateJsonSchema,
@@ -237,7 +235,8 @@ def bonsai_sgen(
     except CalledProcessError as e:
         print(f"Error occurred while restoring tools: {e}")
         print(
-            "Ensure you have the Bonsai.Sgen tool installed locally. See https://github.com/bonsai-rx/sgen?tab=readme-ov-file#getting-started for instructions."
+            "Ensure you have the Bonsai.Sgen tool installed locally. "
+            "See https://github.com/bonsai-rx/sgen?tab=readme-ov-file#getting-started for instructions."
         )
         raise
 
@@ -296,3 +295,54 @@ def convert_pydantic_to_bonsai(
         return cmd_return
 
     return None
+
+
+class _SgenMeta(_ModelMetaclass):  # type: ignore[misc]
+    """Metaclass that strips ``x-sgen-typename`` from subclasses of
+    ``sgen_typename``-decorated models. Subclasses must re-decorate to opt in.
+    """
+
+    def __new__(
+        mcs,
+        cls_name: str,
+        bases: tuple[type[Any], ...],
+        namespace: dict[str, Any],
+        __pydantic_generic_metadata__: Any = None,
+        __pydantic_reset_parent_namespace__: bool = True,
+        _create_model_module: Optional[str] = None,
+        **kwargs: Any,
+    ) -> type:
+        if any(base.__dict__.get("__sgen_typename_source__", False) for base in bases):
+            explicit_extra = namespace.get("model_config", {}).get("json_schema_extra", {})
+            if not (isinstance(explicit_extra, dict) and "x-sgen-typename" in explicit_extra):
+                inherited = next(
+                    (getattr(b, "model_config") for b in bases if getattr(b, "model_config", None) is not None),
+                    ConfigDict(),
+                )
+                merged = cast(ConfigDict, {**inherited, **namespace.get("model_config", {})})
+                raw_extra = merged.get("json_schema_extra")
+                extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
+                extra.pop("x-sgen-typename", None)
+                namespace["model_config"] = cast(ConfigDict, {**merged, "json_schema_extra": extra})
+        return super().__new__(mcs, cls_name, bases, namespace, **kwargs)  # type: ignore[call-overload]
+
+
+def sgen_typename(typename: str) -> Callable[[Type[BaseModel]], Type[BaseModel]]:
+
+
+    def decorator(cls: Type[BaseModel]) -> Type[BaseModel]:
+        existing = getattr(cls, "model_config", ConfigDict())
+        raw_extra = existing.get("json_schema_extra")
+        new_extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
+        new_extra["x-sgen-typename"] = typename
+        new_config = cast(ConfigDict, {**existing, "json_schema_extra": new_extra})
+        model = create_model(
+            cls.__name__,
+            __base__=cls,
+            __config__=new_config,
+            __cls_kwargs__={"metaclass": _SgenMeta},
+        )
+        model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
+        return model
+
+    return decorator
