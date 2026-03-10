@@ -1,0 +1,64 @@
+aind\_behavior\_services package
+================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   aind_behavior_services.rig
+   aind_behavior_services.schema
+   aind_behavior_services.session
+   aind_behavior_services.task
+
+Submodules
+----------
+
+aind\_behavior\_services.base module
+------------------------------------
+
+.. automodule:: aind_behavior_services.base
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.common module
+--------------------------------------
+
+.. automodule:: aind_behavior_services.common
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.data\_types module
+-------------------------------------------
+
+.. automodule:: aind_behavior_services.data_types
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.message\_protocol module
+-------------------------------------------------
+
+.. automodule:: aind_behavior_services.message_protocol
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+aind\_behavior\_services.utils module
+-------------------------------------
+
+.. automodule:: aind_behavior_services.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services
+   :members:
+   :show-inheritance:
+   :undoc-members:
