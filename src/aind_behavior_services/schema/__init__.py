@@ -9,7 +9,6 @@ from subprocess import CalledProcessError, CompletedProcess, run
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
 
 from pydantic import BaseModel, ConfigDict, PydanticInvalidForJsonSchema, create_model
-from pydantic._internal._model_construction import ModelMetaclass as _ModelMetaclass
 from pydantic.json_schema import (
     GenerateJsonSchema,
     JsonSchemaMode,
@@ -297,7 +296,10 @@ def convert_pydantic_to_bonsai(
     return None
 
 
-class _SgenMeta(_ModelMetaclass):  # type: ignore[misc]
+_BaseModelType = type(BaseModel)
+
+
+class _SgenMeta(_BaseModelType):
     """Metaclass that strips ``x-sgen-typename`` from subclasses of
     ``sgen_typename``-decorated models. Subclasses must re-decorate to opt in.
     """
@@ -324,7 +326,16 @@ class _SgenMeta(_ModelMetaclass):  # type: ignore[misc]
                 extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
                 extra.pop("x-sgen-typename", None)
                 namespace["model_config"] = cast(ConfigDict, {**merged, "json_schema_extra": extra})
-        return super().__new__(mcs, cls_name, bases, namespace, **kwargs)  # type: ignore[call-overload]
+        return super().__new__(
+            mcs,
+            cls_name,
+            bases,
+            namespace,
+            __pydantic_generic_metadata__=__pydantic_generic_metadata__,
+            __pydantic_reset_parent_namespace__=__pydantic_reset_parent_namespace__,
+            _create_model_module=_create_model_module,
+            **kwargs,
+        )
 
 
 def sgen_typename(typename: str) -> Callable[[Type[BaseModel]], Type[BaseModel]]:
@@ -339,8 +350,10 @@ def sgen_typename(typename: str) -> Callable[[Type[BaseModel]], Type[BaseModel]]
             cls.__name__,
             __base__=cls,
             __config__=new_config,
+            __module__=cls.__module__,
             __cls_kwargs__={"metaclass": _SgenMeta},
         )
+        model.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
         model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
         return model
 
