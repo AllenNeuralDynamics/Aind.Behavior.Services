@@ -329,7 +329,6 @@ class _SgenMeta(_ModelMetaclass):  # type: ignore[misc]
 
 def sgen_typename(typename: str) -> Callable[[Type[BaseModel]], Type[BaseModel]]:
 
-
     def decorator(cls: Type[BaseModel]) -> Type[BaseModel]:
         existing = getattr(cls, "model_config", ConfigDict())
         raw_extra = existing.get("json_schema_extra")
