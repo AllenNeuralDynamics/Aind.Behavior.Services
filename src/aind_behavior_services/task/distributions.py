@@ -112,8 +112,6 @@ class Scalar(DistributionBase):
     distribution_parameters: ScalarDistributionParameter = Field(
         default=ScalarDistributionParameter(), description="Parameters of the distribution"
     )
-    truncation_parameters: Literal[None] = None
-    scaling_parameters: Literal[None] = None
 
 
 class NormalDistributionParameters(DistributionParametersBase):
