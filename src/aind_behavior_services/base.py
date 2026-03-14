@@ -29,7 +29,7 @@ class SchemaVersionedModel(BaseModel):
     aind_behavior_services_pkg_version: Literal[__semver__] = Field(
         default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
     )
-    version: str = Field(..., pattern=SEMVER_REGEX, description="schema version", title="Version", frozen=True)
+    version: str = Field(pattern=SEMVER_REGEX, description="schema version", title="Version", frozen=True)
 
     @field_validator("aind_behavior_services_pkg_version", "version", mode="before", check_fields=False)
     @classmethod

@@ -76,7 +76,7 @@ class DistributionParametersBase(BaseModel):
     Provides common family field for discriminated union validation.
     """
 
-    family: DistributionFamily = Field(..., description="Family of the distribution")
+    family: DistributionFamily = Field(description="Family of the distribution")
 
 
 @sgen_typename(_SGEN_TYPENAME_NAMESPACE + ".DistributionBase")
@@ -88,8 +88,8 @@ class DistributionBase(BaseModel):
     transformations for flexible probability distributions.
     """
 
-    family: DistributionFamily = Field(..., description="Family of the distribution")
-    distribution_parameters: "DistributionParameters" = Field(..., description="Parameters of the distribution")
+    family: DistributionFamily = Field(description="Family of the distribution")
+    distribution_parameters: "DistributionParameters" = Field(description="Parameters of the distribution")
     truncation_parameters: Optional[TruncationParameters] = Field(
         default=None, description="Truncation parameters of the distribution"
     )

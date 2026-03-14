@@ -11,7 +11,7 @@ from ._base import Device
 class _HarpDeviceBase(Device):
     who_am_i: Optional[int] = Field(default=None, le=9999, ge=0, description="Device WhoAmI")
     serial_number: Optional[str] = Field(default=None, description="Device serial number")
-    port_name: str = Field(..., description="Device port name")
+    port_name: str = Field(description="Device port name")
 
 
 class HarpDeviceGeneric(_HarpDeviceBase):
@@ -22,7 +22,7 @@ class ConnectedClockOutput(BaseModel):
     target_device: Optional[str] = Field(
         default=None, description="Optional device name to provide user additional information"
     )
-    output_channel: int = Field(..., ge=0, description="Output channel")
+    output_channel: int = Field(ge=0, description="Output channel")
 
 
 def _assert_unique_output_channels(outputs: List[ConnectedClockOutput]) -> List[ConnectedClockOutput]:
