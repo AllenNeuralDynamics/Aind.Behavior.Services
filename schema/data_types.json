@@ -12,6 +12,22 @@
       "title": "DataType",
       "type": "string"
     },
+    "EndExperimentPayload": {
+      "properties": {
+        "timestamp": {
+          "description": "The end time of the session",
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "timestamp"
+      ],
+      "title": "EndExperimentPayload",
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.EndExperimentPayload"
+    },
     "RenderSynchState": {
       "properties": {
         "sync_quad_value": {
@@ -59,10 +75,10 @@
         }
       },
       "title": "RenderSynchState",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.RenderSynchState"
     },
     "SoftwareEvent": {
-      "description": "A software event is a generic event that can be used to track any event that occurs in the software.",
       "properties": {
         "name": {
           "description": "The name of the event",
@@ -148,7 +164,24 @@
         "name"
       ],
       "title": "SoftwareEvent",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.SoftwareEvent"
+    },
+    "StartExperimentPayload": {
+      "properties": {
+        "timestamp": {
+          "description": "The start time of the session",
+          "format": "date-time",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "timestamp"
+      ],
+      "title": "StartExperimentPayload",
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.StartExperimentPayload"
     },
     "TimestampSource": {
       "enum": [
