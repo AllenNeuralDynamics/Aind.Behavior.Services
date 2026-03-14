@@ -30,7 +30,7 @@ class SoftwareEvent(BaseModel, Generic[TData]):
     A software event is a generic event that can be used to track any event that occurs in the software.
     """
 
-    name: str = Field(..., description="The name of the event")
+    name: str = Field(description="The name of the event")
     timestamp: Optional[float] = Field(default=None, description="The timestamp of the event")
     timestamp_source: TimestampSource = Field(default=TimestampSource.NULL, description="The source of the timestamp")
     frame_index: Optional[int] = Field(default=None, ge=0, description="The frame index of the event")
