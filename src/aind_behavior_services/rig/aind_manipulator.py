@@ -3,9 +3,13 @@ from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
+from ..schema import sgen_typename
 from ._harp_gen import HarpStepperDriver
 
+_SGEN_TYPENAME_NAMESPACE = "AllenNeuralDynamics.AindManipulator"
 
+
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.Axis")
 class Axis(IntEnum):
     """Motor axis available"""
 
@@ -16,6 +20,7 @@ class Axis(IntEnum):
     Z = 4
 
 
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.ManipulatorPosition")
 class ManipulatorPosition(BaseModel):
     """Represents a position in the manipulator coordinate system"""
 
@@ -25,6 +30,7 @@ class ManipulatorPosition(BaseModel):
     z: float = Field(title="Z coordinate")
 
 
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.MicrostepResolution")
 class MicrostepResolution(IntEnum):
     """Microstep resolution available"""
 
@@ -34,6 +40,7 @@ class MicrostepResolution(IntEnum):
     MICROSTEP64 = 3
 
 
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.MotorOperationMode")
 class MotorOperationMode(IntEnum):
     """Motor operation mode"""
 
@@ -41,6 +48,7 @@ class MotorOperationMode(IntEnum):
     DYNAMIC = 1
 
 
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.AxisConfiguration")
 class AxisConfiguration(BaseModel):
     """Axis configuration"""
 
@@ -69,6 +77,7 @@ class AxisConfiguration(BaseModel):
     min_limit: float = Field(default=-0.01, title="Minimum limit in SI units. A value of 0 disables this limit.")
 
 
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.AindManipulatorCalibration")
 class AindManipulatorCalibration(BaseModel):
     """AindManipulator calibration class"""
 
@@ -95,6 +104,7 @@ class AindManipulatorCalibration(BaseModel):
     )
 
 
+@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.AindManipulator")
 class AindManipulator(HarpStepperDriver):
     """AindManipulator device definition"""
 

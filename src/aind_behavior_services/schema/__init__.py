@@ -6,9 +6,9 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from subprocess import CalledProcessError, CompletedProcess, run
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
+from typing import Annotated, Any, Callable, Dict, List, Optional, Type, TypeVar, cast
 
-from pydantic import BaseModel, ConfigDict, PydanticInvalidForJsonSchema, create_model
+from pydantic import BaseModel, ConfigDict, Field, PydanticInvalidForJsonSchema, create_model
 from pydantic.json_schema import (
     GenerateJsonSchema,
     JsonSchemaMode,
@@ -338,23 +338,27 @@ class _SgenMeta(_BaseModelType):
         )
 
 
-def sgen_typename(typename: str) -> Callable[[Type[BaseModel]], Type[BaseModel]]:
+def sgen_typename(typename: str, *, as_annotated: bool = False) -> Callable[[Type[T]], Type[T]]:
 
-    def decorator(cls: Type[BaseModel]) -> Type[BaseModel]:
-        existing = getattr(cls, "model_config", ConfigDict())
-        raw_extra = existing.get("json_schema_extra")
-        new_extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
-        new_extra["x-sgen-typename"] = typename
-        new_config = cast(ConfigDict, {**existing, "json_schema_extra": new_extra})
-        model = create_model(
-            cls.__name__,
-            __base__=cls,
-            __config__=new_config,
-            __module__=cls.__module__,
-            __cls_kwargs__={"metaclass": _SgenMeta},
-        )
-        model.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
-        model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
-        return model
+    def decorator(cls: Type[T]) -> Type[T]:
+        if isinstance(cls, type) and issubclass(cls, BaseModel) and not as_annotated:
+            existing = getattr(cls, "model_config", ConfigDict())
+            raw_extra = existing.get("json_schema_extra")
+            new_extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
+            new_extra["x-sgen-typename"] = typename
+            new_config = cast(ConfigDict, {**existing, "json_schema_extra": new_extra})
+            model = create_model(
+                cls.__name__,
+                __base__=cls,
+                __config__=new_config,
+                __module__=cls.__module__,
+                __cls_kwargs__={"metaclass": _SgenMeta},
+                __doc__=cls.__doc__,
+            )
+            model.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
+            model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
+            return model
+        else:
+            return cast(Type[T], Annotated[cls, Field(json_schema_extra={"x-sgen-typename": typename})])
 
     return decorator
