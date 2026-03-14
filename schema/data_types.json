@@ -79,6 +79,7 @@
       "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.RenderSynchState"
     },
     "SoftwareEvent": {
+      "description": "A software event is a generic event that can be used to track any event that occurs in the software.",
       "properties": {
         "name": {
           "description": "The name of the event",
