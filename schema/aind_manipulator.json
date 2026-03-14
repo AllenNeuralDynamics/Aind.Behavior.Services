@@ -76,7 +76,8 @@
             4
           ],
           "items": {
-            "$ref": "#/$defs/Axis"
+            "$ref": "#/$defs/Axis",
+            "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.Axis"
           },
           "title": "Homing order",
           "type": "array"
@@ -92,7 +93,8 @@
         }
       },
       "title": "AindManipulatorCalibration",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.AindManipulatorCalibration"
     },
     "Axis": {
       "description": "Motor axis available",
@@ -118,7 +120,8 @@
       "properties": {
         "axis": {
           "$ref": "#/$defs/Axis",
-          "title": "Axis to be configured"
+          "title": "Axis to be configured",
+          "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.Axis"
         },
         "step_acceleration_interval": {
           "default": 100,
@@ -139,7 +142,8 @@
         "microstep_resolution": {
           "$ref": "#/$defs/MicrostepResolution",
           "default": 0,
-          "title": "Microstep resolution"
+          "title": "Microstep resolution",
+          "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.MicrostepResolution"
         },
         "maximum_step_interval": {
           "default": 2000,
@@ -151,7 +155,8 @@
         "motor_operation_mode": {
           "$ref": "#/$defs/MotorOperationMode",
           "default": 0,
-          "title": "Motor operation mode"
+          "title": "Motor operation mode",
+          "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.MotorOperationMode"
         },
         "max_limit": {
           "default": 25,
@@ -168,7 +173,8 @@
         "axis"
       ],
       "title": "AxisConfiguration",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.AxisConfiguration"
     },
     "ManipulatorPosition": {
       "description": "Represents a position in the manipulator coordinate system",
@@ -197,7 +203,8 @@
         "z"
       ],
       "title": "ManipulatorPosition",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.ManipulatorPosition"
     },
     "MicrostepResolution": {
       "description": "Microstep resolution available",
@@ -334,5 +341,6 @@
     "port_name"
   ],
   "title": "AindManipulator",
-  "type": "object"
+  "type": "object",
+  "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.AindManipulator"
 }

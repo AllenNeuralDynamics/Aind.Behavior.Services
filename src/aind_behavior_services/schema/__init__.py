@@ -353,6 +353,7 @@ def sgen_typename(typename: str, *, as_annotated: bool = False) -> Callable[[Typ
                 __config__=new_config,
                 __module__=cls.__module__,
                 __cls_kwargs__={"metaclass": _SgenMeta},
+                __doc__=cls.__doc__,
             )
             model.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
             model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
