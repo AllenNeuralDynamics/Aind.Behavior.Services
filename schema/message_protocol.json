@@ -22,14 +22,16 @@
         },
         "status": {
           "$ref": "#/$defs/HeartbeatStatus",
-          "description": "The status of the heartbeat message"
+          "description": "The status of the heartbeat message",
+          "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.HeartbeatStatus"
         }
       },
       "required": [
         "status"
       ],
       "title": "HeartbeatPayload",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.HeartbeatPayload"
     },
     "HeartbeatStatus": {
       "description": "Enumeration of possible heartbeat status values.\n\nRepresents the health status of a system component,\nwith higher values indicating more severe issues.\n\nExamples:\n    ```python\n    HeartbeatStatus.OK                            # <HeartbeatStatus.OK: 0>\n    HeartbeatStatus.CRITICAL > HeartbeatStatus.WARNING  # True\n    int(HeartbeatStatus.ERROR)                    # 2\n    ```",
@@ -86,7 +88,8 @@
         "level": {
           "$ref": "#/$defs/LogLevel",
           "default": 10,
-          "description": "The level of the log message"
+          "description": "The level of the log message",
+          "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.LogLevel"
         },
         "context": {
           "default": null,
@@ -117,11 +120,13 @@
         "message"
       ],
       "title": "LogPayload",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.LogPayload"
     },
     "Message": {
       "$ref": "#/$defs/_Message_Any_",
-      "title": "Message"
+      "title": "Message",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.Message"
     },
     "MessageType": {
       "description": "Enumeration of possible message types in the protocol.\n\nExamples:\n    ```python\n    MessageType.REQUEST  # 'request'\n    MessageType.REPLY    # 'reply'\n    MessageType.EVENT    # 'event'\n    ```",
@@ -136,7 +141,8 @@
     "RegisteredMessages": {
       "properties": {
         "message_type": {
-          "$ref": "#/$defs/MessageType"
+          "$ref": "#/$defs/MessageType",
+          "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.MessageType"
         },
         "protocol_version": {
           "const": 0,
@@ -207,7 +213,8 @@
         "rig_name"
       ],
       "title": "RegisteredMessages",
-      "type": "object"
+      "type": "object",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.RegisteredMessages"
     },
     "RegisteredPayload": {
       "discriminator": {
@@ -226,12 +233,14 @@
         }
       ],
       "title": "RegisteredPayload",
-      "x-abstract": true
+      "x-abstract": true,
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.RegisteredPayload"
     },
     "_Message_Any_": {
       "properties": {
         "message_type": {
-          "$ref": "#/$defs/MessageType"
+          "$ref": "#/$defs/MessageType",
+          "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.MessageType"
         },
         "protocol_version": {
           "const": 0,
@@ -305,5 +314,6 @@
       "type": "object"
     }
   },
-  "x-abstract": true
+  "x-abstract": true,
+  "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol.MessageProtocol"
 }
