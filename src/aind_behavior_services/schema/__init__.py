@@ -338,14 +338,29 @@ class _SgenMeta(_BaseModelType):
         )
 
 
-def sgen_typename(typename: str, *, as_annotated: bool = False) -> Callable[[Type[T]], Type[T]]:
+class SgenNamespace:
+    def __init__(self, namespace: str):
+        self._namespace = namespace
 
+    @property
+    def namespace(self) -> str:
+        return self._namespace
+
+    def sgen_typename(self, *, typename: str | None = None, as_annotated: bool = False) -> Callable[[Type[T]], Type[T]]:
+        return sgen_typename(typename=typename, namespace=self._namespace, as_annotated=as_annotated)
+
+
+def sgen_typename(
+    *, typename: Optional[str] = None, namespace: str | None = None, as_annotated: bool = False
+) -> Callable[[Type[T]], Type[T]]:
     def decorator(cls: Type[T]) -> Type[T]:
+        _typename = typename or cls.__name__
+        _typename = f"{namespace}.{_typename}" if namespace else _typename
         if isinstance(cls, type) and issubclass(cls, BaseModel) and not as_annotated:
             existing = getattr(cls, "model_config", ConfigDict())
             raw_extra = existing.get("json_schema_extra")
             new_extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
-            new_extra["x-sgen-typename"] = typename
+            new_extra["x-sgen-typename"] = _typename
             new_config = cast(ConfigDict, {**existing, "json_schema_extra": new_extra})
             model = create_model(
                 cls.__name__,
@@ -359,6 +374,6 @@ def sgen_typename(typename: str, *, as_annotated: bool = False) -> Callable[[Typ
             model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
             return model
         else:
-            return cast(Type[T], Annotated[cls, Field(json_schema_extra={"x-sgen-typename": typename})])
+            return cast(Type[T], Annotated[cls, Field(json_schema_extra={"x-sgen-typename": _typename})])
 
     return decorator

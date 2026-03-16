@@ -3,13 +3,13 @@ from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
-from ..schema import sgen_typename
+from ..schema import SgenNamespace
 from ._harp_gen import HarpStepperDriver
 
-_SGEN_TYPENAME_NAMESPACE = "AllenNeuralDynamics.AindManipulator"
+_sgen_namespace = SgenNamespace("AllenNeuralDynamics.AindManipulator")
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.Axis")
+@_sgen_namespace.sgen_typename()
 class Axis(IntEnum):
     """Motor axis available"""
 
@@ -20,7 +20,7 @@ class Axis(IntEnum):
     Z = 4
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.ManipulatorPosition")
+@_sgen_namespace.sgen_typename()
 class ManipulatorPosition(BaseModel):
     """Represents a position in the manipulator coordinate system"""
 
@@ -30,7 +30,7 @@ class ManipulatorPosition(BaseModel):
     z: float = Field(title="Z coordinate")
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.MicrostepResolution")
+@_sgen_namespace.sgen_typename()
 class MicrostepResolution(IntEnum):
     """Microstep resolution available"""
 
@@ -40,7 +40,7 @@ class MicrostepResolution(IntEnum):
     MICROSTEP64 = 3
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.MotorOperationMode")
+@_sgen_namespace.sgen_typename()
 class MotorOperationMode(IntEnum):
     """Motor operation mode"""
 
@@ -48,7 +48,7 @@ class MotorOperationMode(IntEnum):
     DYNAMIC = 1
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.AxisConfiguration")
+@_sgen_namespace.sgen_typename()
 class AxisConfiguration(BaseModel):
     """Axis configuration"""
 
@@ -77,7 +77,7 @@ class AxisConfiguration(BaseModel):
     min_limit: float = Field(default=-0.01, title="Minimum limit in SI units. A value of 0 disables this limit.")
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.AindManipulatorCalibration")
+@_sgen_namespace.sgen_typename()
 class AindManipulatorCalibration(BaseModel):
     """AindManipulator calibration class"""
 
@@ -104,7 +104,7 @@ class AindManipulatorCalibration(BaseModel):
     )
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.AindManipulator")
+@_sgen_namespace.sgen_typename()
 class AindManipulator(HarpStepperDriver):
     """AindManipulator device definition"""
 

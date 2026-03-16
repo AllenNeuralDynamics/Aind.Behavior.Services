@@ -3,11 +3,10 @@ from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, Optional, Ty
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
 
-from .schema import sgen_typename
+from .schema import SgenNamespace
 
 PROTOCOL_VERSION = 0
-_SGEN_TYPENAME_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol"
-
+_sgen_namespace = SgenNamespace("AllenNeuralDynamics.AindBehaviorServices.MessageProtocol")
 # From the point of view of a protocol API only the major version is relevant for de(serialization) as everything is expected to be backward compatible within the same major version.
 
 # ================================================================================
@@ -17,7 +16,7 @@ _SGEN_TYPENAME_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.MessageProt
 TPayload = TypeVar("TPayload", bound=BaseModel)
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.MessageType")
+@_sgen_namespace.sgen_typename()
 class MessageType(enum.StrEnum):
     """
     Enumeration of possible message types in the protocol.
@@ -64,7 +63,7 @@ class _Message(BaseModel, Generic[TPayload]):
 # ================================================================================
 # Core payload types
 # ================================================================================
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.LogLevel")
+@_sgen_namespace.sgen_typename()
 class LogLevel(enum.IntEnum):
     """
     Enumeration of log levels for the logging system.
@@ -88,7 +87,7 @@ class LogLevel(enum.IntEnum):
     NOTSET = 0
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.LogPayload")
+@_sgen_namespace.sgen_typename()
 class LogPayload(BaseModel):
     """
     Payload for log messages containing logging information.
@@ -121,7 +120,7 @@ class LogPayload(BaseModel):
     application_version: Optional[str] = Field(default=None, description="The version of the application")
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.HeartbeatStatus")
+@_sgen_namespace.sgen_typename()
 class HeartbeatStatus(enum.IntEnum):
     """
     Enumeration of possible heartbeat status values.
@@ -143,7 +142,7 @@ class HeartbeatStatus(enum.IntEnum):
     CRITICAL = 3
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.HeartbeatPayload")
+@_sgen_namespace.sgen_typename()
 class HeartbeatPayload(BaseModel):
     """
     Payload for heartbeat messages indicating system health status.
@@ -187,7 +186,7 @@ if TYPE_CHECKING:
 
 else:
 
-    @sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.RegisteredPayload")
+    @_sgen_namespace.sgen_typename()
     class RegisteredPayload(RootModel):
         root: Annotated[
             Union[LogPayload, HeartbeatPayload],
@@ -196,7 +195,7 @@ else:
         model_config: ConfigDict = ConfigDict(json_schema_extra={"x-abstract": True})
 
 
-RegisteredMessages = sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.RegisteredMessages")(
+RegisteredMessages = _sgen_namespace.sgen_typename()(
     create_model(
         "RegisteredMessages",
         __base__=_Message[RegisteredPayload],
@@ -204,12 +203,12 @@ RegisteredMessages = sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.RegisteredMessag
 )
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.Message")
+@_sgen_namespace.sgen_typename()
 class Message(RootModel):
     root: _Message[Any]
 
 
-@sgen_typename(f"{_SGEN_TYPENAME_NAMESPACE}.MessageProtocol")
+@_sgen_namespace.sgen_typename()
 class MessageProtocol(BaseModel):
     """
     Container for the complete message protocol including all registered message types.
