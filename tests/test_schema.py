@@ -3,7 +3,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, RootModel, TypeAdapter
 
-from aind_behavior_services.schema import sgen_typename
+from aind_behavior_services.schema import SgenNamespace, sgen_typename
 
 
 class SchemaTests(unittest.TestCase):
@@ -149,3 +149,111 @@ class SchemaTests(unittest.TestCase):
         # According to pydantic docs, the TypeAdapter should propagate the json-extra
         adapter_schema = TypeAdapter(decorated)
         self.assertIn("x-sgen-typename", adapter_schema.json_schema())
+
+    def test_sgen_typename_infers_class_name_when_typename_omitted(self):
+        """When typename is not provided the class name is used as the typename."""
+
+        @sgen_typename()
+        class MyModel(BaseModel):
+            x: float
+
+        self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "MyModel")
+
+    def test_sgen_typename_infers_class_name_with_namespace(self):
+        """When typename is omitted but namespace is given, typename becomes 'namespace.ClassName'."""
+
+        @sgen_typename(namespace="My.Namespace")
+        class MyModel(BaseModel):
+            x: float
+
+        self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "My.Namespace.MyModel")
+
+    def test_sgen_typename_infers_class_name_non_basemodel(self):
+        """Class-name inference also works on the Annotated path (non-BaseModel types)."""
+
+        @sgen_typename()
+        class FooEnum(StrEnum):
+            A = "A"
+            B = "B"
+
+        class Container(BaseModel):
+            val: FooEnum
+
+        schema = Container.model_json_schema()
+        self.assertEqual(schema["properties"]["val"]["x-sgen-typename"], "FooEnum")
+
+    def test_sgen_typename_explicit_typename_overrides_inferred_name(self):
+        """An explicit typename must take precedence over the inferred class name."""
+
+        @sgen_typename(typename="Explicit.Name")
+        class MyModel(BaseModel):
+            x: float
+
+        self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "Explicit.Name")
+
+    def test_sgen_namespace_stores_namespace(self):
+        """SgenNamespace exposes the namespace it was constructed with."""
+
+        ns = SgenNamespace("My.Namespace")
+        self.assertEqual(ns.namespace, "My.Namespace")
+
+    def test_sgen_namespace_decorates_with_namespace(self):
+        """SgenNamespace.sgen_typename applies the stored namespace prefix to the typename."""
+
+        ns = SgenNamespace("My.Namespace")
+
+        @ns.sgen_typename()
+        class MyModel(BaseModel):
+            x: float
+
+        self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "My.Namespace.MyModel")
+
+    def test_sgen_namespace_propagates_across_multiple_classes(self):
+        """A single SgenNamespace instance can decorate multiple classes with the same namespace."""
+
+        ns = SgenNamespace("Shared.Namespace")
+
+        @ns.sgen_typename()
+        class ModelA(BaseModel):
+            a: int
+
+        @ns.sgen_typename()
+        class ModelB(BaseModel):
+            b: str
+
+        self.assertEqual(ModelA.model_json_schema()["x-sgen-typename"], "Shared.Namespace.ModelA")
+        self.assertEqual(ModelB.model_json_schema()["x-sgen-typename"], "Shared.Namespace.ModelB")
+
+    def test_sgen_namespace_explicit_typename_overrides_class_name(self):
+        """When an explicit typename is given to SgenNamespace.sgen_typename, it is used instead of the class name."""
+
+        ns = SgenNamespace("My.Namespace")
+
+        @ns.sgen_typename(typename="CustomName")
+        class MyModel(BaseModel):
+            x: float
+
+        self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "My.Namespace.CustomName")
+
+    def test_sgen_namespace_does_not_affect_undecorated_classes(self):
+        """Classes not decorated via SgenNamespace must not carry the namespace typename."""
+
+        class BareModel(BaseModel):
+            x: float
+
+        self.assertNotIn("x-sgen-typename", BareModel.model_json_schema())
+
+    def test_sgen_namespace_as_annotated_applies_namespace(self):
+        """SgenNamespace.sgen_typename with as_annotated=True places the namespaced typename on the field reference."""
+
+        ns = SgenNamespace("My.Namespace")
+
+        @ns.sgen_typename(as_annotated=True)
+        class FooModel(BaseModel):
+            x: float
+
+        class Container(BaseModel):
+            val: FooModel
+
+        schema = Container.model_json_schema()
+        self.assertEqual(schema["properties"]["val"]["x-sgen-typename"], "My.Namespace.FooModel")
