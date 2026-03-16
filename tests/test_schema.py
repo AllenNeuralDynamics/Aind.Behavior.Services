@@ -11,12 +11,12 @@ class SchemaTests(unittest.TestCase):
 
     def test_sgen_typename_decorator(self):
 
-        @sgen_typename("OpenTK.Vector2")
+        @sgen_typename(typename="OpenTK.Vector2")
         class Vector2(BaseModel):
             x: float
             y: float
 
-        @sgen_typename("System.Int")
+        @sgen_typename(typename="System.Int")
         class IntRootModel(RootModel[int]):
             root: int
 
@@ -26,7 +26,7 @@ class SchemaTests(unittest.TestCase):
     def test_sgen_typename_deep_chain_strips_typename(self):
         """x-sgen-typename must not bleed through multiple levels of plain subclasses."""
 
-        @sgen_typename("OpenTK.Vector2")
+        @sgen_typename(typename="OpenTK.Vector2")
         class Vector2(BaseModel):
             x: float
             y: float
@@ -46,7 +46,7 @@ class SchemaTests(unittest.TestCase):
         class MyModel(BaseModel):
             x: float
 
-        decorated = sgen_typename("Foo.Bar")(MyModel)
+        decorated = sgen_typename(typename="Foo.Bar")(MyModel)
 
         self.assertNotIn("x-sgen-typename", MyModel.model_json_schema())
         self.assertEqual(decorated.model_json_schema()["x-sgen-typename"], "Foo.Bar")
@@ -58,7 +58,7 @@ class SchemaTests(unittest.TestCase):
             model_config = ConfigDict(json_schema_extra={"x-custom": "hello"})
             x: float
 
-        decorated = sgen_typename("Foo.Bar")(MyModel)
+        decorated = sgen_typename(typename="Foo.Bar")(MyModel)
         schema = decorated.model_json_schema()
 
         self.assertEqual(schema["x-sgen-typename"], "Foo.Bar")
@@ -67,25 +67,25 @@ class SchemaTests(unittest.TestCase):
     def test_sgen_typename_redecorate_updates_value(self):
         """Re-applying the decorator to an already-decorated class replaces the typename."""
 
-        @sgen_typename("Foo.First")
+        @sgen_typename(typename="Foo.First")
         class MyModel(BaseModel):
             x: float
 
-        @sgen_typename("Foo.Second")
+        @sgen_typename(typename="Foo.Second")
         class Renamed(MyModel):
             pass
 
         self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "Foo.First")
         self.assertEqual(Renamed.model_json_schema()["x-sgen-typename"], "Foo.Second")
 
-        Renamed = sgen_typename("Foo.Second")(MyModel)
+        Renamed = sgen_typename(typename="Foo.Second")(MyModel)
         self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "Foo.First")
         self.assertEqual(Renamed.model_json_schema()["x-sgen-typename"], "Foo.Second")
 
     def test_sgen_typename_non_basemodel_annotated(self):
         """Non-BaseModel types (e.g. Enum) use the Annotated path; typename appears on the field reference."""
 
-        @sgen_typename("My.FooEnum")
+        @sgen_typename(typename="My.FooEnum")
         class FooEnum(StrEnum):
             A = "A"
             B = "B"
@@ -99,7 +99,7 @@ class SchemaTests(unittest.TestCase):
     def test_sgen_typename_as_annotated_true(self):
         """as_annotated=True forces the Annotated path even for BaseModel subclasses; typename appears on the field reference."""
 
-        @sgen_typename("My.FooModel", as_annotated=True)
+        @sgen_typename(typename="My.FooModel", as_annotated=True)
         class FooModel(BaseModel):
             x: float
 
@@ -112,7 +112,7 @@ class SchemaTests(unittest.TestCase):
     def test_sgen_typename_as_annotated_does_not_mutate_defs(self):
         """as_annotated=True must not place the typename inside $defs, only on the field reference."""
 
-        @sgen_typename("My.FooModel", as_annotated=True)
+        @sgen_typename(typename="My.FooModel", as_annotated=True)
         class FooModel(BaseModel):
             x: float
 
@@ -125,7 +125,7 @@ class SchemaTests(unittest.TestCase):
     def test_sgen_typename_non_basemodel_does_not_mutate_defs(self):
         """Enum typename must not appear inside $defs, only on the field reference."""
 
-        @sgen_typename("My.FooEnum")
+        @sgen_typename(typename="My.FooEnum")
         class FooEnum(StrEnum):
             A = "A"
             B = "B"
@@ -142,7 +142,7 @@ class SchemaTests(unittest.TestCase):
         class FooModel(BaseModel):
             x: float
 
-        decorated = sgen_typename("My.FooModel", as_annotated=True)(FooModel)
+        decorated = sgen_typename(typename="My.FooModel", as_annotated=True)(FooModel)
 
         self.assertNotIn("x-sgen-typename", decorated.model_json_schema())
 
