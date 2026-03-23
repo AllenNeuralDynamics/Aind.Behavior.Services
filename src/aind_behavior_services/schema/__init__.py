@@ -6,9 +6,9 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from subprocess import CalledProcessError, CompletedProcess, run
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
+from typing import Annotated, Any, Callable, Dict, List, Optional, Type, TypeVar, cast
 
-from pydantic import BaseModel, ConfigDict, PydanticInvalidForJsonSchema, create_model
+from pydantic import BaseModel, ConfigDict, GetCoreSchemaHandler, PydanticInvalidForJsonSchema, create_model
 from pydantic.json_schema import (
     GenerateJsonSchema,
     JsonSchemaMode,
@@ -315,7 +315,7 @@ def convert_pydantic_to_bonsai(
 _BaseModelType = type(BaseModel)
 
 
-class _SgenMeta(_BaseModelType):
+class _SgenBaseModelMeta(_BaseModelType):
     """Metaclass that strips ``x-sgen-typename`` from subclasses of
     ``sgen_typename``-decorated models. Subclasses must re-decorate to opt in.
     """
@@ -355,6 +355,26 @@ class _SgenMeta(_BaseModelType):
         )
 
 
+class _SgenTypenameAnnotation:
+    """Annotation marker for frozen types (e.g., ``TypeAliasType``) that injects
+    ``x-sgen-typename`` into the type's ``$defs`` entry via ``pydantic_js_updates``.
+    """
+
+    # This is probably an overkill, but since TypeAliasType is a frozen class,
+    # we need to inject the x-sgen-typename via an annotation that mutates the resolved schema.
+    def __init__(self, typename: str) -> None:
+        self._typename = typename
+
+    def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+        schema = handler(source_type)
+        target = handler.resolve_ref_schema(schema) if schema.get("type") == "definition-ref" else schema
+        meta: Dict[str, Any] = dict(target.get("metadata") or {})
+        updates: Dict[str, Any] = dict(meta.get("pydantic_js_updates") or {})
+        updates["x-sgen-typename"] = self._typename
+        target["metadata"] = {**meta, "pydantic_js_updates": updates}
+        return schema
+
+
 class SgenNamespace:
     def __init__(self, namespace: str):
         self._namespace = namespace
@@ -368,6 +388,13 @@ class SgenNamespace:
 
 
 def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = None) -> Callable[[Type[T]], Type[T]]:
+    """Class decorator to add an ``x-sgen-typename`` property to the model's JSON schema, which Bonsai.SGen uses to determine the typename for the generated class."""
+
+    # Why do we need 3 different approaches you might ask?
+    # 1. For regular BaseModel subclasses, we create_model subclass because we want the strip the x-sgen-typename from any subclasses by default (to avoid unintended inheritance) and require explicit re-decoration opt-in. This is handled by the _SgenBaseModelMeta metaclass.
+    # 2. For all other classes, we can just set the __sgen_typename__ attribute directly, and the custom JSON schema generator will pick it up and add it to the generated schema. This is the simplest case.
+    # 3. 2. For frozen types (e.g., TypeAliasType), we can't modify using 2. so we wrap the type in an Annotated with a custom annotation that injects the x-sgen-typename via pydantic_js_updates. Handled by the _SgenTypenameAnnotation class.
+
     def decorator(cls: Type[T]) -> Type[T]:
         _typename = typename or cls.__name__
         _typename = f"{namespace}.{_typename}" if namespace else _typename
@@ -382,7 +409,7 @@ def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = Non
                 __base__=cls,
                 __config__=new_config,
                 __module__=cls.__module__,
-                __cls_kwargs__={"metaclass": _SgenMeta},
+                __cls_kwargs__={"metaclass": _SgenBaseModelMeta},
                 __doc__=cls.__doc__,
             )
             result.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
@@ -391,7 +418,9 @@ def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = Non
         try:
             setattr(result, "__sgen_typename__", _typename)
         except AttributeError:
-            pass
+            # Frozen object (e.g., TypeAliasType); wrap in Annotated with a marker
+            # that injects x-sgen-typename into the $defs entry via pydantic_js_functions.
+            result = Annotated[result, _SgenTypenameAnnotation(_typename)]  # type: ignore[assignment]
         return cast(Type[T], result)
 
     return decorator

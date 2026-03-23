@@ -1,7 +1,9 @@
 import unittest
 from enum import StrEnum
+from typing import Union
 
 from pydantic import BaseModel, ConfigDict, RootModel
+from typing_extensions import TypeAliasType
 
 from aind_behavior_services.schema import CustomGenerateJsonSchema, SgenNamespace, sgen_typename
 
@@ -230,3 +232,56 @@ class SchemaTests(unittest.TestCase):
 
         schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
         self.assertEqual(schema["$defs"]["FooEnum"]["x-sgen-typename"], "My.Namespace.FooEnum")
+
+    def test_sgen_typename_type_alias_type_in_defs(self):
+        """TypeAliasType gets x-sgen-typename in its $defs entry."""
+
+        class A(BaseModel):
+            x: int
+
+        class B(BaseModel):
+            y: str
+
+        MyAlias = sgen_typename(typename="My.Alias")(TypeAliasType("MyAlias", Union[A, B]))
+
+        class Container(BaseModel):
+            val: MyAlias
+
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertEqual(schema["$defs"]["MyAlias"]["x-sgen-typename"], "My.Alias")
+
+    def test_sgen_typename_type_alias_type_not_on_field_ref(self):
+        """TypeAliasType typename must appear in $defs, not on the field-level $ref."""
+
+        class A(BaseModel):
+            x: int
+
+        class B(BaseModel):
+            y: str
+
+        MyAlias = sgen_typename(typename="My.Alias")(TypeAliasType("MyAlias", Union[A, B]))
+
+        class Container(BaseModel):
+            val: MyAlias
+
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertNotIn("x-sgen-typename", schema["properties"]["val"])
+
+    def test_sgen_namespace_type_alias_type_in_defs(self):
+        """SgenNamespace.sgen_typename on a TypeAliasType places the namespaced typename in $defs."""
+
+        ns = SgenNamespace("My.Namespace")
+
+        class A(BaseModel):
+            x: int
+
+        class B(BaseModel):
+            y: str
+
+        MyAlias = ns.sgen_typename()(TypeAliasType("MyAlias", Union[A, B]))
+
+        class Container(BaseModel):
+            val: MyAlias
+
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertEqual(schema["$defs"]["MyAlias"]["x-sgen-typename"], "My.Namespace.MyAlias")
