@@ -1,9 +1,9 @@
 import unittest
 from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict, RootModel, TypeAdapter
+from pydantic import BaseModel, ConfigDict, RootModel
 
-from aind_behavior_services.schema import SgenNamespace, sgen_typename
+from aind_behavior_services.schema import CustomGenerateJsonSchema, SgenNamespace, sgen_typename
 
 
 class SchemaTests(unittest.TestCase):
@@ -82,8 +82,8 @@ class SchemaTests(unittest.TestCase):
         self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "Foo.First")
         self.assertEqual(Renamed.model_json_schema()["x-sgen-typename"], "Foo.Second")
 
-    def test_sgen_typename_non_basemodel_annotated(self):
-        """Non-BaseModel types (e.g. Enum) use the Annotated path; typename appears on the field reference."""
+    def test_sgen_typename_non_basemodel_in_defs(self):
+        """Non-BaseModel types (e.g. Enum) get typename in their $defs entry."""
 
         @sgen_typename(typename="My.FooEnum")
         class FooEnum(StrEnum):
@@ -93,37 +93,11 @@ class SchemaTests(unittest.TestCase):
         class Container(BaseModel):
             val: FooEnum
 
-        schema = Container.model_json_schema()
-        self.assertEqual(schema["properties"]["val"]["x-sgen-typename"], "My.FooEnum")
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertEqual(schema["$defs"]["FooEnum"]["x-sgen-typename"], "My.FooEnum")
 
-    def test_sgen_typename_as_annotated_true(self):
-        """as_annotated=True forces the Annotated path even for BaseModel subclasses; typename appears on the field reference."""
-
-        @sgen_typename(typename="My.FooModel", as_annotated=True)
-        class FooModel(BaseModel):
-            x: float
-
-        class Container(BaseModel):
-            val: FooModel
-
-        schema = Container.model_json_schema()
-        self.assertEqual(schema["properties"]["val"]["x-sgen-typename"], "My.FooModel")
-
-    def test_sgen_typename_as_annotated_does_not_mutate_defs(self):
-        """as_annotated=True must not place the typename inside $defs, only on the field reference."""
-
-        @sgen_typename(typename="My.FooModel", as_annotated=True)
-        class FooModel(BaseModel):
-            x: float
-
-        class Container(BaseModel):
-            val: FooModel
-
-        schema = Container.model_json_schema()
-        self.assertNotIn("x-sgen-typename", schema.get("$defs", {}).get("FooModel", {}))
-
-    def test_sgen_typename_non_basemodel_does_not_mutate_defs(self):
-        """Enum typename must not appear inside $defs, only on the field reference."""
+    def test_sgen_typename_non_basemodel_not_on_field_ref(self):
+        """Non-BaseModel typename must appear in $defs, not on the field-level $ref."""
 
         @sgen_typename(typename="My.FooEnum")
         class FooEnum(StrEnum):
@@ -133,22 +107,20 @@ class SchemaTests(unittest.TestCase):
         class Container(BaseModel):
             val: FooEnum
 
-        schema = Container.model_json_schema()
-        self.assertNotIn("x-sgen-typename", schema.get("$defs", {}).get("FooEnum", {}))
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertNotIn("x-sgen-typename", schema["properties"]["val"])
 
-    def test_sgen_typename_as_annotated_preserves_class_identity(self):
-        """as_annotated=True must not create a new subclass; the original class is returned unchanged so isinstance checks and pattern matching still work."""
+    def test_sgen_typename_non_basemodel_class_identity(self):
+        """Non-BaseModel types are returned unchanged; isinstance checks still work."""
 
-        class FooModel(BaseModel):
-            x: float
+        @sgen_typename(typename="My.FooEnum")
+        class FooEnum(StrEnum):
+            A = "A"
+            B = "B"
 
-        decorated = sgen_typename(typename="My.FooModel", as_annotated=True)(FooModel)
-
-        self.assertNotIn("x-sgen-typename", decorated.model_json_schema())
-
-        # According to pydantic docs, the TypeAdapter should propagate the json-extra
-        adapter_schema = TypeAdapter(decorated)
-        self.assertIn("x-sgen-typename", adapter_schema.json_schema())
+        self.assertIsInstance(FooEnum.A, FooEnum)
+        self.assertTrue(issubclass(FooEnum, StrEnum))
+        self.assertEqual(FooEnum.__sgen_typename__, "My.FooEnum")
 
     def test_sgen_typename_infers_class_name_when_typename_omitted(self):
         """When typename is not provided the class name is used as the typename."""
@@ -169,7 +141,7 @@ class SchemaTests(unittest.TestCase):
         self.assertEqual(MyModel.model_json_schema()["x-sgen-typename"], "My.Namespace.MyModel")
 
     def test_sgen_typename_infers_class_name_non_basemodel(self):
-        """Class-name inference also works on the Annotated path (non-BaseModel types)."""
+        """Class-name inference also works for non-BaseModel types; typename appears in $defs."""
 
         @sgen_typename()
         class FooEnum(StrEnum):
@@ -179,8 +151,8 @@ class SchemaTests(unittest.TestCase):
         class Container(BaseModel):
             val: FooEnum
 
-        schema = Container.model_json_schema()
-        self.assertEqual(schema["properties"]["val"]["x-sgen-typename"], "FooEnum")
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertEqual(schema["$defs"]["FooEnum"]["x-sgen-typename"], "FooEnum")
 
     def test_sgen_typename_explicit_typename_overrides_inferred_name(self):
         """An explicit typename must take precedence over the inferred class name."""
@@ -243,17 +215,18 @@ class SchemaTests(unittest.TestCase):
 
         self.assertNotIn("x-sgen-typename", BareModel.model_json_schema())
 
-    def test_sgen_namespace_as_annotated_applies_namespace(self):
-        """SgenNamespace.sgen_typename with as_annotated=True places the namespaced typename on the field reference."""
+    def test_sgen_namespace_non_basemodel_in_defs(self):
+        """SgenNamespace.sgen_typename on a non-BaseModel type places the namespaced typename in $defs."""
 
         ns = SgenNamespace("My.Namespace")
 
-        @ns.sgen_typename(as_annotated=True)
-        class FooModel(BaseModel):
-            x: float
+        @ns.sgen_typename()
+        class FooEnum(StrEnum):
+            A = "A"
+            B = "B"
 
         class Container(BaseModel):
-            val: FooModel
+            val: FooEnum
 
-        schema = Container.model_json_schema()
-        self.assertEqual(schema["properties"]["val"]["x-sgen-typename"], "My.Namespace.FooModel")
+        schema = Container.model_json_schema(schema_generator=CustomGenerateJsonSchema)
+        self.assertEqual(schema["$defs"]["FooEnum"]["x-sgen-typename"], "My.Namespace.FooEnum")

@@ -388,7 +388,10 @@ def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = Non
             result.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
         else:
             result = cls  # type: ignore[assignment]
-        result.__sgen_typename__ = _typename  # type: ignore[attr-defined]
+        try:
+            setattr(result, "__sgen_typename__", _typename)
+        except AttributeError:
+            pass
         return cast(Type[T], result)
 
     return decorator
