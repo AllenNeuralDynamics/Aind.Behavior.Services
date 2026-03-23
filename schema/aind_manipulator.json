@@ -76,8 +76,7 @@
             4
           ],
           "items": {
-            "$ref": "#/$defs/Axis",
-            "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.Axis"
+            "$ref": "#/$defs/Axis"
           },
           "title": "Homing order",
           "type": "array"
@@ -113,15 +112,15 @@
         "Y1",
         "Y2",
         "Z"
-      ]
+      ],
+      "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.Axis"
     },
     "AxisConfiguration": {
       "description": "Axis configuration",
       "properties": {
         "axis": {
           "$ref": "#/$defs/Axis",
-          "title": "Axis to be configured",
-          "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.Axis"
+          "title": "Axis to be configured"
         },
         "step_acceleration_interval": {
           "default": 100,
@@ -142,8 +141,7 @@
         "microstep_resolution": {
           "$ref": "#/$defs/MicrostepResolution",
           "default": 0,
-          "title": "Microstep resolution",
-          "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.MicrostepResolution"
+          "title": "Microstep resolution"
         },
         "maximum_step_interval": {
           "default": 2000,
@@ -155,8 +153,7 @@
         "motor_operation_mode": {
           "$ref": "#/$defs/MotorOperationMode",
           "default": 0,
-          "title": "Motor operation mode",
-          "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.MotorOperationMode"
+          "title": "Motor operation mode"
         },
         "max_limit": {
           "default": 25,
@@ -221,7 +218,8 @@
         "Microstep16",
         "Microstep32",
         "Microstep64"
-      ]
+      ],
+      "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.MicrostepResolution"
     },
     "MotorOperationMode": {
       "description": "Motor operation mode",
@@ -234,7 +232,8 @@
       "x-enumNames": [
         "Quiet",
         "Dynamic"
-      ]
+      ],
+      "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.MotorOperationMode"
     }
   },
   "description": "AindManipulator device definition",

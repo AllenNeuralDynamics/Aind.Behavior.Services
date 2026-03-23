@@ -6,9 +6,9 @@ from enum import Enum
 from os import PathLike
 from pathlib import Path
 from subprocess import CalledProcessError, CompletedProcess, run
-from typing import Annotated, Any, Callable, Dict, List, Optional, Type, TypeVar, cast
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, cast
 
-from pydantic import BaseModel, ConfigDict, Field, PydanticInvalidForJsonSchema, create_model
+from pydantic import BaseModel, ConfigDict, PydanticInvalidForJsonSchema, create_model
 from pydantic.json_schema import (
     GenerateJsonSchema,
     JsonSchemaMode,
@@ -148,6 +148,22 @@ class CustomGenerateJsonSchema(GenerateJsonSchema):
         # if it's a single Literal[None] then it becomes a `const` schema above
         else:
             return {"enum": expected}
+
+    def generate_inner(self, schema: core_schema.CoreSchema) -> JsonSchemaValue:
+        defs_before = set(self.definitions.keys())
+        result = super().generate_inner(schema)
+        new_refs = set(self.definitions.keys()) - defs_before
+
+        if new_refs:
+            cls = schema.get("cls")
+            typename: Optional[str] = None
+            if cls is not None and not (isinstance(cls, type) and issubclass(cls, BaseModel)):
+                typename = cls.__dict__.get("__sgen_typename__")
+            if typename is not None:
+                for ref in new_refs:
+                    self.definitions[ref]["x-sgen-typename"] = typename
+
+        return result
 
     def union_schema(self, schema: core_schema.UnionSchema) -> JsonSchemaValue:
         """Generates a JSON schema that matches a schema that allows values matching any of the given schemas.
@@ -314,7 +330,7 @@ class _SgenMeta(_BaseModelType):
         _create_model_module: Optional[str] = None,
         **kwargs: Any,
     ) -> type:
-        if any(base.__dict__.get("__sgen_typename_source__", False) for base in bases):
+        if any(base.__dict__.get("__sgen_typename__") is not None for base in bases):
             explicit_extra = namespace.get("model_config", {}).get("json_schema_extra", {})
             if not (isinstance(explicit_extra, dict) and "x-sgen-typename" in explicit_extra):
                 inherited = next(
@@ -326,6 +342,7 @@ class _SgenMeta(_BaseModelType):
                 extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
                 extra.pop("x-sgen-typename", None)
                 namespace["model_config"] = cast(ConfigDict, {**merged, "json_schema_extra": extra})
+                namespace["__sgen_typename__"] = None  # shadow inherited value; subclasses must re-decorate
         return super().__new__(
             mcs,
             cls_name,
@@ -346,23 +363,21 @@ class SgenNamespace:
     def namespace(self) -> str:
         return self._namespace
 
-    def sgen_typename(self, *, typename: str | None = None, as_annotated: bool = False) -> Callable[[Type[T]], Type[T]]:
-        return sgen_typename(typename=typename, namespace=self._namespace, as_annotated=as_annotated)
+    def sgen_typename(self, *, typename: str | None = None) -> Callable[[Type[T]], Type[T]]:
+        return sgen_typename(typename=typename, namespace=self._namespace)
 
 
-def sgen_typename(
-    *, typename: Optional[str] = None, namespace: str | None = None, as_annotated: bool = False
-) -> Callable[[Type[T]], Type[T]]:
+def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = None) -> Callable[[Type[T]], Type[T]]:
     def decorator(cls: Type[T]) -> Type[T]:
         _typename = typename or cls.__name__
         _typename = f"{namespace}.{_typename}" if namespace else _typename
-        if isinstance(cls, type) and issubclass(cls, BaseModel) and not as_annotated:
+        if isinstance(cls, type) and issubclass(cls, BaseModel):
             existing = getattr(cls, "model_config", ConfigDict())
             raw_extra = existing.get("json_schema_extra")
             new_extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
             new_extra["x-sgen-typename"] = _typename
             new_config = cast(ConfigDict, {**existing, "json_schema_extra": new_extra})
-            model = create_model(
+            result = create_model(
                 cls.__name__,
                 __base__=cls,
                 __config__=new_config,
@@ -370,10 +385,10 @@ def sgen_typename(
                 __cls_kwargs__={"metaclass": _SgenMeta},
                 __doc__=cls.__doc__,
             )
-            model.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
-            model.__sgen_typename_source__ = True  # type: ignore[attr-defined]
-            return model
+            result.__qualname__ = cls.__qualname__  # type: ignore[attr-defined]
         else:
-            return cast(Type[T], Annotated[cls, Field(json_schema_extra={"x-sgen-typename": _typename})])
+            result = cls  # type: ignore[assignment]
+        result.__sgen_typename__ = _typename  # type: ignore[attr-defined]
+        return cast(Type[T], result)
 
     return decorator

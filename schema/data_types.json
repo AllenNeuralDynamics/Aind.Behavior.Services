@@ -10,7 +10,8 @@
         "boolean"
       ],
       "title": "DataType",
-      "type": "string"
+      "type": "string",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.DataType"
     },
     "EndExperimentPayload": {
       "properties": {
@@ -102,8 +103,7 @@
         "timestamp_source": {
           "$ref": "#/$defs/TimestampSource",
           "default": "null",
-          "description": "The source of the timestamp",
-          "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.TimestampSource"
+          "description": "The source of the timestamp"
         },
         "frame_index": {
           "default": null,
@@ -146,8 +146,7 @@
         "data_type": {
           "$ref": "#/$defs/DataType",
           "default": "null",
-          "description": "The data type of the event",
-          "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.DataType"
+          "description": "The data type of the event"
         },
         "data_type_hint": {
           "default": null,
@@ -193,7 +192,8 @@
         "render"
       ],
       "title": "TimestampSource",
-      "type": "string"
+      "type": "string",
+      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.DataTypes.TimestampSource"
     }
   },
   "x-abstract": "True"
