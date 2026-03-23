@@ -38,7 +38,7 @@ wheels = [
 
 [[package]]
 name = "aind-behavior-services"
-version = "0.13.4"
+version = "0.13.5rc1"
 source = { editable = "." }
 dependencies = [
     { name = "aind-behavior-curriculum" },
