@@ -19,11 +19,29 @@ class Rect(BaseModel):
     height: int = Field(default=0, ge=0, description="Height of the rectangle")
 
 
+class Size(BaseModel):
+    """
+    Represents 2D dimensions with width and height.
+    """
+
+    width: float = Field(default=0, description="Width of the texture")
+    height: float = Field(default=0, description="Height of the texture")
+
+
 class Circle(BaseModel):
     """Represents a circle defined by its center point and radius."""
 
     center: Point2f = Field(default=Point2f(x=0, y=0), description="Center of the circle (px)", validate_default=True)
     radius: float = Field(default=1, ge=0, description="Radius of the circle (px)")
+
+
+class Vector2(BaseModel):
+    """
+    Represents a 2D vector with float coordinates.
+    """
+
+    x: float = Field(default=0, description="X coordinate of the vector")
+    y: float = Field(default=0, description="Y coordinate of the vector")
 
 
 class Vector3(BaseModel):
