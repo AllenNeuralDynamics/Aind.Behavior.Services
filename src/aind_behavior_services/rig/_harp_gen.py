@@ -180,9 +180,14 @@ class HarpAnalogInput(_HarpDeviceBase):
     who_am_i: Literal[1236] = 1236
 
 
+class HarpAudioSwitch(_HarpDeviceBase):
+    device_type: Literal["AudioSwitch"] = "AudioSwitch"
+    who_am_i: Literal[1248] = 1248
+
+
 class HarpRgbArray(_HarpDeviceBase):
     device_type: Literal["RgbArray"] = "RgbArray"
-    who_am_i: Literal[1248] = 1248
+    who_am_i: Literal[1264] = 1264
 
 
 class HarpFlyPad(_HarpDeviceBase):
@@ -195,9 +200,19 @@ class HarpSoundCard(_HarpDeviceBase):
     who_am_i: Literal[1280] = 1280
 
 
+class HarpCurrentDriver(_HarpDeviceBase):
+    device_type: Literal["CurrentDriver"] = "CurrentDriver"
+    who_am_i: Literal[1282] = 1282
+
+
 class HarpSyringePump(_HarpDeviceBase):
     device_type: Literal["SyringePump"] = "SyringePump"
     who_am_i: Literal[1296] = 1296
+
+
+class HarpLaserDriverController(_HarpDeviceBase):
+    device_type: Literal["LaserDriverController"] = "LaserDriverController"
+    who_am_i: Literal[1298] = 1298
 
 
 class HarpNeurophotometricsFP3002(_HarpDeviceBase):
@@ -289,10 +304,13 @@ _HarpDevice = Union[
     HarpVestibularH2,
     HarpLoadCells,
     HarpAnalogInput,
+    HarpAudioSwitch,
     HarpRgbArray,
     HarpFlyPad,
     HarpSoundCard,
+    HarpCurrentDriver,
     HarpSyringePump,
+    HarpLaserDriverController,
     HarpNeurophotometricsFP3002,
     HarpIblBehaviorControl,
     HarpRfidReader,
@@ -343,10 +361,13 @@ __all__ = [
     "HarpVestibularH2",
     "HarpLoadCells",
     "HarpAnalogInput",
+    "HarpAudioSwitch",
     "HarpRgbArray",
     "HarpFlyPad",
     "HarpSoundCard",
+    "HarpCurrentDriver",
     "HarpSyringePump",
+    "HarpLaserDriverController",
     "HarpNeurophotometricsFP3002",
     "HarpIblBehaviorControl",
     "HarpRfidReader",
