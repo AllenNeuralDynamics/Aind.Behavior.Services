@@ -1,0 +1,10 @@
+aind\_behavior\_services.schema package
+=======================================
+
+Module contents
+---------------
+
+.. automodule:: aind_behavior_services.schema
+   :members:
+   :show-inheritance:
+   :undoc-members:
