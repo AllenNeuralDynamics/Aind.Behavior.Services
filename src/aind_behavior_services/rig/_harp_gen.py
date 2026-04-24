@@ -276,6 +276,11 @@ class HarpCuttlefishfip(_HarpDeviceBase):
     who_am_i: Literal[1407] = 1407
 
 
+class HarpDeluxdriver(_HarpDeviceBase):
+    device_type: Literal["deLuxDriver"] = "deLuxDriver"
+    who_am_i: Literal[1410] = 1410
+
+
 _HarpDevice = Union[
     HarpDeviceGeneric,
     HarpHobgoblin,
@@ -322,6 +327,7 @@ _HarpDevice = Union[
     HarpWhiteRabbit,
     HarpEnvironmentSensor,
     HarpCuttlefishfip,
+    HarpDeluxdriver,
 ]
 
 if TYPE_CHECKING:
@@ -379,5 +385,6 @@ __all__ = [
     "HarpWhiteRabbit",
     "HarpEnvironmentSensor",
     "HarpCuttlefishfip",
+    "HarpDeluxdriver",
     "HarpDevice",
 ]
