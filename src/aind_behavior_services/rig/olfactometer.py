@@ -28,14 +28,10 @@ class OlfactometerChannelType(str, Enum):
 class OlfactometerChannelConfig(BaseModel):
     """Configuration for a single olfactometer channel"""
 
-    channel_index: int = Field(title="Odor channel index")
     channel_type: OlfactometerChannelType = Field(
         default=OlfactometerChannelType.ODOR, title="Olfactometer channel type"
     )
     flow_rate_capacity: Literal[100, 1000] = Field(default=100, title="Flow capacity. mL/min")
-    flow_rate: float = Field(
-        default=100, le=100, title="Target flow rate. mL/min. If channel_type == CARRIER, this value is ignored."
-    )
     odorant: Optional[str] = Field(default=None, title="Odorant name")
     odorant_dilution: Optional[float] = Field(default=None, title="Odorant dilution (%v/v)")
 
@@ -43,9 +39,27 @@ class OlfactometerChannelConfig(BaseModel):
 class OlfactometerCalibration(DatedCalibration):
     """Olfactometer device configuration model"""
 
-    channel_config: Dict[OlfactometerChannel, OlfactometerChannelConfig] = Field(
-        default={}, description="Configuration of olfactometer channels"
-    )
+    channel0: Optional[OlfactometerChannelConfig] = Field(default=None, title="Configuration for channel 0")
+    channel1: Optional[OlfactometerChannelConfig] = Field(default=None, title="Configuration for channel 1")
+    channel2: Optional[OlfactometerChannelConfig] = Field(default=None, title="Configuration for channel 2")
+    channel3: Optional[OlfactometerChannelConfig] = Field(default=None, title="Configuration for channel 3")
+
+    def as_dictionary(self) -> Dict[OlfactometerChannel, OlfactometerChannelConfig]:
+        """Return the channel configuration as a dictionary"""
+        return {
+            channel: config
+            for channel in OlfactometerChannel
+            if (config := getattr(self, f"channel{channel.value}")) is not None
+        }
+
+
+class StrictOlfactometerCalibration(OlfactometerCalibration):
+    """Strict olfactometer calibration where all channels must be defined"""
+
+    channel0: OlfactometerChannelConfig = Field(title="Configuration for channel 0")
+    channel1: OlfactometerChannelConfig = Field(title="Configuration for channel 1")
+    channel2: OlfactometerChannelConfig = Field(title="Configuration for channel 2")
+    channel3: OlfactometerChannelConfig = Field(title="Configuration for channel 3")
 
 
 class Olfactometer(HarpOlfactometer):
