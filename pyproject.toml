@@ -37,13 +37,13 @@ Changelog = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/relea
 dev = ['ruff', 'codespell', 'jinja2', 'requests', 'pyyaml']
 
 docs = [
-    'Sphinx<8.4',
-    'furo',
-    'sphinx-jinja',
-    'autodoc_pydantic',
-    'sphinx-jsonschema',
-    'sphinx-copybutton',
-    "sphinx_mdinclude",
+    'mkdocs',
+    'mkdocs-material',
+    'mkdocstrings[python]',
+    'griffe-pydantic',
+    'mkdocs-autorefs>=1.4.4',
+    'griffe-typingdoc>=0.3.1',
+    'pymdown-extensions',
 ]
 
 [project.scripts]
@@ -60,7 +60,7 @@ mccabe = { max-complexity = 14 }
 pydocstyle = { convention = 'google' }
 
 [tool.codespell]
-skip = '.git,*.pdf,*.svg,./bonsai,*.bonsai,./docs/_build,uv.lock'
+skip = '.git,*.pdf,*.svg,./bonsai,*.bonsai,./site,./docs/schema,uv.lock'
 ignore-words-list = 'nd, assertIn'
 
 [tool.uv]

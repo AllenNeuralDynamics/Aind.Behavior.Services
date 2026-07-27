@@ -40,7 +40,7 @@ class _Message(BaseModel, Generic[TPayload]):
     While not marked as abstract, it is intended to be subclassed
     for specific message types with defined payloads.
 
-    Args:
+    Attributes:
         cls_type: The specific message class type identifier (discriminator)
         message_type: The category of message (request, reply, or event)
         protocol_version: The major version of the message protocol being used

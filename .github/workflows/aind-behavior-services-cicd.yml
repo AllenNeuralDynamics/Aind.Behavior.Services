@@ -41,9 +41,9 @@ jobs:
         python-version: [ 3.11, 3.12, 3.13 ]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v8.1.0
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
 
@@ -87,12 +87,12 @@ jobs:
       'github-actions[bot]@users.noreply.github.com'
     name: Create GitHub pre-release
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: main
 
-      - uses: astral-sh/setup-uv@v8.1.0
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
 
@@ -156,12 +156,12 @@ jobs:
       is_prerelease: ${{ steps.check_prerelease.outputs.prerelease }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: main
 
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
 
@@ -245,13 +245,13 @@ jobs:
        !github.event.release.prerelease &&
        startsWith(github.ref, 'refs/tags/v'))
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.ref_name
             }}
 
-      - uses: astral-sh/setup-uv@v8.1.0
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
 
@@ -294,22 +294,22 @@ jobs:
     if: ${{ !github.event.release.prerelease }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v8.1.0
+        uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
 
       - name: Install dependencies
         run: uv sync --group docs
 
-      - name: Build Sphinx documentation
-        run: uv run sphinx-build -b html docs/ _build/html
+      - name: Build MkDocs documentation
+        run: uv run mkdocs build --strict
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/html
+          publish_dir: site
           force_orphan: true
