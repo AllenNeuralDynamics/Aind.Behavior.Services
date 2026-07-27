@@ -113,7 +113,11 @@ extensions = [
     "sphinx_copybutton",
 ]
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+# The docs/knowledge/ tree is an Open Knowledge Format (OKF) bundle: raw
+# markdown with YAML front-matter meant for machine/agent consumption and
+# GitHub browsing, not Sphinx rendering. It is surfaced via knowledge.rst
+# (which links to it on GitHub), so exclude the bundle itself from the build.
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "knowledge/**"]
 
 autosummary_generate = True
 autodoc_typehints = "description"

@@ -8,8 +8,12 @@ Welcome to AIND Behavior Services's documentation!
    :caption: Contents:
 
    self
+   getting_started
    architecture
+   ecosystem
+   examples
    articles
+   knowledge
    api/api
    GitHub Source Code <https://github.com/AllenNeuralDynamics/Aind.Behavior.Services>
 

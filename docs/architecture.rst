@@ -5,6 +5,9 @@ From the point of view of the software, an experiment instance can be seen as a 
 
 This is the main goal of the `aind_behavior_services` framework: to provide a set of tools, patterns and standards to generate, maintain and produce data from behavior experiments.
 
+.. note::
+   This page covers the core architecture. For the ecosystem-wide picture — how ``clabe``, ``contraqctor``, the curriculum stack, and Bonsai/Harp fit together, and how concrete experiments materialize on top of the framework — see the :doc:`knowledge`.
+
 
 Domain-specific language for experiment instantiation
 ==================================================================
@@ -52,20 +55,32 @@ Currently, we approach the use of these three classes in distinct ways:
 Inheriting from these base classes ensures that basic functionality can be provided across tasks and rigs, especially when interacting with databases for parameter storage and retrieval.
 
 
+A composable vocabulary, not a universal schema
+-----------------------------------------------------
+
+A deliberate consequence of this design is that ``aind_behavior_services`` does **not** define a single, fixed schema that every experiment must conform to. There is no universal "behavior experiment" schema, and no expectation that two paradigms share the same ``Rig`` or ``Task`` shape.
+
+Instead, the library provides a set of **composable building blocks** — the ``Rig`` / ``Task`` / ``Session`` base classes, a library of device and calibration models, distribution primitives, common value types, and standardized data-record types — that each experiment assembles into the schema it actually needs. What is standardized is the *vocabulary and the patterns*, not one monolithic document.
+
+This vocabulary is intentionally partial, and is expected to **grow as needed**. When a paradigm requires a device, distribution, or data type that does not yet exist, the intended path is to add that element to the shared library so that others can reuse it, rather than forcing the experiment into an ill-fitting existing shape. Standardization here is therefore emergent and additive: shared where sharing helps, and extended whenever a new experiment calls for it.
+
+
 Concrete implementations
 -----------------------------------------------------
 
 Examples of concrete implementations of these classes can be found in implementations of different behavior tasks:
-   - `Force Foraging <https://github.com/AllenNeuralDynamics/Aind.Behavior.ForceForaging>`_
+   - `VR Foraging <https://github.com/AllenNeuralDynamics/Aind.Behavior.VrForaging>`_ (the most mature reference implementation)
    - `Telekinesis <https://github.com/AllenNeuralDynamics/Aind.Behavior.Telekinesis>`_
-   - `VR Foraging <https://github.com/AllenNeuralDynamics/Aind.Behavior.VrForaging>`_
+   - `Dynamic Foraging <https://github.com/AllenNeuralDynamics/Aind.Behavior.DynamicForaging>`_
+   - `Iso Force <https://github.com/AllenNeuralDynamics/Aind.Behavior.IsoForce>`_
 
 but also physiology data acquisition platforms:
    - `Fip <https://github.com/AllenNeuralDynamics/Aind.Physiology.Fip>`_
 
-and other smaller workflows:
-   - `Olfactometer calibration <https://github.com/AllenNeuralDynamics/Aind.Behavior.Device.Olfactometer>`_
-   - `Water valve calibration <https://github.com/AllenNeuralDynamics/Aind.Behavior.Device.WaterTuner>`_
+and composed experiments that combine several of the above into one coordinated session:
+   - `VR Foraging + Fip <https://github.com/AllenNeuralDynamics/Aind.Experiment.VrForaging-Fip>`_
+
+For a tour of how these repositories relate to one another and to the wider tooling (``clabe``, ``contraqctor``, curricula, Bonsai/Harp), see :doc:`ecosystem`.
 
 
 Tooling

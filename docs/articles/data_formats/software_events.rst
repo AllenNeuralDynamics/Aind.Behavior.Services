@@ -3,7 +3,10 @@ Software Events
 
 Version
 #############
-0.1.0-draft
+0.2.0-draft
+
+.. note::
+    **Changed in 0.2.0-draft** (`#230 <https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/issues/230>`_): ``SoftwareEvent`` files now use the ``.jsonl`` extension (`JSON Lines <https://jsonlines.org/>`_) instead of ``.json``. Each file was already a line-delimited sequence of JSON objects rather than a single JSON document, so ``.json`` was misleading. This is a breaking change at the file-system layer; ingestion tools such as `contraqctor <https://github.com/AllenNeuralDynamics/contraqctor/>`_ abstract the extension away.
 
 Introduction
 ##############
@@ -26,19 +29,19 @@ This data format is used to address some issues / limitations of other formats, 
 Format specification
 ####################################
 
-The ``SoftwareEvent`` can exists as standalone files or part of a larger directory structure. In either case, the file name should be descriptive of the event that it represents (or even match the event name). The extension of the file will always be ``.json``.
+The ``SoftwareEvent`` can exists as standalone files or part of a larger directory structure. In either case, the file name should be descriptive of the event that it represents (or even match the event name). The extension of the file will always be ``.jsonl`` (`JSON Lines <https://jsonlines.org/>`_), reflecting that each file is a line-delimited sequence of JSON objects rather than a single JSON document.
 
 .. code-block:: none
 
     📦SoftwareEvents
-    ┣ 📜Foo.json
-    ┣ 📜Bar.json
+    ┣ 📜Foo.jsonl
+    ┣ 📜Bar.jsonl
     ┣ ...
-    ┗ 📜Baz.json
+    ┗ 📜Baz.jsonl
 
 All ``SoftwareEvent`` files are expected to be demuxed by ``name``. This means that each file should contain a single event type.
 
-Each file will thus simply be a series of lines where each line is a deserialized JSON object with fields given by the :py:class:`~aind_behavior_services.data_types.SoftwareEvent` class.
+Each file will thus simply be a series of lines where each line is a serialized JSON object with fields given by the :py:class:`~aind_behavior_services.data_types.SoftwareEvent` class. This is the `JSON Lines <https://jsonlines.org/>`_ convention: newline-delimited, one complete JSON object per line, so a file can be read and appended to incrementally without parsing the whole document.
 
 Application notes
 #####################
