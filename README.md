@@ -10,6 +10,20 @@ A library for defining and maintaining behavior tasks.
 
 ---
 
+## Documentation & knowledge base
+
+Hosted documentation: <https://allenneuraldynamics.github.io/Aind.Behavior.Services/>
+
+For a structured, progressively-disclosed **knowledge bundle** covering this
+framework and the ecosystem it anchors — the rig/task/session triad,
+schema-first code generation, versioning, data contracts and standards, the
+surrounding tools (`clabe`, `contraqctor`, curriculum, Bonsai/Harp), and how
+concrete experiments materialize on top — see
+[`docs/knowledge/`](docs/knowledge/index.md). It is written for both humans and
+coding agents; start at [`docs/knowledge/overview.md`](docs/knowledge/overview.md).
+
+---
+
 ## Installation
 
 The python package can be installed from pypi using the following command:

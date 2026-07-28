@@ -1,0 +1,134 @@
+site_name: AIND Behavior Services
+site_description: AIND Behavior Services framework documentation
+site_author: Bruno Cruz
+copyright: 2025, Allen Institute for Neural Dynamics
+repo_url: https://github.com/AllenNeuralDynamics/Aind.Behavior.Services
+repo_name: GitHub
+docs_dir: docs
+
+validation:
+  links:
+    not_found: warn
+    absolute_links: warn
+    unrecognized_links: info
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      primary: white
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.instant
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.share
+
+hooks:
+  - docs/hooks.py
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths:
+            - src
+          import:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.pydantic.dev/latest/objects.inv
+          options:
+            extensions:
+              - griffe_typingdoc
+              - griffe_pydantic
+            show_root_heading: true
+            show_root_full_path: false
+            show_if_no_docstring: true
+            inherited_members: true
+            members_order: source
+            separate_signature: true
+            unwrap_annotated: true
+            filters:
+              - "!^_"
+            merge_init_into_class: true
+            docstring_section_style: spacy
+            show_docstring_attributes: true
+            show_docstring_parameters: true
+            signature_crossrefs: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_bases: true
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: "#"
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.extra
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Documentation:
+    - Getting Started: getting_started.md
+    - Architecture: architecture.md
+    - Ecosystem: ecosystem.md
+    - Examples: examples.md
+    - Knowledge Base: knowledge.md
+  - Articles:
+    - articles/index.md
+    - Requirements: articles/requirements.md
+    - Dataset Standards:
+      - Overview: articles/data_standards.md
+      - Core:
+        - Conventions: articles/core/conventions.md
+        - Dataset Structure: articles/core/dataset_structure.md
+      - Data Formats:
+        - Harp: articles/data_formats/harp.md
+        - Software Events: articles/data_formats/software_events.md
+  - API Reference:
+    - Overview: api/index.md
+    - Schema: api/schema.md
+    - Session: api/session.md
+    - Rig: api/rig.md
+    - Task: api/task.md
+    - Data Types: api/data_types.md
+    - Message Protocol: api/message_protocol.md
+    - Utils: api/utils.md
+  # JSON Schemas section is appended dynamically by docs/hooks.py

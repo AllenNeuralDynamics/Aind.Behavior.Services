@@ -67,8 +67,11 @@ coverage.xml
 .pytest_cache/
 cover/
 
-# Sphinx documentation
-docs/_build/
+# MkDocs documentation
+site/
+# Generated docs files (regenerated on every mkdocs build)
+docs/index.md
+docs/schema/
 
 # Jupyter Notebook
 .ipynb_checkpoints
