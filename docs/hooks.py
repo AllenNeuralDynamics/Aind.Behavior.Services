@@ -44,9 +44,7 @@ def _copy_readme() -> None:
     # The knowledge/ tree is intentionally excluded from the rendered site and
     # surfaced on GitHub instead. Rewrite the README's repo-relative links to it
     # into absolute GitHub URLs so they resolve on the site (and still on GitHub).
-    gh_blob = (
-        "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/blob/main/docs/knowledge/"
-    )
+    gh_blob = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/blob/main/docs/knowledge/"
     text = text.replace("](docs/knowledge/", f"]({gh_blob}")
     index.write_text(text, encoding="utf-8")
     log.info("Copied README.md -> docs/index.md")
@@ -57,7 +55,7 @@ def _generate_schemas() -> None:
     try:
         if str(SRC_DIR) not in sys.path:
             sys.path.insert(0, str(SRC_DIR))
-        from _generators import json_schema  # noqa: PLC0415
+        from _generators import json_schema
 
         json_schema.main()
         log.info("Regenerated JSON schemas -> schema/")
