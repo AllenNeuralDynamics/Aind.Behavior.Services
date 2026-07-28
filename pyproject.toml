@@ -34,7 +34,7 @@ Changelog = "https://github.com/AllenNeuralDynamics/Aind.Behavior.Services/relea
 
 [dependency-groups]
 
-dev = ['ruff', 'codespell', 'jinja2', 'requests', 'pyyaml']
+dev = ['ruff', 'codespell', 'jinja2', 'requests', 'pyyaml', 'pytest']
 
 docs = [
     'mkdocs',
