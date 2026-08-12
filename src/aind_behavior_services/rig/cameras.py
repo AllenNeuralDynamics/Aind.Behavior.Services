@@ -230,7 +230,7 @@ class SpinnakerCamera(Device):
     serial_number: str = Field(description="Camera serial number")
     binning: int = Field(default=1, ge=1, description="Binning")
     color_processing: Literal["Default", "NoColorProcessing"] = Field(default="Default", description="Color processing")
-    exposure: int = Field(default=1000, ge=100, description="Exposure time")
+    exposure: int = Field(default=1000, ge=100, description="Exposure time (microseconds)")
     gain: float = Field(default=0, ge=0, description="Gain")
     gamma: Optional[float] = Field(default=None, ge=0, description="Gamma. If None, will disable gamma correction.")
     adc_bit_depth: Optional[SpinnakerCameraAdcBitDepth] = Field(
