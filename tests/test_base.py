@@ -14,7 +14,7 @@ class DefaultAwareDatetimeTest(unittest.TestCase):
     def setUp(self):
         self.type_adapter = TypeAdapter(DefaultAwareDatetime)
         self.datetime_naive = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=None)
-        self.datetime_utc = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=datetime.timezone.utc)
+        self.datetime_utc = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=datetime.UTC)
         self.datetime_pst = datetime.datetime(
             2021, 1, 1, 0, 0, 0, 0, tzinfo=datetime.timezone(-datetime.timedelta(hours=8))
         )
@@ -26,7 +26,7 @@ class DefaultAwareDatetimeTest(unittest.TestCase):
 
     def test_timezone_utc(self):
         dt = self.type_adapter.validate_python(self.datetime_utc)
-        self.assertEqual(dt.tzinfo, datetime.timezone.utc)
+        self.assertEqual(dt.tzinfo, datetime.UTC)
         self.assertEqual(dt, self.datetime_utc)
         self.assertEqual(self.type_adapter.validate_strings(format_datetime(self.datetime_utc)), dt)
 

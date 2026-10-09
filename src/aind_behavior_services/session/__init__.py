@@ -10,18 +10,18 @@ from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedMod
 
 class Session(SchemaVersionedModel):
     version: Literal[__semver__] = __semver__
-    experiment: Optional[str] = Field(default=None, description="Name of the experiment")
-    experimenter: List[str] = Field(default=[], description="Name of the experimenter")
+    experiment: str | None = Field(default=None, description="Name of the experiment")
+    experimenter: list[str] = Field(default=[], description="Name of the experimenter")
     date: DefaultAwareDatetime = Field(
         default_factory=aind_behavior_services.utils.utcnow, description="Date of the experiment", validate_default=True
     )
-    session_name: Optional[str] = Field(
+    session_name: str | None = Field(
         default=None,
         description="Name of the session. This will be used to create a folder in the root path. If not provided, it will be generated using subject and date.",
     )
     subject: str = Field(description="Name of the subject")
-    notes: Optional[str] = Field(default=None, description="Notes about the experiment")
-    commit_hash: Optional[str] = Field(default=None, description="Commit hash of the repository")
+    notes: str | None = Field(default=None, description="Notes about the experiment")
+    commit_hash: str | None = Field(default=None, description="Commit hash of the repository")
     allow_dirty_repo: bool = Field(default=False, description="Allow running from a dirty repository")
     skip_hardware_validation: bool = Field(default=False, description="Skip hardware validation")
 

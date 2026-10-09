@@ -48,13 +48,15 @@ A concrete experiment materializes the triad like this (paraphrased from the exp
 from aind_behavior_services.rig import Rig
 from aind_behavior_services.task import Task, TaskParameters
 
-class AindBehaviorTelekinesisRig(Rig):          # subclass Rig, add devices
+
+class AindBehaviorTelekinesisRig(Rig):  # subclass Rig, add devices
     ...
 
-class AindTelekinesisTaskParameters(TaskParameters):
-    ...
 
-class AindBehaviorTelekinesisTaskLogic(Task):   # subclass Task
+class AindTelekinesisTaskParameters(TaskParameters): ...
+
+
+class AindBehaviorTelekinesisTaskLogic(Task):  # subclass Task
     task_parameters: AindTelekinesisTaskParameters
 ```
 

@@ -1,5 +1,5 @@
 import enum
-from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, TypeVar, Union
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
 
@@ -53,11 +53,11 @@ class _Message(BaseModel, Generic[TPayload]):
 
     message_type: MessageType
     protocol_version: Literal[PROTOCOL_VERSION] = PROTOCOL_VERSION
-    timestamp: Optional[AwareDatetime] = Field(description="The timestamp of the message")
+    timestamp: AwareDatetime | None = Field(description="The timestamp of the message")
     payload: SerializeAsAny[TPayload] = Field(description="The payload of the message")
-    process_id: Optional[str] = Field(description="Process that created the message")
-    hostname: Optional[str] = Field(description="Hostname that created the message")
-    rig_name: Optional[str] = Field(description="Rig name that created the message")
+    process_id: str | None = Field(description="Process that created the message")
+    hostname: str | None = Field(description="Hostname that created the message")
+    rig_name: str | None = Field(description="Rig name that created the message")
 
 
 # ================================================================================
@@ -116,8 +116,8 @@ class LogPayload(BaseModel):
     payload_type: Literal["LogPayload"] = "LogPayload"
     message: str = Field(description="The message of the log")
     level: LogLevel = Field(default=LogLevel.DEBUG, description="The level of the log message")
-    context: Optional[SerializeAsAny[Any]] = Field(default=None, description="Additional context for the log message")
-    application_version: Optional[str] = Field(default=None, description="The version of the application")
+    context: SerializeAsAny[Any] | None = Field(default=None, description="Additional context for the log message")
+    application_version: str | None = Field(default=None, description="The version of the application")
 
 
 @_sgen_namespace.sgen_typename()
@@ -171,7 +171,7 @@ class HeartbeatPayload(BaseModel):
     """
 
     payload_type: Literal["HeartbeatPayload"] = "HeartbeatPayload"
-    context: SerializeAsAny[Optional[Any]] = Field(
+    context: SerializeAsAny[Any | None] = Field(
         default=None, description="Additional context for the heartbeat message."
     )
     status: HeartbeatStatus = Field(description="The status of the heartbeat message")
@@ -189,7 +189,7 @@ else:
     @_sgen_namespace.sgen_typename()
     class RegisteredPayload(RootModel):
         root: Annotated[
-            Union[LogPayload, HeartbeatPayload],
+            LogPayload | HeartbeatPayload,
             Field(discriminator="payload_type"),
         ]
         model_config: ConfigDict = ConfigDict(json_schema_extra={"x-abstract": True})

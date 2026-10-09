@@ -1,6 +1,5 @@
 import unittest
 from enum import StrEnum
-from typing import Union
 
 from pydantic import BaseModel, ConfigDict, RootModel
 from typing_extensions import TypeAliasType
@@ -242,7 +241,7 @@ class SchemaTests(unittest.TestCase):
         class B(BaseModel):
             y: str
 
-        MyAlias = sgen_typename(typename="My.Alias")(TypeAliasType("MyAlias", Union[A, B]))
+        MyAlias = sgen_typename(typename="My.Alias")(TypeAliasType("MyAlias", A | B))
 
         class Container(BaseModel):
             val: MyAlias
@@ -259,7 +258,7 @@ class SchemaTests(unittest.TestCase):
         class B(BaseModel):
             y: str
 
-        MyAlias = sgen_typename(typename="My.Alias")(TypeAliasType("MyAlias", Union[A, B]))
+        MyAlias = sgen_typename(typename="My.Alias")(TypeAliasType("MyAlias", A | B))
 
         class Container(BaseModel):
             val: MyAlias
@@ -278,7 +277,7 @@ class SchemaTests(unittest.TestCase):
         class B(BaseModel):
             y: str
 
-        MyAlias = ns.sgen_typename()(TypeAliasType("MyAlias", Union[A, B]))
+        MyAlias = ns.sgen_typename()(TypeAliasType("MyAlias", A | B))
 
         class Container(BaseModel):
             val: MyAlias

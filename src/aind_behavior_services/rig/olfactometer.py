@@ -1,5 +1,5 @@
 from enum import Enum, IntEnum
-from typing import Dict, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -36,14 +36,14 @@ class OlfactometerChannelConfig(BaseModel):
     flow_rate: float = Field(
         default=100, le=100, title="Target flow rate. mL/min. If channel_type == CARRIER, this value is ignored."
     )
-    odorant: Optional[str] = Field(default=None, title="Odorant name")
-    odorant_dilution: Optional[float] = Field(default=None, title="Odorant dilution (%v/v)")
+    odorant: str | None = Field(default=None, title="Odorant name")
+    odorant_dilution: float | None = Field(default=None, title="Odorant dilution (%v/v)")
 
 
 class OlfactometerCalibration(DatedCalibration):
     """Olfactometer device configuration model"""
 
-    channel_config: Dict[OlfactometerChannel, OlfactometerChannelConfig] = Field(
+    channel_config: dict[OlfactometerChannel, OlfactometerChannelConfig] = Field(
         default={}, description="Configuration of olfactometer channels"
     )
 

@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from aind_behavior_services.session import Session
 
@@ -16,7 +16,7 @@ class TestSession(unittest.TestCase):
         self.assertEqual(session.session_name, "custom_session")
 
     def test_custom_date(self):
-        custom_date = datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc)
+        custom_date = datetime(2024, 1, 15, 10, 30, 0, tzinfo=UTC)
         session = Session(subject="mouse001", date=custom_date)
         self.assertEqual(session.date, custom_date)
 

@@ -1,5 +1,5 @@
 import logging
-from typing import ClassVar, List
+from typing import ClassVar
 
 from pydantic import Field, field_validator
 
@@ -22,7 +22,7 @@ class TreadmillCalibration(DatedCalibration):
     wheel_diameter: float = Field(default=15, ge=0, description="Wheel diameter")
     pulses_per_revolution: int = Field(default=28800, ge=1, description="Pulses per revolution")
     invert_direction: bool = Field(default=False, description="Invert direction")
-    brake_lookup_calibration: List[ValuePair] = Field(
+    brake_lookup_calibration: list[ValuePair] = Field(
         default=[[0, 0], [1, 65535]],
         validate_default=True,
         min_length=2,
@@ -31,7 +31,7 @@ class TreadmillCalibration(DatedCalibration):
 
     @field_validator("brake_lookup_calibration", mode="after")
     @classmethod
-    def validate_brake_lookup_calibration(cls, value: List[ValuePair]) -> List[ValuePair]:
+    def validate_brake_lookup_calibration(cls, value: list[ValuePair]) -> list[ValuePair]:
         for pair in value:
             if pair[0] < cls._BRAKE_INPUT_MIN or pair[0] > cls._BRAKE_INPUT_MAX:
                 raise ValueError(f"Brake input value must be between {cls._BRAKE_INPUT_MIN} and {cls._BRAKE_INPUT_MAX}")

@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 from pydantic import BaseModel, Field, SerializeAsAny
 
@@ -12,13 +11,13 @@ class Device(BaseModel):
     """
 
     device_type: str = Field(description="Device type")
-    calibration: Optional[SerializeAsAny[BaseModel]] = Field(default=None, description="Calibration for the device.")
+    calibration: SerializeAsAny[BaseModel] | None = Field(default=None, description="Calibration for the device.")
 
 
 class DatedCalibration(BaseModel):
     """Base model for dated calibrations."""
 
-    date: Optional[DefaultAwareDatetime] = Field(default=None, description="Date of the calibration")
+    date: DefaultAwareDatetime | None = Field(default=None, description="Date of the calibration")
 
 
 class Rig(SchemaVersionedModel):

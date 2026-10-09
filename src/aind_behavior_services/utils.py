@@ -2,11 +2,12 @@ import datetime
 import logging
 import os
 import subprocess
+from collections.abc import Iterable
 from os import PathLike
 from pathlib import Path
 from string import capwords
 from subprocess import CompletedProcess
-from typing import Dict, Iterable, List, Optional, Tuple, Type, TypeVar, Union, cast, get_args
+from typing import TypeVar, Union, cast, get_args
 
 import pydantic
 from pydantic import BaseModel
@@ -72,8 +73,8 @@ def _build_bonsai_process_command(
     bonsai_exe: PathLike | str = "bonsai/bonsai.exe",
     is_editor_mode: bool = True,
     is_start_flag: bool = True,
-    layout: Optional[PathLike | str] = None,
-    additional_properties: Optional[Dict[str, str]] = None,
+    layout: PathLike | str | None = None,
+    additional_properties: dict[str, str] | None = None,
 ) -> str:
     output_cmd: str = f'"{bonsai_exe}" "{workflow_file}"'
     if is_editor_mode:
@@ -96,10 +97,10 @@ def run_bonsai_process(
     bonsai_exe: PathLike | str = "bonsai/bonsai.exe",
     is_editor_mode: bool = True,
     is_start_flag: bool = True,
-    layout: Optional[PathLike | str] = None,
-    additional_properties: Optional[Dict[str, str]] = None,
-    cwd: Optional[PathLike | str] = None,
-    timeout: Optional[float] = None,
+    layout: PathLike | str | None = None,
+    additional_properties: dict[str, str] | None = None,
+    cwd: PathLike | str | None = None,
+    timeout: float | None = None,
     print_cmd: bool = False,
 ) -> CompletedProcess:
     if not Path(bonsai_exe).exists():
@@ -129,11 +130,11 @@ def open_bonsai_process(
     bonsai_exe: PathLike | str = "bonsai/bonsai.exe",
     is_editor_mode: bool = True,
     is_start_flag: bool = True,
-    layout: Optional[PathLike | str] = None,
-    additional_properties: Optional[Dict[str, str]] = None,
-    log_file_name: Optional[str] = None,
-    cwd: Optional[PathLike | str] = None,
-    creation_flags: Optional[int] = None,
+    layout: PathLike | str | None = None,
+    additional_properties: dict[str, str] | None = None,
+    log_file_name: str | None = None,
+    cwd: PathLike | str | None = None,
+    creation_flags: int | None = None,
     print_cmd: bool = False,
 ) -> subprocess.Popen:
     output_cmd = _build_bonsai_process_command(
@@ -179,7 +180,7 @@ def now() -> datetime.datetime:
 
 def utcnow() -> datetime.datetime:
     """Returns the current time as a timezone aware datetime in UTC."""
-    return datetime.datetime.now(datetime.timezone.utc)
+    return datetime.datetime.now(datetime.UTC)
 
 
 def tznow() -> datetime.datetime:
@@ -192,20 +193,20 @@ def model_from_json_file(json_path: os.PathLike | str, model: type[TModel]) -> T
         return model.model_validate_json(file.read())
 
 
-ISearchable = Union[pydantic.BaseModel, Dict, List]
+ISearchable = Union[pydantic.BaseModel, dict, list]
 _ISearchableTypeChecker = tuple(get_args(ISearchable))  # pre-compute for performance
 
 
 def get_fields_of_type(
     searchable: ISearchable,
-    target_type: Type[T],
+    target_type: type[T],
     *,
     recursive: bool = True,
     stop_recursion_on_type: bool = True,
-) -> List[Tuple[Optional[str], T]]:
+) -> list[tuple[str | None, T]]:
     _iterable: Iterable
     _is_type: bool
-    result: List[Tuple[Optional[str], T]] = []
+    result: list[tuple[str | None, T]] = []
 
     if isinstance(searchable, dict):
         _iterable = searchable.items()
@@ -233,7 +234,7 @@ def get_fields_of_type(
     return result
 
 
-def get_commit_hash(repository: Optional[PathLike] = None) -> str:
+def get_commit_hash(repository: PathLike | None = None) -> str:
     """Get the commit hash of the repository."""
     import git
 

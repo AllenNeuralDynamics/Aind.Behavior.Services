@@ -61,9 +61,7 @@ from aind_behavior_telekinesis import __semver__
 
 def scalar_value(value: float) -> distributions.Scalar:
     """Build a fixed (scalar) distribution."""
-    return distributions.Scalar(
-        distribution_parameters=distributions.ScalarDistributionParameter(value=value)
-    )
+    return distributions.Scalar(distribution_parameters=distributions.ScalarDistributionParameter(value=value))
 
 
 class Action(BaseModel):
@@ -97,6 +95,7 @@ import os
 
 from aind_behavior_services.session import Session
 
+
 def mock_session() -> Session:
     return Session(
         date=datetime.datetime.now(tz=datetime.timezone.utc),
@@ -106,6 +105,7 @@ def mock_session() -> Session:
         allow_dirty_repo=True,
         skip_hardware_validation=False,
     )
+
 
 def main(path_seed: str = "./local/{schema}.json"):
     models = [mock_task_logic(), mock_session(), mock_rig()]
@@ -154,6 +154,7 @@ from aind_behavior_services.session import Session
 
 import aind_behavior_telekinesis.rig
 import aind_behavior_telekinesis.task_logic
+
 
 def main():
     models = [
@@ -204,7 +205,9 @@ async def telekinesis_experiment(launcher: Launcher) -> None:
     bonsai_app = AindBehaviorServicesBonsaiApp(
         workflow=Path(r"./src/main.bonsai"),
         temp_directory=launcher.temp_dir,
-        rig=rig, session=session, task=task_logic,
+        rig=rig,
+        session=session,
+        task=task_logic,
     )
     await bonsai_app.run_async()
     launcher.copy_logs()
@@ -246,7 +249,9 @@ from contraqctor.contract.csv import Csv
 
 root = Path(r"path_to_data")
 my_dataset = Dataset(
-    name="my_dataset", version="1.0.0", description="My dataset",
+    name="my_dataset",
+    version="1.0.0",
+    description="My dataset",
     data_streams=[
         DataStreamCollection(
             name="Behavior",
@@ -254,7 +259,8 @@ my_dataset = Dataset(
                 HarpDevice(
                     name="HarpBehavior",
                     reader_params=HarpDevice.make_params(
-                        path=root / "behavior/Behavior.harp", device_yml_hint=DeviceYmlByFile(),
+                        path=root / "behavior/Behavior.harp",
+                        device_yml_hint=DeviceYmlByFile(),
                     ),
                 ),
                 SoftwareEvents(

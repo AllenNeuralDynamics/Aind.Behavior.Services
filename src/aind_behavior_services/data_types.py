@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Any, Generic, Literal, Optional, TypeVar
+from typing import Any, Generic, Literal, TypeVar
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, SerializeAsAny
 
@@ -38,20 +38,20 @@ class SoftwareEvent(BaseModel, Generic[TData]):
     """
 
     name: str = Field(description="The name of the event")
-    timestamp: Optional[float] = Field(default=None, description="The timestamp of the event")
+    timestamp: float | None = Field(default=None, description="The timestamp of the event")
     timestamp_source: TimestampSource = Field(default=TimestampSource.NULL, description="The source of the timestamp")
-    frame_index: Optional[int] = Field(default=None, ge=0, description="The frame index of the event")
-    frame_timestamp: Optional[float] = Field(default=None, description="The timestamp of the frame")
-    data: SerializeAsAny[Optional[TData]] = Field(default=None, description="The data of the event")
+    frame_index: int | None = Field(default=None, ge=0, description="The frame index of the event")
+    frame_timestamp: float | None = Field(default=None, description="The timestamp of the frame")
+    data: SerializeAsAny[TData | None] = Field(default=None, description="The data of the event")
     data_type: DataType = Field(default=DataType.NULL, description="The data type of the event")
-    data_type_hint: Optional[str] = Field(default=None, description="The data type hint of the event")
+    data_type_hint: str | None = Field(default=None, description="The data type hint of the event")
 
 
 @_sgen_namespace.sgen_typename()
 class RenderSynchState(BaseModel):
-    sync_quad_value: Optional[float] = Field(default=None, ge=0, le=1, description="The synchronization quad value")
-    frame_index: Optional[int] = Field(default=None, ge=0, description="The frame index of the event")
-    frame_timestamp: Optional[float] = Field(default=None, ge=0, description="The timestamp of the frame")
+    sync_quad_value: float | None = Field(default=None, ge=0, le=1, description="The synchronization quad value")
+    frame_index: int | None = Field(default=None, ge=0, description="The frame index of the event")
+    frame_timestamp: float | None = Field(default=None, ge=0, description="The timestamp of the frame")
 
 
 @_sgen_namespace.sgen_typename()

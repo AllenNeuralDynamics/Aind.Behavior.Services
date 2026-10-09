@@ -76,7 +76,7 @@ class TestRegisteredMessages(unittest.TestCase):
         log_payload = LogPayload(message="Serialization test", level=LogLevel.DEBUG)
         message = RegisteredMessages(
             message_type=MessageType.REQUEST,
-            timestamp=datetime.datetime.now(datetime.timezone.utc),
+            timestamp=datetime.datetime.now(datetime.UTC),
             payload=log_payload,
             process_id="test_process",
             hostname="test_host",

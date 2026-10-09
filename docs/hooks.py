@@ -13,7 +13,7 @@ import logging
 import shutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 log = logging.getLogger("mkdocs.hooks")
 
@@ -25,7 +25,7 @@ SCHEMA_DOCS_DIR = DOCS_DIR / "schema"
 SCHEMAS_LABEL = "JSON Schemas"
 
 
-def on_pre_build(config: Dict[str, Any], **kwargs) -> None:
+def on_pre_build(config: dict[str, Any], **kwargs) -> None:
     """MkDocs pre-build hook."""
     _copy_readme()
     _generate_schemas()
@@ -63,7 +63,7 @@ def _generate_schemas() -> None:
         log.warning(f"Skipping schema regeneration (using committed schema/): {e}")
 
 
-def _render_schema_pages() -> List[Dict[str, str]]:
+def _render_schema_pages() -> list[dict[str, str]]:
     """Render each schema/*.json as a Markdown page and return nav entries.
 
     Follows the vr-foraging convention: a download button plus the raw JSON in a
@@ -76,7 +76,7 @@ def _render_schema_pages() -> List[Dict[str, str]]:
 
     SCHEMA_DOCS_DIR.mkdir(parents=True, exist_ok=True)
 
-    nav_entries: List[Dict[str, str]] = []
+    nav_entries: list[dict[str, str]] = []
     for json_file in sorted(SCHEMA_SRC.glob("*.json")):
         stem = json_file.stem
         title = stem.replace("_", " ").title()
@@ -102,9 +102,9 @@ def _render_schema_pages() -> List[Dict[str, str]]:
     return nav_entries
 
 
-def _inject_nav(config: Dict[str, Any], schema_nav: List[Dict[str, str]]) -> None:
+def _inject_nav(config: dict[str, Any], schema_nav: list[dict[str, str]]) -> None:
     """Append (or replace) the JSON Schemas section in the MkDocs nav."""
-    nav: List[Any] = config.get("nav") or []
+    nav: list[Any] = config.get("nav") or []
     nav = [item for item in nav if not (isinstance(item, dict) and SCHEMAS_LABEL in item)]
     nav.append({SCHEMAS_LABEL: schema_nav})
     config["nav"] = nav

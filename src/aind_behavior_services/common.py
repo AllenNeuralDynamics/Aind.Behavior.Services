@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 
 from pydantic import BaseModel, Field
 
@@ -52,6 +52,6 @@ class Vector3(BaseModel):
     z: float = Field(default=0, description="Z coordinate of the vector")
 
 
-ValuePair = Annotated[List[float], Field(min_length=2, max_length=2)]
+ValuePair = Annotated[list[float], Field(min_length=2, max_length=2)]
 
-LookUpTable = Annotated[List[ValuePair], Field(min_length=2)]
+LookUpTable = Annotated[list[ValuePair], Field(min_length=2)]

@@ -41,7 +41,7 @@ def main():
     environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(current_directory, "templates")))
     template = environment.get_template("harp.j2")
 
-    template.stream(generation_time=datetime.datetime.now(datetime.timezone.utc), boards=boards).dump(
+    template.stream(generation_time=datetime.datetime.now(datetime.UTC), boards=boards).dump(
         os.path.join(current_directory, "../../src/aind_behavior_services/rig/_harp_gen.py")
     )
 
