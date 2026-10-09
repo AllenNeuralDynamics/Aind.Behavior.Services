@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -22,7 +22,7 @@ wheels = [
 
 [[package]]
 name = "aind-behavior-services"
-version = "0.13.8"
+version = "0.13.9"
 source = { editable = "." }
 dependencies = [
     { name = "aind-behavior-curriculum" },
