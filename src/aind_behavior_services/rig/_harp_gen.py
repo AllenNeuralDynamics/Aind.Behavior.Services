@@ -1,6 +1,6 @@
 # Auto-generated code. Do not edit manually.
 
-from typing import TYPE_CHECKING, Annotated, Literal, Union
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import TypeAliasType
@@ -26,7 +26,7 @@ class ConnectedClockOutput(BaseModel):
 
 
 def _assert_unique_output_channels(outputs: list[ConnectedClockOutput]) -> list[ConnectedClockOutput]:
-    channels = set([ch.output_channel for ch in outputs])
+    channels = {ch.output_channel for ch in outputs}
     if len(channels) != len(outputs):
         raise ValueError("Output channels must be unique")
     return outputs
@@ -286,55 +286,55 @@ class HarpQuac(_HarpDeviceBase):
     who_am_i: Literal[1411] = 1411
 
 
-_HarpDevice = Union[
-    HarpDeviceGeneric,
-    HarpHobgoblin,
-    HarpUSBHub,
-    HarpPoke,
-    HarpMultiPwmGenerator,
-    HarpWear,
-    HarpWearBaseStationGen2,
-    HarpDriver12Volts,
-    HarpLedController,
-    HarpSynchronizer,
-    HarpInputExpander,
-    HarpOutputExpander,
-    HarpSimpleAnalogGenerator,
-    HarpStepperDriver,
-    HarpArchimedes,
-    HarpOlfactometer,
-    HarpClockSynchronizer,
-    HarpTimestampGeneratorGen1,
-    HarpTimestampGeneratorGen3,
-    HarpCameraController,
-    HarpCameraControllerGen2,
-    HarpPyControlAdapter,
-    HarpBehavior,
-    HarpVestibularH1,
-    HarpVestibularH2,
-    HarpLoadCells,
-    HarpAnalogInput,
-    HarpAudioSwitch,
-    HarpRgbArray,
-    HarpFlyPad,
-    HarpSoundCard,
-    HarpCurrentDriver,
-    HarpSyringePump,
-    HarpLaserDriverController,
-    HarpNeurophotometricsFP3002,
-    HarpIblBehaviorControl,
-    HarpRfidReader,
-    HarpPluma,
-    HarpLicketySplit,
-    HarpSniffDetector,
-    HarpTreadmill,
-    HarpCuttlefish,
-    HarpWhiteRabbit,
-    HarpEnvironmentSensor,
-    HarpCuttlefishfip,
-    HarpDeluxdriver,
-    HarpQuac,
-]
+_HarpDevice = (
+    HarpDeviceGeneric
+    | HarpHobgoblin
+    | HarpUSBHub
+    | HarpPoke
+    | HarpMultiPwmGenerator
+    | HarpWear
+    | HarpWearBaseStationGen2
+    | HarpDriver12Volts
+    | HarpLedController
+    | HarpSynchronizer
+    | HarpInputExpander
+    | HarpOutputExpander
+    | HarpSimpleAnalogGenerator
+    | HarpStepperDriver
+    | HarpArchimedes
+    | HarpOlfactometer
+    | HarpClockSynchronizer
+    | HarpTimestampGeneratorGen1
+    | HarpTimestampGeneratorGen3
+    | HarpCameraController
+    | HarpCameraControllerGen2
+    | HarpPyControlAdapter
+    | HarpBehavior
+    | HarpVestibularH1
+    | HarpVestibularH2
+    | HarpLoadCells
+    | HarpAnalogInput
+    | HarpAudioSwitch
+    | HarpRgbArray
+    | HarpFlyPad
+    | HarpSoundCard
+    | HarpCurrentDriver
+    | HarpSyringePump
+    | HarpLaserDriverController
+    | HarpNeurophotometricsFP3002
+    | HarpIblBehaviorControl
+    | HarpRfidReader
+    | HarpPluma
+    | HarpLicketySplit
+    | HarpSniffDetector
+    | HarpTreadmill
+    | HarpCuttlefish
+    | HarpWhiteRabbit
+    | HarpEnvironmentSensor
+    | HarpCuttlefishfip
+    | HarpDeluxdriver
+    | HarpQuac
+)
 
 if TYPE_CHECKING:
     HarpDevice = _HarpDevice
