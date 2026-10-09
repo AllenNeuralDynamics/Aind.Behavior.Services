@@ -2,7 +2,6 @@ import logging
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Type
 
 from pydantic import BaseModel
 
@@ -13,10 +12,12 @@ from aind_behavior_services.schema import export_schema
 from aind_behavior_services.session import Session
 from aind_behavior_services.utils import pascal_to_snake_case
 
+logger = logging.getLogger(__name__)
+
 SCHEMA_ROOT = Path("./schema")
 
 
-def _write_json(schema_path: os.PathLike, output_model_name: str, model: Type[BaseModel], **extra_kwargs) -> None:
+def _write_json(schema_path: os.PathLike, output_model_name: str, model: type[BaseModel], **extra_kwargs) -> None:
     with open(os.path.join(schema_path, f"{output_model_name}.json"), "w", encoding="utf-8") as f:
         json_model = export_schema(model, **extra_kwargs)
         f.write(json_model)
@@ -25,7 +26,7 @@ def _write_json(schema_path: os.PathLike, output_model_name: str, model: Type[Ba
 @dataclass
 class ToGenerateJsonSchema:
     model_name: str
-    model: Type[BaseModel]
+    model: type[BaseModel]
     remove_root: bool = True
 
 
@@ -38,7 +39,7 @@ def main():
     )
 
     if not SCHEMA_ROOT.exists():
-        logging.info(f"Creating schema root directory at {SCHEMA_ROOT}")
+        logger.info(f"Creating schema root directory at {SCHEMA_ROOT}")
         SCHEMA_ROOT.mkdir(parents=True, exist_ok=True)
     for m in models:
         _write_json(SCHEMA_ROOT, pascal_to_snake_case(m.model_name), m.model, remove_root=m.remove_root)

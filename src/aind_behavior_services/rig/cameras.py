@@ -1,5 +1,5 @@
 from enum import IntEnum, auto
-from typing import TYPE_CHECKING, Annotated, Dict, Generic, Literal, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Annotated, Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import TypeAliasType
@@ -49,10 +49,10 @@ class VideoWriterOpenCv(BaseModel):
 
 
 if TYPE_CHECKING:
-    VideoWriter = Union[VideoWriterFfmpeg, VideoWriterOpenCv]
+    VideoWriter = VideoWriterFfmpeg | VideoWriterOpenCv
 else:
     VideoWriter = TypeAliasType(
-        "VideoWriter", Annotated[Union[VideoWriterFfmpeg, VideoWriterOpenCv], Field(discriminator="video_writer_type")]
+        "VideoWriter", Annotated[VideoWriterFfmpeg | VideoWriterOpenCv, Field(discriminator="video_writer_type")]
     )
 
 
@@ -61,7 +61,7 @@ class WebCamera(Device):
 
     device_type: Literal["WebCamera"] = Field(default="WebCamera")
     index: int = Field(default=0, ge=0, description="Camera index")
-    video_writer: Optional[VideoWriter] = Field(
+    video_writer: VideoWriter | None = Field(
         default=None, description="Video writer. If not provided, no video will be saved."
     )
 
@@ -232,30 +232,29 @@ class SpinnakerCamera(Device):
     color_processing: Literal["Default", "NoColorProcessing"] = Field(default="Default", description="Color processing")
     exposure: int = Field(default=1000, ge=100, description="Exposure time (microseconds)")
     gain: float = Field(default=0, ge=0, description="Gain")
-    gamma: Optional[float] = Field(default=None, ge=0, description="Gamma. If None, will disable gamma correction.")
-    adc_bit_depth: Optional[SpinnakerCameraAdcBitDepth] = Field(
+    gamma: float | None = Field(default=None, ge=0, description="Gamma. If None, will disable gamma correction.")
+    adc_bit_depth: SpinnakerCameraAdcBitDepth | None = Field(
         default=SpinnakerCameraAdcBitDepth.ADC8BIT, description="ADC bit depth. If None will be left as default."
     )
-    pixel_format: Optional[SpinnakerCameraPixelFormat] = Field(
+    pixel_format: SpinnakerCameraPixelFormat | None = Field(
         default=SpinnakerCameraPixelFormat.MONO8, description="Pixel format. If None will be left as default."
     )
     region_of_interest: Rect = Field(
         default=Rect(height=0, width=0, x=0, y=0), description="Region of interest", validate_default=True
     )
-    video_writer: Optional[VideoWriter] = Field(
+    video_writer: VideoWriter | None = Field(
         default=None, description="Video writer. If not provided, no video will be saved."
     )
 
     @field_validator("region_of_interest")
     @classmethod
     def validate_roi(cls, v: Rect) -> Rect:
-        if v.width == 0 or v.height == 0:
-            if any([x != 0 for x in [v.width, v.height, v.x, v.y]]):
-                raise ValueError("If width or height is 0, all other values must be 0")
+        if (v.width == 0 or v.height == 0) and any(x != 0 for x in [v.width, v.height, v.x, v.y]):
+            raise ValueError("If width or height is 0, all other values must be 0")
         return v
 
 
-CameraTypes = Union[WebCamera, SpinnakerCamera]
+CameraTypes = WebCamera | SpinnakerCamera
 TCamera = TypeVar("TCamera", bound=CameraTypes)
 
 
@@ -265,5 +264,5 @@ class CameraController(Device, Generic[TCamera]):
     """
 
     device_type: Literal["CameraController"] = "CameraController"
-    cameras: Dict[str, TCamera] = Field(description="Cameras to be instantiated")
-    frame_rate: Optional[int] = Field(default=30, ge=0, description="Frame rate of the trigger to all cameras")
+    cameras: dict[str, TCamera] = Field(description="Cameras to be instantiated")
+    frame_rate: int | None = Field(default=30, ge=0, description="Frame rate of the trigger to all cameras")

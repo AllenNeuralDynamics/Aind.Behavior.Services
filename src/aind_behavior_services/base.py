@@ -69,9 +69,8 @@ else:
     def _add_default_tz(dt: Any, handler: ValidatorFunctionWrapHandler) -> datetime.datetime:
         if isinstance(dt, str):
             dt = datetime.datetime.fromisoformat(dt)
-        if isinstance(dt, datetime.datetime):
-            if dt.tzinfo is None:
-                dt = dt.astimezone()
+        if isinstance(dt, datetime.datetime) and dt.tzinfo is None:
+            dt = dt.astimezone()
         return dt
 
     DefaultAwareDatetime = Annotated[AwareDatetime, WrapValidator(_add_default_tz)]

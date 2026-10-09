@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -27,13 +27,13 @@ class LoadCellChannelCalibration(BaseModel):
 class LoadCellsCalibration(DatedCalibration):
     """Load cells calibration"""
 
-    channels: List[LoadCellChannelCalibration] = Field(
+    channels: list[LoadCellChannelCalibration] = Field(
         default=[], title="Load cells calibration", validate_default=True
     )
 
     @field_validator("channels", mode="after")
     @classmethod
-    def ensure_unique_channels(cls, values: List[LoadCellChannelCalibration]) -> List[LoadCellChannelCalibration]:
+    def ensure_unique_channels(cls, values: list[LoadCellChannelCalibration]) -> list[LoadCellChannelCalibration]:
         channels = [c.channel for c in values]
         if len(channels) != len(set(channels)):
             raise ValueError("Channels must be unique.")

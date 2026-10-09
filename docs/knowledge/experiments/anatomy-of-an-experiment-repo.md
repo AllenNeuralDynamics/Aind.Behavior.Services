@@ -62,21 +62,24 @@ from clabe.launcher import Launcher, LauncherCliArgs
 from clabe.apps import AindBehaviorServicesBonsaiApp
 from clabe.pickers import DefaultBehaviorPicker, DefaultBehaviorPickerSettings
 
+
 async def experiment(launcher):
-    picker  = DefaultBehaviorPicker(launcher=..., settings=DefaultBehaviorPickerSettings(
-        config_library_dir=r"\\allen\...\AindBehavior.db\<Task>"))
+    picker = DefaultBehaviorPicker(
+        launcher=..., settings=DefaultBehaviorPickerSettings(config_library_dir=r"\\allen\...\AindBehavior.db\<Task>")
+    )
     session = picker.pick_session(Session)
-    task    = picker.pick_task(AindFooTaskLogic)     # or pick_trainer_state(...) if curriculum-driven
-    rig     = picker.pick_rig(AindFooRig)
+    task = picker.pick_task(AindFooTaskLogic)  # or pick_trainer_state(...) if curriculum-driven
+    rig = picker.pick_rig(AindFooRig)
     launcher.register_session(session, rig.data_directory)
     ResourceMonitor(...).run()
-    bonsai_app = AindBehaviorServicesBonsaiApp(workflow=Path("./src/main.bonsai"),
-                                               rig=rig, session=session, task=task)
+    bonsai_app = AindBehaviorServicesBonsaiApp(workflow=Path("./src/main.bonsai"), rig=rig, session=session, task=task)
     await bonsai_app.run_async()
     # optional: CurriculumApp, data mappers, contraqctor QC (HtmlReporter), copy_logs / transfer
 
+
 class ClabeCli(LauncherCliArgs):
-    def cli_cmd(self): Launcher(settings=self).run_experiment(experiment)
+    def cli_cmd(self):
+        Launcher(settings=self).run_experiment(experiment)
 ```
 
 **Common** across all: `Launcher` + a `Picker` reading a config-library DB + `AindBehaviorServicesBonsaiApp` + `ResourceMonitor` + optional QC. **Custom per repo**: which picker, whether a [curriculum](../ecosystem/curriculum.md) runs, `ByAnimalModifier` subclasses for stateful rig fields (e.g. manipulator position), and the data-mapper/QC steps. See [running-an-experiment](../workflows/running-an-experiment.md).

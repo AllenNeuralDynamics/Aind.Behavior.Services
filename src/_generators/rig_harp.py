@@ -20,7 +20,7 @@ def fetch_who_am_i_list(remote: str = WHOAMI_REMOTE) -> dict:
     response = requests.get(remote, timeout=5)
     response.raise_for_status()
     parsed = yaml.load(response.content, Loader=yaml.FullLoader)["devices"]
-    return {whoami: name for whoami, name in zip(parsed.keys(), map(lambda x: x.get("name"), parsed.values()))}
+    return {whoami: name for whoami, name in zip(parsed.keys(), (x.get("name") for x in parsed.values()))}
 
 
 def sanitize_to_pascal_case(name: str) -> str:
@@ -41,7 +41,11 @@ def main():
     environment = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(current_directory, "templates")))
     template = environment.get_template("harp.j2")
 
-    template.stream(generation_time=datetime.datetime.now(datetime.timezone.utc), boards=boards).dump(
+    all_names = sorted(
+        ["ConnectedClockOutput", "HarpDeviceGeneric", "HarpDevice", *(f"Harp{board['class_name']}" for board in boards)]
+    )
+
+    template.stream(generation_time=datetime.datetime.now(datetime.UTC), boards=boards, all_names=all_names).dump(
         os.path.join(current_directory, "../../src/aind_behavior_services/rig/_harp_gen.py")
     )
 

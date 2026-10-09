@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 import aind_behavior_curriculum.task as curriculum_task
 from pydantic import Field, field_validator
@@ -10,7 +10,7 @@ from aind_behavior_services.base import SEMVER_REGEX, coerce_schema_version
 class TaskParameters(curriculum_task.TaskParameters):
     """Base class for storing parameters for the task."""
 
-    rng_seed: Optional[float] = Field(default=None, description="Seed of the random number generator")
+    rng_seed: float | None = Field(default=None, description="Seed of the random number generator")
     aind_behavior_services_pkg_version: Literal[__semver__] = Field(
         default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
     )

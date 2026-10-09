@@ -1,6 +1,6 @@
 # Auto-generated code. Do not edit manually.
 
-from typing import TYPE_CHECKING, Annotated, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import TypeAliasType
@@ -9,8 +9,8 @@ from ._base import Device
 
 
 class _HarpDeviceBase(Device):
-    who_am_i: Optional[int] = Field(default=None, le=9999, ge=0, description="Device WhoAmI")
-    serial_number: Optional[str] = Field(default=None, description="Device serial number")
+    who_am_i: int | None = Field(default=None, le=9999, ge=0, description="Device WhoAmI")
+    serial_number: str | None = Field(default=None, description="Device serial number")
     port_name: str = Field(description="Device port name")
 
 
@@ -19,14 +19,14 @@ class HarpDeviceGeneric(_HarpDeviceBase):
 
 
 class ConnectedClockOutput(BaseModel):
-    target_device: Optional[str] = Field(
+    target_device: str | None = Field(
         default=None, description="Optional device name to provide user additional information"
     )
     output_channel: int = Field(ge=0, description="Output channel")
 
 
-def _assert_unique_output_channels(outputs: List[ConnectedClockOutput]) -> List[ConnectedClockOutput]:
-    channels = set([ch.output_channel for ch in outputs])
+def _assert_unique_output_channels(outputs: list[ConnectedClockOutput]) -> list[ConnectedClockOutput]:
+    channels = {ch.output_channel for ch in outputs}
     if len(channels) != len(outputs):
         raise ValueError("Output channels must be unique")
     return outputs
@@ -110,33 +110,33 @@ class HarpOlfactometer(_HarpDeviceBase):
 class HarpClockSynchronizer(_HarpDeviceBase):
     device_type: Literal["ClockSynchronizer"] = "ClockSynchronizer"
     who_am_i: Literal[1152] = 1152
-    connected_clock_outputs: List[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
+    connected_clock_outputs: list[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
 
     @field_validator("connected_clock_outputs")
     @classmethod
-    def validate_connected_clock_outputs(cls, v: List[ConnectedClockOutput]) -> List[ConnectedClockOutput]:
+    def validate_connected_clock_outputs(cls, v: list[ConnectedClockOutput]) -> list[ConnectedClockOutput]:
         return _assert_unique_output_channels(v)
 
 
 class HarpTimestampGeneratorGen1(_HarpDeviceBase):
     device_type: Literal["TimestampGeneratorGen1"] = "TimestampGeneratorGen1"
     who_am_i: Literal[1154] = 1154
-    connected_clock_outputs: List[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
+    connected_clock_outputs: list[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
 
     @field_validator("connected_clock_outputs")
     @classmethod
-    def validate_connected_clock_outputs(cls, v: List[ConnectedClockOutput]) -> List[ConnectedClockOutput]:
+    def validate_connected_clock_outputs(cls, v: list[ConnectedClockOutput]) -> list[ConnectedClockOutput]:
         return _assert_unique_output_channels(v)
 
 
 class HarpTimestampGeneratorGen3(_HarpDeviceBase):
     device_type: Literal["TimestampGeneratorGen3"] = "TimestampGeneratorGen3"
     who_am_i: Literal[1158] = 1158
-    connected_clock_outputs: List[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
+    connected_clock_outputs: list[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
 
     @field_validator("connected_clock_outputs")
     @classmethod
-    def validate_connected_clock_outputs(cls, v: List[ConnectedClockOutput]) -> List[ConnectedClockOutput]:
+    def validate_connected_clock_outputs(cls, v: list[ConnectedClockOutput]) -> list[ConnectedClockOutput]:
         return _assert_unique_output_channels(v)
 
 
@@ -258,11 +258,11 @@ class HarpCuttlefish(_HarpDeviceBase):
 class HarpWhiteRabbit(_HarpDeviceBase):
     device_type: Literal["WhiteRabbit"] = "WhiteRabbit"
     who_am_i: Literal[1404] = 1404
-    connected_clock_outputs: List[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
+    connected_clock_outputs: list[ConnectedClockOutput] = Field(default=[], description="Connected clock outputs")
 
     @field_validator("connected_clock_outputs")
     @classmethod
-    def validate_connected_clock_outputs(cls, v: List[ConnectedClockOutput]) -> List[ConnectedClockOutput]:
+    def validate_connected_clock_outputs(cls, v: list[ConnectedClockOutput]) -> list[ConnectedClockOutput]:
         return _assert_unique_output_channels(v)
 
 
@@ -276,53 +276,65 @@ class HarpCuttlefishfip(_HarpDeviceBase):
     who_am_i: Literal[1407] = 1407
 
 
-_HarpDevice = Union[
-    HarpDeviceGeneric,
-    HarpHobgoblin,
-    HarpUSBHub,
-    HarpPoke,
-    HarpMultiPwmGenerator,
-    HarpWear,
-    HarpWearBaseStationGen2,
-    HarpDriver12Volts,
-    HarpLedController,
-    HarpSynchronizer,
-    HarpInputExpander,
-    HarpOutputExpander,
-    HarpSimpleAnalogGenerator,
-    HarpStepperDriver,
-    HarpArchimedes,
-    HarpOlfactometer,
-    HarpClockSynchronizer,
-    HarpTimestampGeneratorGen1,
-    HarpTimestampGeneratorGen3,
-    HarpCameraController,
-    HarpCameraControllerGen2,
-    HarpPyControlAdapter,
-    HarpBehavior,
-    HarpVestibularH1,
-    HarpVestibularH2,
-    HarpLoadCells,
-    HarpAnalogInput,
-    HarpAudioSwitch,
-    HarpRgbArray,
-    HarpFlyPad,
-    HarpSoundCard,
-    HarpCurrentDriver,
-    HarpSyringePump,
-    HarpLaserDriverController,
-    HarpNeurophotometricsFP3002,
-    HarpIblBehaviorControl,
-    HarpRfidReader,
-    HarpPluma,
-    HarpLicketySplit,
-    HarpSniffDetector,
-    HarpTreadmill,
-    HarpCuttlefish,
-    HarpWhiteRabbit,
-    HarpEnvironmentSensor,
-    HarpCuttlefishfip,
-]
+class HarpDeluxdriver(_HarpDeviceBase):
+    device_type: Literal["deLuxDriver"] = "deLuxDriver"
+    who_am_i: Literal[1410] = 1410
+
+
+class HarpQuac(_HarpDeviceBase):
+    device_type: Literal["Quac"] = "Quac"
+    who_am_i: Literal[1411] = 1411
+
+
+_HarpDevice = (
+    HarpDeviceGeneric
+    | HarpHobgoblin
+    | HarpUSBHub
+    | HarpPoke
+    | HarpMultiPwmGenerator
+    | HarpWear
+    | HarpWearBaseStationGen2
+    | HarpDriver12Volts
+    | HarpLedController
+    | HarpSynchronizer
+    | HarpInputExpander
+    | HarpOutputExpander
+    | HarpSimpleAnalogGenerator
+    | HarpStepperDriver
+    | HarpArchimedes
+    | HarpOlfactometer
+    | HarpClockSynchronizer
+    | HarpTimestampGeneratorGen1
+    | HarpTimestampGeneratorGen3
+    | HarpCameraController
+    | HarpCameraControllerGen2
+    | HarpPyControlAdapter
+    | HarpBehavior
+    | HarpVestibularH1
+    | HarpVestibularH2
+    | HarpLoadCells
+    | HarpAnalogInput
+    | HarpAudioSwitch
+    | HarpRgbArray
+    | HarpFlyPad
+    | HarpSoundCard
+    | HarpCurrentDriver
+    | HarpSyringePump
+    | HarpLaserDriverController
+    | HarpNeurophotometricsFP3002
+    | HarpIblBehaviorControl
+    | HarpRfidReader
+    | HarpPluma
+    | HarpLicketySplit
+    | HarpSniffDetector
+    | HarpTreadmill
+    | HarpCuttlefish
+    | HarpWhiteRabbit
+    | HarpEnvironmentSensor
+    | HarpCuttlefishfip
+    | HarpDeluxdriver
+    | HarpQuac
+)
 
 if TYPE_CHECKING:
     HarpDevice = _HarpDevice
@@ -334,50 +346,52 @@ else:
 
 __all__ = [
     "ConnectedClockOutput",
-    "HarpDeviceGeneric",
-    "HarpHobgoblin",
-    "HarpUSBHub",
-    "HarpPoke",
-    "HarpMultiPwmGenerator",
-    "HarpWear",
-    "HarpWearBaseStationGen2",
-    "HarpDriver12Volts",
-    "HarpLedController",
-    "HarpSynchronizer",
-    "HarpInputExpander",
-    "HarpOutputExpander",
-    "HarpSimpleAnalogGenerator",
-    "HarpStepperDriver",
+    "HarpAnalogInput",
     "HarpArchimedes",
-    "HarpOlfactometer",
-    "HarpClockSynchronizer",
-    "HarpTimestampGeneratorGen1",
-    "HarpTimestampGeneratorGen3",
+    "HarpAudioSwitch",
+    "HarpBehavior",
     "HarpCameraController",
     "HarpCameraControllerGen2",
+    "HarpClockSynchronizer",
+    "HarpCurrentDriver",
+    "HarpCuttlefish",
+    "HarpCuttlefishfip",
+    "HarpDeluxdriver",
+    "HarpDevice",
+    "HarpDeviceGeneric",
+    "HarpDriver12Volts",
+    "HarpEnvironmentSensor",
+    "HarpFlyPad",
+    "HarpHobgoblin",
+    "HarpIblBehaviorControl",
+    "HarpInputExpander",
+    "HarpLaserDriverController",
+    "HarpLedController",
+    "HarpLicketySplit",
+    "HarpLoadCells",
+    "HarpMultiPwmGenerator",
+    "HarpNeurophotometricsFP3002",
+    "HarpOlfactometer",
+    "HarpOutputExpander",
+    "HarpPluma",
+    "HarpPoke",
     "HarpPyControlAdapter",
-    "HarpBehavior",
+    "HarpQuac",
+    "HarpRfidReader",
+    "HarpRgbArray",
+    "HarpSimpleAnalogGenerator",
+    "HarpSniffDetector",
+    "HarpSoundCard",
+    "HarpStepperDriver",
+    "HarpSynchronizer",
+    "HarpSyringePump",
+    "HarpTimestampGeneratorGen1",
+    "HarpTimestampGeneratorGen3",
+    "HarpTreadmill",
+    "HarpUSBHub",
     "HarpVestibularH1",
     "HarpVestibularH2",
-    "HarpLoadCells",
-    "HarpAnalogInput",
-    "HarpAudioSwitch",
-    "HarpRgbArray",
-    "HarpFlyPad",
-    "HarpSoundCard",
-    "HarpCurrentDriver",
-    "HarpSyringePump",
-    "HarpLaserDriverController",
-    "HarpNeurophotometricsFP3002",
-    "HarpIblBehaviorControl",
-    "HarpRfidReader",
-    "HarpPluma",
-    "HarpLicketySplit",
-    "HarpSniffDetector",
-    "HarpTreadmill",
-    "HarpCuttlefish",
+    "HarpWear",
+    "HarpWearBaseStationGen2",
     "HarpWhiteRabbit",
-    "HarpEnvironmentSensor",
-    "HarpCuttlefishfip",
-    "HarpDevice",
 ]

@@ -2,11 +2,12 @@ import inspect
 import json
 import logging
 import os
+from collections.abc import Callable
 from enum import Enum
 from os import PathLike
 from pathlib import Path
 from subprocess import CalledProcessError, CompletedProcess, run
-from typing import Annotated, Any, Callable, Dict, List, Optional, Type, TypeVar, cast
+from typing import Annotated, Any, TypeVar, cast
 
 from pydantic import BaseModel, ConfigDict, GetCoreSchemaHandler, PydanticInvalidForJsonSchema, create_model
 from pydantic.json_schema import (
@@ -156,7 +157,7 @@ class CustomGenerateJsonSchema(GenerateJsonSchema):
 
         if new_refs:
             cls = schema.get("cls")
-            typename: Optional[str] = None
+            typename: str | None = None
             if cls is not None and not (isinstance(cls, type) and issubclass(cls, BaseModel)):
                 typename = cls.__dict__.get("__sgen_typename__")
             if typename is not None:
@@ -195,8 +196,8 @@ class CustomGenerateJsonSchema(GenerateJsonSchema):
 
 
 def export_schema(
-    model: Type[BaseModel],
-    schema_generator: Type[GenerateJsonSchema] = CustomGenerateJsonSchema,
+    model: type[BaseModel],
+    schema_generator: type[GenerateJsonSchema] = CustomGenerateJsonSchema,
     mode: JsonSchemaMode = "serialization",
     remove_root: bool = True,
 ):
@@ -217,9 +218,9 @@ class BonsaiSgenSerializers(Enum):
 def bonsai_sgen(
     schema_path: PathLike,
     output_path: PathLike,
-    namespace: Optional[str] = None,
-    root_element: Optional[str] = None,
-    serializer: Optional[List[BonsaiSgenSerializers]] = None,
+    namespace: str | None = None,
+    root_element: str | None = None,
+    serializer: list[BonsaiSgenSerializers] | None = None,
 ) -> CompletedProcess:
     """Runs Bonsai.SGen to generate a Bonsai-compatible schema from a json-schema model
     For more information run `bonsai.sgen --help` in the command line.
@@ -281,17 +282,17 @@ def _check_bonsai_sgen_version() -> Version:
 
 
 def convert_pydantic_to_bonsai(
-    model: Type[BaseModel],
+    model: type[BaseModel],
     *,
-    model_name: Optional[str] = None,
+    model_name: str | None = None,
     json_schema_output_dir: PathLike = Path("./src/DataSchemas/"),
-    cs_output_dir: Optional[PathLike] = Path("./src/Extensions/"),
+    cs_output_dir: PathLike | None = Path("./src/Extensions/"),
     cs_namespace: str = "DataSchema",
-    cs_serializer: Optional[List[BonsaiSgenSerializers]] = None,
-    json_schema_export_kwargs: Optional[Dict[str, Any]] = None,
-    root_element: Optional[str] = None,
-) -> Optional[CompletedProcess]:
-    def _write_json(schema_path: PathLike, output_model_name: str, model: Type[BaseModel], **extra_kwargs) -> None:
+    cs_serializer: list[BonsaiSgenSerializers] | None = None,
+    json_schema_export_kwargs: dict[str, Any] | None = None,
+    root_element: str | None = None,
+) -> CompletedProcess | None:
+    def _write_json(schema_path: PathLike, output_model_name: str, model: type[BaseModel], **extra_kwargs) -> None:
         with open(os.path.join(schema_path, f"{output_model_name}.json"), "w", encoding="utf-8") as f:
             json_model = export_schema(model, **extra_kwargs)
             f.write(json_model)
@@ -327,19 +328,19 @@ class _SgenBaseModelMeta(_BaseModelType):
         namespace: dict[str, Any],
         __pydantic_generic_metadata__: Any = None,
         __pydantic_reset_parent_namespace__: bool = True,
-        _create_model_module: Optional[str] = None,
+        _create_model_module: str | None = None,
         **kwargs: Any,
     ) -> type:
         if any(base.__dict__.get("__sgen_typename__") is not None for base in bases):
             explicit_extra = namespace.get("model_config", {}).get("json_schema_extra", {})
             if not (isinstance(explicit_extra, dict) and "x-sgen-typename" in explicit_extra):
                 inherited = next(
-                    (getattr(b, "model_config") for b in bases if getattr(b, "model_config", None) is not None),
+                    (b.model_config for b in bases if getattr(b, "model_config", None) is not None),
                     ConfigDict(),
                 )
                 merged = cast(ConfigDict, {**inherited, **namespace.get("model_config", {})})
                 raw_extra = merged.get("json_schema_extra")
-                extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
+                extra: dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
                 extra.pop("x-sgen-typename", None)
                 namespace["model_config"] = cast(ConfigDict, {**merged, "json_schema_extra": extra})
                 namespace["__sgen_typename__"] = None  # shadow inherited value; subclasses must re-decorate
@@ -368,8 +369,8 @@ class _SgenTypenameAnnotation:
     def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
         schema = handler(source_type)
         target = handler.resolve_ref_schema(schema) if schema.get("type") == "definition-ref" else schema
-        meta: Dict[str, Any] = dict(target.get("metadata") or {})
-        updates: Dict[str, Any] = dict(meta.get("pydantic_js_updates") or {})
+        meta: dict[str, Any] = dict(target.get("metadata") or {})
+        updates: dict[str, Any] = dict(meta.get("pydantic_js_updates") or {})
         updates["x-sgen-typename"] = self._typename
         target["metadata"] = {**meta, "pydantic_js_updates": updates}
         return schema
@@ -383,11 +384,11 @@ class SgenNamespace:
     def namespace(self) -> str:
         return self._namespace
 
-    def sgen_typename(self, *, typename: str | None = None) -> Callable[[Type[T]], Type[T]]:
+    def sgen_typename(self, *, typename: str | None = None) -> Callable[[type[T]], type[T]]:
         return sgen_typename(typename=typename, namespace=self._namespace)
 
 
-def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = None) -> Callable[[Type[T]], Type[T]]:
+def sgen_typename(*, typename: str | None = None, namespace: str | None = None) -> Callable[[type[T]], type[T]]:
     """Class decorator to add an ``x-sgen-typename`` property to the model's JSON schema, which Bonsai.SGen uses to determine the typename for the generated class."""
 
     # Why do we need 3 different approaches you might ask?
@@ -395,13 +396,13 @@ def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = Non
     # 2. For all other classes, we can just set the __sgen_typename__ attribute directly, and the custom JSON schema generator will pick it up and add it to the generated schema. This is the simplest case.
     # 3. 2. For frozen types (e.g., TypeAliasType), we can't modify using 2. so we wrap the type in an Annotated with a custom annotation that injects the x-sgen-typename via pydantic_js_updates. Handled by the _SgenTypenameAnnotation class.
 
-    def decorator(cls: Type[T]) -> Type[T]:
+    def decorator(cls: type[T]) -> type[T]:
         _typename = typename or cls.__name__
         _typename = f"{namespace}.{_typename}" if namespace else _typename
         if isinstance(cls, type) and issubclass(cls, BaseModel):
             existing = getattr(cls, "model_config", ConfigDict())
             raw_extra = existing.get("json_schema_extra")
-            new_extra: Dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
+            new_extra: dict[str, Any] = dict(raw_extra) if isinstance(raw_extra, dict) else {}
             new_extra["x-sgen-typename"] = _typename
             new_config = cast(ConfigDict, {**existing, "json_schema_extra": new_extra})
             result = create_model(
@@ -416,11 +417,11 @@ def sgen_typename(*, typename: Optional[str] = None, namespace: str | None = Non
         else:
             result = cls  # type: ignore[assignment]
         try:
-            setattr(result, "__sgen_typename__", _typename)
+            result.__sgen_typename__ = _typename
         except AttributeError:
             # Frozen object (e.g., TypeAliasType); wrap in Annotated with a marker
             # that injects x-sgen-typename into the $defs entry via pydantic_js_functions.
             result = Annotated[result, _SgenTypenameAnnotation(_typename)]  # type: ignore[assignment]
-        return cast(Type[T], result)
+        return cast(type[T], result)
 
     return decorator

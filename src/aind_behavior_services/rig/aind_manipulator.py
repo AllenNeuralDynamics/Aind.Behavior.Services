@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import List, Literal
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -86,7 +86,7 @@ class AindManipulatorCalibration(BaseModel):
         default=(ManipulatorPosition(x=0.010, y1=0.010, y2=0.010, z=0.010)),
         title="Full step to mm. Used to convert steps to SI Units",
     )
-    axis_configuration: List[AxisConfiguration] = Field(
+    axis_configuration: list[AxisConfiguration] = Field(
         default=[
             AxisConfiguration(axis=Axis.Y1),
             AxisConfiguration(axis=Axis.Y2),
@@ -96,7 +96,7 @@ class AindManipulatorCalibration(BaseModel):
         title="Axes configuration. Only the axes that are configured will be enabled.",
         validate_default=True,
     )
-    homing_order: List[Axis] = Field(
+    homing_order: list[Axis] = Field(
         default=[Axis.Y1, Axis.Y2, Axis.X, Axis.Z], title="Homing order", validate_default=True
     )
     initial_position: ManipulatorPosition = Field(

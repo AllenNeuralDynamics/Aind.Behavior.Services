@@ -1,5 +1,5 @@
 import unittest
-from typing import List, Literal, Optional
+from typing import Literal
 
 from pydantic import Field
 
@@ -27,16 +27,16 @@ class TestHarpClockOutput(unittest.TestCase):
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
-        harp_device: Optional[HarpDevice]
+        harp_device: HarpDevice | None
 
     class NHarpDevice(Rig):
         data_directory: str = "/data"
         rig_name: str = "rig"
         computer_name: str = "computer"
         version: Literal["0.0.0"] = "0.0.0"
-        harp_device: Optional[HarpDevice] = None
-        harp_white_rabbit: Optional[HarpWhiteRabbit] = None
-        harp_device_array: List[HarpDevice] = Field(default_factory=list)
+        harp_device: HarpDevice | None = None
+        harp_white_rabbit: HarpWhiteRabbit | None = None
+        harp_device_array: list[HarpDevice] = Field(default_factory=list)
 
     def setUp(self):
         self.generic_harp = HarpDeviceGeneric(port_name="COM1", name="GenericHarp")

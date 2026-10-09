@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -21,18 +21,18 @@ if TYPE_CHECKING:
 
     from aind_behavior_services.task.distributions import ScalingParameters, TruncationParameters
 
-    Distribution = Union[
-        Scalar,
-        NormalDistribution,
-        LogNormalDistribution,
-        ExponentialDistribution,
-        UniformDistribution,
-        PoissonDistribution,
-        BinomialDistribution,
-        BetaDistribution,
-        GammaDistribution,
-        PdfDistribution,
-    ]
+    Distribution = (
+        Scalar
+        | NormalDistribution
+        | LogNormalDistribution
+        | ExponentialDistribution
+        | UniformDistribution
+        | PoissonDistribution
+        | BinomialDistribution
+        | BetaDistribution
+        | GammaDistribution
+        | PdfDistribution
+    )
 
 __all__ = ["draw_sample", "draw_samples"]
 

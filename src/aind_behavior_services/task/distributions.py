@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated, Any, List, Literal, Optional, Self, Union
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Self
 
 from pydantic import BaseModel, BeforeValidator, Field, NonNegativeFloat, field_validator, model_validator
 from typing_extensions import TypeAliasType
@@ -91,10 +91,10 @@ class DistributionBase(BaseModel):
 
     family: DistributionFamily = Field(description="Family of the distribution")
     distribution_parameters: "DistributionParameters" = Field(description="Parameters of the distribution")
-    truncation_parameters: Optional[TruncationParameters] = Field(
+    truncation_parameters: TruncationParameters | None = Field(
         default=None, description="Truncation parameters of the distribution"
     )
-    scaling_parameters: Optional[ScalingParameters] = Field(
+    scaling_parameters: ScalingParameters | None = Field(
         default=None, description="Scaling parameters of the distribution"
     )
 
@@ -358,12 +358,12 @@ class PdfDistributionParameters(DistributionParametersBase):
     """
 
     family: Literal[DistributionFamily.PDF] = DistributionFamily.PDF
-    pdf: List[NonNegativeFloat] = Field(default=[1], description="The probability density function")
-    index: List[float] = Field(default=[0], description="The index of the probability density function")
+    pdf: list[NonNegativeFloat] = Field(default=[1], description="The probability density function")
+    index: list[float] = Field(default=[0], description="The index of the probability density function")
 
     @field_validator("pdf")
     @classmethod
-    def normalize_pdf(cls, v: List[NonNegativeFloat]) -> List[NonNegativeFloat]:
+    def normalize_pdf(cls, v: list[NonNegativeFloat]) -> list[NonNegativeFloat]:
         """Normalizes the PDF values to sum to 1"""
         return [x / sum(v) for x in v]
 
@@ -407,51 +407,49 @@ def _numeric_to_scalar(value: Any) -> Scalar | Any:
 
 
 if TYPE_CHECKING:
-    Distribution = Union[
-        float,  # we add float here since we convert numeric to Scalar
-        Scalar,
-        NormalDistribution,
-        LogNormalDistribution,
-        ExponentialDistribution,
-        UniformDistribution,
-        PoissonDistribution,
-        BinomialDistribution,
-        BetaDistribution,
-        GammaDistribution,
-        PdfDistribution,
-    ]
+    Distribution = (
+        float  # we add float here since we convert numeric to Scalar
+        | Scalar
+        | NormalDistribution
+        | LogNormalDistribution
+        | ExponentialDistribution
+        | UniformDistribution
+        | PoissonDistribution
+        | BinomialDistribution
+        | BetaDistribution
+        | GammaDistribution
+        | PdfDistribution
+    )
 
     DistributionParameters = (
-        Union[
-            ScalarDistributionParameter,
-            NormalDistributionParameters,
-            LogNormalDistributionParameters,
-            ExponentialDistributionParameters,
-            UniformDistributionParameters,
-            PoissonDistributionParameters,
-            BinomialDistributionParameters,
-            BetaDistributionParameters,
-            GammaDistributionParameters,
-            PdfDistributionParameters,
-        ],
+        (
+            ScalarDistributionParameter
+            | NormalDistributionParameters
+            | LogNormalDistributionParameters
+            | ExponentialDistributionParameters
+            | UniformDistributionParameters
+            | PoissonDistributionParameters
+            | BinomialDistributionParameters
+            | BetaDistributionParameters
+            | GammaDistributionParameters
+            | PdfDistributionParameters
+        ),
     )
 else:
     Distribution = _sgen_namespace.sgen_typename()(
         TypeAliasType(
             "Distribution",
             Annotated[
-                Union[
-                    Scalar,
-                    NormalDistribution,
-                    LogNormalDistribution,
-                    ExponentialDistribution,
-                    UniformDistribution,
-                    PoissonDistribution,
-                    BinomialDistribution,
-                    BetaDistribution,
-                    GammaDistribution,
-                    PdfDistribution,
-                ],
+                Scalar
+                | NormalDistribution
+                | LogNormalDistribution
+                | ExponentialDistribution
+                | UniformDistribution
+                | PoissonDistribution
+                | BinomialDistribution
+                | BetaDistribution
+                | GammaDistribution
+                | PdfDistribution,
                 Field(discriminator="family", title="Distribution", description="Available distributions"),
                 BeforeValidator(_numeric_to_scalar),
             ],
@@ -462,18 +460,16 @@ else:
         TypeAliasType(
             "DistributionParameters",
             Annotated[
-                Union[
-                    ScalarDistributionParameter,
-                    NormalDistributionParameters,
-                    LogNormalDistributionParameters,
-                    ExponentialDistributionParameters,
-                    UniformDistributionParameters,
-                    PoissonDistributionParameters,
-                    BinomialDistributionParameters,
-                    BetaDistributionParameters,
-                    GammaDistributionParameters,
-                    PdfDistributionParameters,
-                ],
+                ScalarDistributionParameter
+                | NormalDistributionParameters
+                | LogNormalDistributionParameters
+                | ExponentialDistributionParameters
+                | UniformDistributionParameters
+                | PoissonDistributionParameters
+                | BinomialDistributionParameters
+                | BetaDistributionParameters
+                | GammaDistributionParameters
+                | PdfDistributionParameters,
                 Field(
                     discriminator="family", title="DistributionParameters", description="Parameters of the distribution"
                 ),

@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Dict, List, Optional
+from typing import Annotated
 
 import numpy as np
 from pydantic import BaseModel, Field
@@ -26,7 +26,7 @@ class Measurement(BaseModel):
         title="Valve open time",
         gt=0,
     )
-    water_weight: List[PositiveFloat] = Field(
+    water_weight: list[PositiveFloat] = Field(
         description="Weight of water delivered (g)",
         title="Water weight",
         min_length=1,
@@ -37,8 +37,8 @@ class Measurement(BaseModel):
 class WaterValveCalibration(DatedCalibration):
     """Represents a water valve calibration."""
 
-    measurements: List[Measurement] = Field(default=[], description="List of measurements")
-    interval_average: Optional[Dict[PositiveFloat, PositiveFloat]] = Field(
+    measurements: list[Measurement] = Field(default=[], description="List of measurements")
+    interval_average: dict[PositiveFloat, PositiveFloat] | None = Field(
         default=None,
         description="Dictionary keyed by measured valve interval and corresponding average single event volume.",
         title="Interval average",
@@ -51,8 +51,8 @@ class WaterValveCalibration(DatedCalibration):
         description="Offset of the linear regression : Volume(g) = Slope(g/s) * time(s) + offset(g)",
         title="Regression offset",
     )
-    r2: Optional[float] = Field(default=None, description="R2 metric from the linear model.", title="R2", ge=0, le=1)
-    valid_domain: Optional[List[PositiveFloat]] = Field(
+    r2: float | None = Field(default=None, description="R2 metric from the linear model.", title="R2", ge=0, le=1)
+    valid_domain: list[PositiveFloat] | None = Field(
         default=None,
         description="The optional time-intervals the calibration curve was calculated on.",
         min_length=2,
