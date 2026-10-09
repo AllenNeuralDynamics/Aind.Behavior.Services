@@ -418,7 +418,7 @@ def sgen_typename(*, typename: str | None = None, namespace: str | None = None) 
             result = cls  # type: ignore[assignment]
         try:
             result.__sgen_typename__ = _typename
-        except AttributeError:
+        except (AttributeError, TypeError):  # TypeError: builtin immutable types (e.g., str)
             # Frozen object (e.g., TypeAliasType); wrap in Annotated with a marker
             # that injects x-sgen-typename into the $defs entry via pydantic_js_functions.
             result = Annotated[result, _SgenTypenameAnnotation(_typename)]  # type: ignore[assignment]
