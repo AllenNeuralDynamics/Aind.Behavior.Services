@@ -1,5 +1,5 @@
 # Import core types
-from typing import List, Literal, Optional, Self
+from typing import Literal, Self
 
 from pydantic import Field, model_validator
 

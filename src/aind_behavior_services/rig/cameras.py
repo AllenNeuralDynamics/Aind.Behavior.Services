@@ -1,5 +1,5 @@
 from enum import IntEnum, auto
-from typing import TYPE_CHECKING, Annotated, Generic, Literal, TypeVar, Union
+from typing import TYPE_CHECKING, Annotated, Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import TypeAliasType
@@ -49,7 +49,7 @@ class VideoWriterOpenCv(BaseModel):
 
 
 if TYPE_CHECKING:
-    VideoWriter = Union[VideoWriterFfmpeg, VideoWriterOpenCv]
+    VideoWriter = VideoWriterFfmpeg | VideoWriterOpenCv
 else:
     VideoWriter = TypeAliasType(
         "VideoWriter", Annotated[VideoWriterFfmpeg | VideoWriterOpenCv, Field(discriminator="video_writer_type")]
@@ -249,13 +249,12 @@ class SpinnakerCamera(Device):
     @field_validator("region_of_interest")
     @classmethod
     def validate_roi(cls, v: Rect) -> Rect:
-        if v.width == 0 or v.height == 0:
-            if any([x != 0 for x in [v.width, v.height, v.x, v.y]]):
-                raise ValueError("If width or height is 0, all other values must be 0")
+        if (v.width == 0 or v.height == 0) and any(x != 0 for x in [v.width, v.height, v.x, v.y]):
+            raise ValueError("If width or height is 0, all other values must be 0")
         return v
 
 
-CameraTypes = Union[WebCamera, SpinnakerCamera]
+CameraTypes = WebCamera | SpinnakerCamera
 TCamera = TypeVar("TCamera", bound=CameraTypes)
 
 

@@ -13,7 +13,7 @@ from aind_behavior_services.utils import format_datetime
 class DefaultAwareDatetimeTest(unittest.TestCase):
     def setUp(self):
         self.type_adapter = TypeAdapter(DefaultAwareDatetime)
-        self.datetime_naive = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=None)
+        self.datetime_naive = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=None)  # noqa: DTZ001 - naive on purpose
         self.datetime_utc = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=datetime.UTC)
         self.datetime_pst = datetime.datetime(
             2021, 1, 1, 0, 0, 0, 0, tzinfo=datetime.timezone(-datetime.timedelta(hours=8))

@@ -20,7 +20,7 @@ def fetch_who_am_i_list(remote: str = WHOAMI_REMOTE) -> dict:
     response = requests.get(remote, timeout=5)
     response.raise_for_status()
     parsed = yaml.load(response.content, Loader=yaml.FullLoader)["devices"]
-    return {whoami: name for whoami, name in zip(parsed.keys(), map(lambda x: x.get("name"), parsed.values()))}
+    return {whoami: name for whoami, name in zip(parsed.keys(), (x.get("name") for x in parsed.values()))}
 
 
 def sanitize_to_pascal_case(name: str) -> str:

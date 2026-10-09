@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 import aind_behavior_curriculum.task as curriculum_task
 from pydantic import Field, field_validator

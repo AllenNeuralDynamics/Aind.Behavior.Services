@@ -59,7 +59,7 @@ def _generate_schemas() -> None:
 
         json_schema.main()
         log.info("Regenerated JSON schemas -> schema/")
-    except Exception as e:  # pragma: no cover - build-time best effort
+    except Exception as e:  # noqa: BLE001  # pragma: no cover - build-time best effort
         log.warning(f"Skipping schema regeneration (using committed schema/): {e}")
 
 

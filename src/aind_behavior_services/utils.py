@@ -7,7 +7,7 @@ from os import PathLike
 from pathlib import Path
 from string import capwords
 from subprocess import CompletedProcess
-from typing import TypeVar, Union, cast, get_args
+from typing import TypeVar, cast, get_args
 
 import pydantic
 from pydantic import BaseModel
@@ -121,7 +121,7 @@ def run_bonsai_process(
     if cwd is None:
         cwd = os.getcwd()
     if print_cmd:
-        logging.debug(output_cmd)
+        logger.debug(output_cmd)
     return subprocess.run(output_cmd, cwd=cwd, check=True, timeout=timeout, capture_output=True)
 
 
@@ -153,12 +153,12 @@ def open_bonsai_process(
 
     if log_file_name is None:
         if print_cmd:
-            logging.debug(output_cmd)
+            logger.debug(output_cmd)
         return subprocess.Popen(output_cmd, cwd=cwd, creationflags=creation_flags)
     else:
         logging_cmd = f'powershell -ep Bypass -c "& {output_cmd} *>&1 | tee -a {log_file_name}"'
         if print_cmd:
-            logging.debug(logging_cmd)
+            logger.debug(logging_cmd)
         return subprocess.Popen(logging_cmd, cwd=cwd, creationflags=creation_flags)
 
 
@@ -175,7 +175,7 @@ def format_datetime(value: datetime.datetime, is_tz_strict: bool = False) -> str
 
 def now() -> datetime.datetime:
     """Returns the current time as a timezone unaware datetime."""
-    return datetime.datetime.now()
+    return datetime.datetime.now()  # noqa: DTZ005 - intentionally timezone unaware
 
 
 def utcnow() -> datetime.datetime:
@@ -193,7 +193,7 @@ def model_from_json_file(json_path: os.PathLike | str, model: type[TModel]) -> T
         return model.model_validate_json(file.read())
 
 
-ISearchable = Union[pydantic.BaseModel, dict, list]
+ISearchable = pydantic.BaseModel | dict | list
 _ISearchableTypeChecker = tuple(get_args(ISearchable))  # pre-compute for performance
 
 
@@ -213,9 +213,9 @@ def get_fields_of_type(
     elif isinstance(searchable, list):
         _iterable = list(zip([None for _ in range(len(searchable))], searchable))
     elif isinstance(searchable, pydantic.BaseModel):
-        _iterable = {k: getattr(searchable, k) for k in type(searchable).model_fields.keys()}.items()
+        _iterable = {k: getattr(searchable, k) for k in type(searchable).model_fields}.items()
     else:
-        raise ValueError(f"Unsupported model type: {type(searchable)}")
+        raise ValueError(f"Unsupported model type: {type(searchable)}")  # noqa: TRY004 - ValueError is part of the API
 
     for name, field in _iterable:
         _is_type = False

@@ -12,6 +12,8 @@ from aind_behavior_services.schema import export_schema
 from aind_behavior_services.session import Session
 from aind_behavior_services.utils import pascal_to_snake_case
 
+logger = logging.getLogger(__name__)
+
 SCHEMA_ROOT = Path("./schema")
 
 
@@ -37,7 +39,7 @@ def main():
     )
 
     if not SCHEMA_ROOT.exists():
-        logging.info(f"Creating schema root directory at {SCHEMA_ROOT}")
+        logger.info(f"Creating schema root directory at {SCHEMA_ROOT}")
         SCHEMA_ROOT.mkdir(parents=True, exist_ok=True)
     for m in models:
         _write_json(SCHEMA_ROOT, pascal_to_snake_case(m.model_name), m.model, remove_root=m.remove_root)

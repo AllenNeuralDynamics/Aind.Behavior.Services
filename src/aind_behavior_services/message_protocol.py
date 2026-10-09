@@ -1,5 +1,5 @@
 import enum
-from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, TypeVar, Union
+from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, TypeVar
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
 
@@ -182,7 +182,7 @@ class HeartbeatPayload(BaseModel):
 # ================================================================================
 
 if TYPE_CHECKING:
-    RegisteredPayload = Union[LogPayload, HeartbeatPayload]
+    RegisteredPayload = LogPayload | HeartbeatPayload
 
 else:
 
