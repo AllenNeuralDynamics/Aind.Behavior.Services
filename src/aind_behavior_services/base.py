@@ -1,5 +1,6 @@
 import datetime
 import logging
+from abc import ABC
 from typing import (
     TYPE_CHECKING,
     Annotated,
@@ -10,6 +11,7 @@ from typing import (
 )
 
 from aind_behavior_curriculum.task import SEMVER_REGEX
+from bonsai.sgen import SchemaModel
 from pydantic import (
     AwareDatetime,
     BaseModel,
@@ -24,8 +26,10 @@ from aind_behavior_services import __semver__
 
 logger = logging.getLogger(__name__)
 
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices"
 
-class SchemaVersionedModel(BaseModel):
+
+class SchemaVersionedModel(SchemaModel, ABC):
     aind_behavior_services_pkg_version: Literal[__semver__] = Field(
         default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
     )

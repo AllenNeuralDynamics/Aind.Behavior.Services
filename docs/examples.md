@@ -142,39 +142,21 @@ The resulting calibration slots into the rig model's `calibration` field (see [D
 
 ## Regenerating schemas and C#
 
-Each repo ships a `regenerate.py` that unions its models into a `pydantic.RootModel` and calls `convert_pydantic_to_bonsai()`, which writes both the JSON Schema and the C# Bonsai serializers. This is the step that keeps Python and the Bonsai runtime in lockstep (see [architecture](architecture.md)). Adapted from `Aind.Behavior.Telekinesis` (`src/aind_behavior_telekinesis/regenerate.py`):
+Each repo declares its Bonsai namespace in a module-level `SGEN_NAMESPACE`, derives its models from the [`bonsai-sgen`](https://bonsai-rx.org/sgen/articles/pydantic-usage.html) base classes (`SchemaModel`, `SchemaEnum`), and uses the upstream `bonsai-sgen` command to export schemas or generate the C# serializers directly. This is the step that keeps Python and the Bonsai runtime in lockstep (see [architecture](architecture.md)).
 
 ```python
-from pathlib import Path
-from typing import Union
+from bonsai.sgen import SchemaModel
 
-import pydantic
-from aind_behavior_services.schema import BonsaiSgenSerializers, convert_pydantic_to_bonsai
-from aind_behavior_services.session import Session
-
-import aind_behavior_telekinesis.rig
-import aind_behavior_telekinesis.task_logic
+SGEN_NAMESPACE = "AindBehaviorTelekinesisDataSchema"
 
 
-def main():
-    models = [
-        aind_behavior_telekinesis.task_logic.AindBehaviorTelekinesisTaskLogic,
-        aind_behavior_telekinesis.rig.AindBehaviorTelekinesisRig,
-        Session,
-    ]
-    model = pydantic.RootModel[Union[tuple(models)]]
-
-    convert_pydantic_to_bonsai(
-        model,
-        model_name="aind_behavior_telekinesis",
-        root_element="Root",
-        cs_namespace="AindBehaviorTelekinesisDataSchema",
-        json_schema_output_dir=Path("./schema/"),
-        cs_output_dir=Path("./src/Extensions/"),
-        cs_serializer=[BonsaiSgenSerializers.JSON],
-    )
+class Telekinesis(SchemaModel):
+    gain: float = 1.0
 ```
 
+```powershell
+uv run bonsai-sgen generate aind_behavior_telekinesis.rig aind_behavior_telekinesis.task_logic -o src/Extensions --serializer json
+```
 
 ## Launching an experiment with `clabe`
 

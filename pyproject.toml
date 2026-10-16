@@ -20,6 +20,7 @@ version = "0.13.9"
 
 dependencies = [
     'pydantic',
+    'bonsai-sgen>=0.10.0rc1',
     'numpy',
     'aind-behavior-curriculum',
     'gitpython',
@@ -45,9 +46,6 @@ docs = [
     'griffe-typingdoc>=0.3.1',
     'pymdown-extensions',
 ]
-
-[project.scripts]
-generate = "_generators:main"
 
 [tool.ruff]
 line-length = 120

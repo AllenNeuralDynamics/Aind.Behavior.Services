@@ -1,16 +1,15 @@
 from enum import IntEnum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from bonsai.sgen import SchemaEnum, SchemaModel
+from pydantic import Field
 
-from ..schema import SgenNamespace
 from ._harp_gen import HarpStepperDriver
 
-_sgen_namespace = SgenNamespace("AllenNeuralDynamics.AindManipulator")
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindManipulator"
 
 
-@_sgen_namespace.sgen_typename()
-class Axis(IntEnum):
+class Axis(SchemaEnum, IntEnum):
     """Motor axis available"""
 
     NONE = 0
@@ -20,8 +19,7 @@ class Axis(IntEnum):
     Z = 4
 
 
-@_sgen_namespace.sgen_typename()
-class ManipulatorPosition(BaseModel):
+class ManipulatorPosition(SchemaModel):
     """Represents a position in the manipulator coordinate system"""
 
     x: float = Field(title="X coordinate")
@@ -30,8 +28,7 @@ class ManipulatorPosition(BaseModel):
     z: float = Field(title="Z coordinate")
 
 
-@_sgen_namespace.sgen_typename()
-class MicrostepResolution(IntEnum):
+class MicrostepResolution(SchemaEnum, IntEnum):
     """Microstep resolution available"""
 
     MICROSTEP8 = 0
@@ -40,16 +37,14 @@ class MicrostepResolution(IntEnum):
     MICROSTEP64 = 3
 
 
-@_sgen_namespace.sgen_typename()
-class MotorOperationMode(IntEnum):
+class MotorOperationMode(SchemaEnum, IntEnum):
     """Motor operation mode"""
 
     QUIET = 0
     DYNAMIC = 1
 
 
-@_sgen_namespace.sgen_typename()
-class AxisConfiguration(BaseModel):
+class AxisConfiguration(SchemaModel):
     """Axis configuration"""
 
     axis: Axis = Field(title="Axis to be configured")
@@ -77,8 +72,7 @@ class AxisConfiguration(BaseModel):
     min_limit: float = Field(default=-0.01, title="Minimum limit in SI units. A value of 0 disables this limit.")
 
 
-@_sgen_namespace.sgen_typename()
-class AindManipulatorCalibration(BaseModel):
+class AindManipulatorCalibration(SchemaModel):
     """AindManipulator calibration class"""
 
     description: Literal["AindManipulator calibration and settings"] = "AindManipulator calibration and settings"
@@ -104,7 +98,6 @@ class AindManipulatorCalibration(BaseModel):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class AindManipulator(HarpStepperDriver):
     """AindManipulator device definition"""
 

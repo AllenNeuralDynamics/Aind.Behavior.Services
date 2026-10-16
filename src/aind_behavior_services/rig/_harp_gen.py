@@ -1,14 +1,18 @@
 # Auto-generated code. Do not edit manually.
 
+from abc import ABC
 from typing import TYPE_CHECKING, Annotated, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from bonsai.sgen import SchemaAlias, SchemaModel
+from pydantic import Field, field_validator
 from typing_extensions import TypeAliasType
 
 from ._base import Device
 
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.Rig.Harp"
 
-class _HarpDeviceBase(Device):
+
+class _HarpDeviceBase(Device, ABC):
     who_am_i: int | None = Field(default=None, le=9999, ge=0, description="Device WhoAmI")
     serial_number: str | None = Field(default=None, description="Device serial number")
     port_name: str = Field(description="Device port name")
@@ -18,7 +22,7 @@ class HarpDeviceGeneric(_HarpDeviceBase):
     device_type: Literal["Generic"] = "Generic"
 
 
-class ConnectedClockOutput(BaseModel):
+class ConnectedClockOutput(SchemaModel):
     target_device: str | None = Field(
         default=None, description="Optional device name to provide user additional information"
     )
@@ -341,7 +345,7 @@ if TYPE_CHECKING:
 else:
     HarpDevice = TypeAliasType(
         "HarpDevice",
-        Annotated[_HarpDevice, Field(discriminator="device_type")],
+        Annotated[_HarpDevice, Field(discriminator="device_type"), SchemaAlias()],
     )
 
 __all__ = [

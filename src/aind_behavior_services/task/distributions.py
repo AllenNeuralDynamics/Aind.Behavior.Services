@@ -1,16 +1,15 @@
-from enum import Enum
+from abc import ABC
+from enum import StrEnum
 from typing import TYPE_CHECKING, Annotated, Any, Literal, Self
 
-from pydantic import BaseModel, BeforeValidator, Field, NonNegativeFloat, field_validator, model_validator
+from bonsai.sgen import SchemaAlias, SchemaEnum, SchemaModel
+from pydantic import BeforeValidator, Field, NonNegativeFloat, field_validator, model_validator
 from typing_extensions import TypeAliasType
 
-from ..schema import SgenNamespace
-
-_sgen_namespace = SgenNamespace(namespace="AllenNeuralDynamics.AindBehaviorServices.Distributions")
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.Distributions"
 
 
-@_sgen_namespace.sgen_typename()
-class TruncationParameters(BaseModel):
+class TruncationParameters(SchemaModel):
     """
     Parameters for truncating a distribution to a specified range. Truncation should
     be applied after sampling and scaling.
@@ -35,8 +34,7 @@ class TruncationParameters(BaseModel):
         return self
 
 
-@_sgen_namespace.sgen_typename()
-class ScalingParameters(BaseModel):
+class ScalingParameters(SchemaModel):
     """
     Parameters for scaling and offsetting sampled distribution values.
     Scaling is applied as (value * scale + offset).
@@ -48,8 +46,7 @@ class ScalingParameters(BaseModel):
     offset: float = Field(default=0, description="Offset factor to apply on the sampled distribution")
 
 
-@_sgen_namespace.sgen_typename()
-class DistributionFamily(str, Enum):
+class DistributionFamily(SchemaEnum, StrEnum):
     """
     Enumeration of supported probability distribution families.
 
@@ -69,8 +66,7 @@ class DistributionFamily(str, Enum):
     PDF = "Pdf"
 
 
-@_sgen_namespace.sgen_typename()
-class DistributionParametersBase(BaseModel):
+class DistributionParametersBase(SchemaModel, ABC):
     """
     Base class for all distribution parameter models. This class should not be instantiated directly.
 
@@ -80,8 +76,7 @@ class DistributionParametersBase(BaseModel):
     family: DistributionFamily = Field(description="Family of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
-class DistributionBase(BaseModel):
+class DistributionBase(SchemaModel, ABC):
     """
     Base class for all distribution models. This class should not be instantiated directly.
 
@@ -99,7 +94,6 @@ class DistributionBase(BaseModel):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class ScalarDistributionParameter(DistributionParametersBase):
     """
     Parameters for a scalar (constant) distribution.
@@ -111,7 +105,6 @@ class ScalarDistributionParameter(DistributionParametersBase):
     value: float = Field(default=0, description="The static value of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class Scalar(DistributionBase):
     """
     A scalar distribution that returns a constant value.
@@ -125,7 +118,6 @@ class Scalar(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class NormalDistributionParameters(DistributionParametersBase):
     """
     Parameters for a normal (Gaussian) distribution.
@@ -138,7 +130,6 @@ class NormalDistributionParameters(DistributionParametersBase):
     std: float = Field(default=0, description="Standard deviation of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class NormalDistribution(DistributionBase):
     """
     A normal (Gaussian) probability distribution.
@@ -153,7 +144,6 @@ class NormalDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class LogNormalDistributionParameters(DistributionParametersBase):
     """
     Parameters for a log-normal distribution.
@@ -166,7 +156,6 @@ class LogNormalDistributionParameters(DistributionParametersBase):
     std: float = Field(default=0, description="Standard deviation of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class LogNormalDistribution(DistributionBase):
     """
     A log-normal probability distribution.
@@ -181,7 +170,6 @@ class LogNormalDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class UniformDistributionParameters(DistributionParametersBase):
     """
     Parameters for a uniform distribution.
@@ -194,7 +182,6 @@ class UniformDistributionParameters(DistributionParametersBase):
     max: float = Field(default=0, description="Maximum value of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class UniformDistribution(DistributionBase):
     """
     A uniform probability distribution.
@@ -208,7 +195,6 @@ class UniformDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class ExponentialDistributionParameters(DistributionParametersBase):
     """
     Parameters for an exponential distribution.
@@ -220,7 +206,6 @@ class ExponentialDistributionParameters(DistributionParametersBase):
     rate: float = Field(default=0, ge=0, description="Rate parameter of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class ExponentialDistribution(DistributionBase):
     """
     An exponential probability distribution.
@@ -235,7 +220,6 @@ class ExponentialDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class GammaDistributionParameters(DistributionParametersBase):
     """
     Parameters for a gamma distribution.
@@ -248,7 +232,6 @@ class GammaDistributionParameters(DistributionParametersBase):
     rate: float = Field(default=1, ge=0, description="Rate parameter of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class GammaDistribution(DistributionBase):
     """
     A gamma probability distribution.
@@ -263,7 +246,6 @@ class GammaDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class BinomialDistributionParameters(DistributionParametersBase):
     """
     Parameters for a binomial distribution.
@@ -276,7 +258,6 @@ class BinomialDistributionParameters(DistributionParametersBase):
     p: float = Field(default=0.5, ge=0, le=1, description="Probability of success")
 
 
-@_sgen_namespace.sgen_typename()
 class BinomialDistribution(DistributionBase):
     """
     A binomial probability distribution.
@@ -291,7 +272,6 @@ class BinomialDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class BetaDistributionParameters(DistributionParametersBase):
     """
     Parameters for a beta distribution.
@@ -304,7 +284,6 @@ class BetaDistributionParameters(DistributionParametersBase):
     beta: float = Field(default=5, ge=0, description="Beta parameter of the distribution")
 
 
-@_sgen_namespace.sgen_typename()
 class BetaDistribution(DistributionBase):
     """
     A beta probability distribution.
@@ -319,7 +298,6 @@ class BetaDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class PoissonDistributionParameters(DistributionParametersBase):
     """
     Parameters for a Poisson distribution.
@@ -333,7 +311,6 @@ class PoissonDistributionParameters(DistributionParametersBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class PoissonDistribution(DistributionBase):
     """
     A Poisson probability distribution.
@@ -348,7 +325,6 @@ class PoissonDistribution(DistributionBase):
     )
 
 
-@_sgen_namespace.sgen_typename()
 class PdfDistributionParameters(DistributionParametersBase):
     """
     Parameters for a custom probability density function distribution.
@@ -375,7 +351,6 @@ class PdfDistributionParameters(DistributionParametersBase):
         return self
 
 
-@_sgen_namespace.sgen_typename()
 class PdfDistribution(DistributionBase):
     """
     A custom probability density function distribution.
@@ -436,43 +411,39 @@ if TYPE_CHECKING:
         ),
     )
 else:
-    Distribution = _sgen_namespace.sgen_typename()(
-        TypeAliasType(
-            "Distribution",
-            Annotated[
-                Scalar
-                | NormalDistribution
-                | LogNormalDistribution
-                | ExponentialDistribution
-                | UniformDistribution
-                | PoissonDistribution
-                | BinomialDistribution
-                | BetaDistribution
-                | GammaDistribution
-                | PdfDistribution,
-                Field(discriminator="family", title="Distribution", description="Available distributions"),
-                BeforeValidator(_numeric_to_scalar),
-            ],
-        )
+    Distribution = TypeAliasType(
+        "Distribution",
+        Annotated[
+            Scalar
+            | NormalDistribution
+            | LogNormalDistribution
+            | ExponentialDistribution
+            | UniformDistribution
+            | PoissonDistribution
+            | BinomialDistribution
+            | BetaDistribution
+            | GammaDistribution
+            | PdfDistribution,
+            Field(discriminator="family", title="Distribution", description="Available distributions"),
+            BeforeValidator(_numeric_to_scalar),
+            SchemaAlias(),
+        ],
     )
 
-    DistributionParameters = _sgen_namespace.sgen_typename()(
-        TypeAliasType(
-            "DistributionParameters",
-            Annotated[
-                ScalarDistributionParameter
-                | NormalDistributionParameters
-                | LogNormalDistributionParameters
-                | ExponentialDistributionParameters
-                | UniformDistributionParameters
-                | PoissonDistributionParameters
-                | BinomialDistributionParameters
-                | BetaDistributionParameters
-                | GammaDistributionParameters
-                | PdfDistributionParameters,
-                Field(
-                    discriminator="family", title="DistributionParameters", description="Parameters of the distribution"
-                ),
-            ],
-        )
+    DistributionParameters = TypeAliasType(
+        "DistributionParameters",
+        Annotated[
+            ScalarDistributionParameter
+            | NormalDistributionParameters
+            | LogNormalDistributionParameters
+            | ExponentialDistributionParameters
+            | UniformDistributionParameters
+            | PoissonDistributionParameters
+            | BinomialDistributionParameters
+            | BetaDistributionParameters
+            | GammaDistributionParameters
+            | PdfDistributionParameters,
+            Field(discriminator="family", title="DistributionParameters", description="Parameters of the distribution"),
+            SchemaAlias(),
+        ],
     )

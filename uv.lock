@@ -1,10 +1,13 @@
 version = 1
-revision = 5
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.12'",
     "python_full_version < '3.12'",
 ]
+
+[options]
+prerelease-mode = "allow"
 
 [[package]]
 name = "aind-behavior-curriculum"
@@ -26,6 +29,7 @@ version = "0.13.9"
 source = { editable = "." }
 dependencies = [
     { name = "aind-behavior-curriculum" },
+    { name = "bonsai-sgen" },
     { name = "gitpython" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
@@ -55,6 +59,7 @@ docs = [
 [package.metadata]
 requires-dist = [
     { name = "aind-behavior-curriculum" },
+    { name = "bonsai-sgen", specifier = ">=0.10.0rc1" },
     { name = "gitpython" },
     { name = "numpy" },
     { name = "pydantic" },
@@ -109,6 +114,19 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/29/13/232505664e8e2a0c7a2eb0c505cfade9d715538f89a5d62bc4c272968f62/backrefs-8.0-py312-none-any.whl", hash = "sha256:87f0fae8c5f207fe9f4b2887efc71d42f4900ac78faa1af08d675ef303692dc5", size = 398084, upload-time = "2026-07-26T19:54:19.954Z" },
     { url = "https://files.pythonhosted.org/packages/8a/69/47a3dc20abc4fa5486655fde681bd55e63211b46c886d8c02223d6468431/backrefs-8.0-py313-none-any.whl", hash = "sha256:601ce68ca12385dbda06ce264406b4c4210cf5b79fd0fd627592365c92f29a88", size = 400040, upload-time = "2026-07-26T19:54:21.194Z" },
     { url = "https://files.pythonhosted.org/packages/1c/cf/e5f9b68a5b0e939a2fb933a66c20180d0c9241bf8927f7a47fa48c1675e9/backrefs-8.0-py314-none-any.whl", hash = "sha256:9ec96efa080938be92323e8e730e57718c9c88eb15ad70bbef4e1766df591408", size = 411903, upload-time = "2026-07-26T19:54:23.221Z" },
+]
+
+[[package]]
+name = "bonsai-sgen"
+version = "0.10.0rc1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/01/37/2660a60143a8e5010a38b083060dc02f18da8778b987c56888dbcd7e80b7/bonsai_sgen-0.10.0rc1.tar.gz", hash = "sha256:1cdcb237e2d8c1124170f92c56f87002a7f381ac848f8537dd54f11738674a9f", size = 27508, upload-time = "2026-10-13T20:21:37.731Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/94/6c1181a2d39c5f2477d9dba587f13534b83f63eecae306ffebeb3615e122/bonsai_sgen-0.10.0rc1-py3-none-any.whl", hash = "sha256:4de9b0350f4d92f5d1fad09d36ca663aaa9be4eab9ced99da664b03746fd50b6", size = 15762, upload-time = "2026-10-13T20:21:36.815Z" },
 ]
 
 [[package]]

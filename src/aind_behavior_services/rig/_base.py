@@ -1,20 +1,23 @@
 from pathlib import Path
 
-from pydantic import BaseModel, Field, SerializeAsAny
+from bonsai.sgen import SchemaModel
+from pydantic import Field
 
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
 
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.Rig"
 
-class Device(BaseModel):
+
+class Device(SchemaModel):
     """A device in the rig configuration.
     All devices are expected to derive from this base class.
     """
 
     device_type: str = Field(description="Device type")
-    calibration: SerializeAsAny[BaseModel] | None = Field(default=None, description="Calibration for the device.")
+    # TODO: restore `calibration: SerializeAsAny[BaseModel] | None` once bonsai-sgen can export subclasses of a base with a SerializeAsAny field.
 
 
-class DatedCalibration(BaseModel):
+class DatedCalibration(SchemaModel):
     """Base model for dated calibrations."""
 
     date: DefaultAwareDatetime | None = Field(default=None, description="Date of the calibration")
