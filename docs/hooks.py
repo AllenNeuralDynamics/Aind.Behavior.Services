@@ -3,23 +3,18 @@
 Runs on every ``mkdocs build`` / ``mkdocs serve``:
 
 * copies ``README.md`` into ``docs/index.md`` (the site home page);
-* (re)generates the framework's JSON schemas into ``./schema``;
-* renders each JSON schema as a rich Markdown page under ``docs/schema/``
-  using ``json-schema-for-humans`` and injects a "JSON Schemas" section
-  into the navigation.
+* exports the framework's JSON schemas into ``docs/schema/``;
+* renders each JSON schema as a Markdown page under ``docs/schema/``
+  and injects a "JSON Schemas" section into the navigation.
 """
 
 import logging
-import shutil
-import sys
 from pathlib import Path
 from typing import Any
 
 log = logging.getLogger("mkdocs.hooks")
 
 REPO_ROOT = Path(__file__).parent.parent
-SRC_DIR = REPO_ROOT / "src"
-SCHEMA_SRC = REPO_ROOT / "schema"
 DOCS_DIR = REPO_ROOT / "docs"
 SCHEMA_DOCS_DIR = DOCS_DIR / "schema"
 SCHEMAS_LABEL = "JSON Schemas"
@@ -51,16 +46,14 @@ def _copy_readme() -> None:
 
 
 def _generate_schemas() -> None:
-    """(Re)generate the JSON schemas into ``./schema`` via the framework's generator."""
+    """Export the schemas of every module in the package into ``docs/schema/``."""
     try:
-        if str(SRC_DIR) not in sys.path:
-            sys.path.insert(0, str(SRC_DIR))
-        from _generators import json_schema
+        from bonsai.sgen.cli import main as sgen_main
 
-        json_schema.main()
-        log.info("Regenerated JSON schemas -> schema/")
+        SCHEMA_DOCS_DIR.mkdir(parents=True, exist_ok=True)
+        sgen_main(["export", "aind_behavior_services", "--allow-local-types", "-o", str(SCHEMA_DOCS_DIR)])
     except Exception as e:  # noqa: BLE001  # pragma: no cover - build-time best effort
-        log.warning(f"Skipping schema regeneration (using committed schema/): {e}")
+        log.warning(f"Skipping schema export: {e}")
 
 
 def _render_schema_pages() -> list[dict[str, str]]:
@@ -70,19 +63,14 @@ def _render_schema_pages() -> list[dict[str, str]]:
     collapsible block. The JSON is inlined into the page (rather than pulled via a
     ``--8<--`` snippet) so rendering does not depend on the build's working directory.
     """
-    if not SCHEMA_SRC.exists():
-        log.warning("schema/ directory not found, skipping schema pages")
+    if not SCHEMA_DOCS_DIR.exists():
+        log.warning("docs/schema directory not found, skipping schema pages")
         return []
 
-    SCHEMA_DOCS_DIR.mkdir(parents=True, exist_ok=True)
-
     nav_entries: list[dict[str, str]] = []
-    for json_file in sorted(SCHEMA_SRC.glob("*.json")):
+    for json_file in sorted(SCHEMA_DOCS_DIR.glob("*.json")):
         stem = json_file.stem
-        title = stem.replace("_", " ").title()
-
-        # Keep a downloadable copy of the raw JSON alongside the rendered page.
-        shutil.copy(json_file, SCHEMA_DOCS_DIR / json_file.name)
+        title = stem.rpartition(".")[2]
 
         raw = json_file.read_text(encoding="utf-8")
         indented = "\n".join(f"    {line}" if line else "" for line in raw.splitlines())
