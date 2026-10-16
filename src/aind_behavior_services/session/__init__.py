@@ -7,6 +7,8 @@ import aind_behavior_services.utils
 from aind_behavior_services import __semver__
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
 
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.Session"
+
 
 class Session(SchemaVersionedModel):
     version: Literal[__semver__] = __semver__

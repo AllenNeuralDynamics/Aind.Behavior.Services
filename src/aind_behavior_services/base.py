@@ -1,5 +1,6 @@
 import datetime
 import logging
+from abc import ABC
 from typing import (
     TYPE_CHECKING,
     Annotated,
@@ -21,11 +22,14 @@ from pydantic import (
 from semver import Version
 
 from aind_behavior_services import __semver__
+from aind_behavior_services.schema_model import SchemaModel
 
 logger = logging.getLogger(__name__)
 
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices"
 
-class SchemaVersionedModel(BaseModel):
+
+class SchemaVersionedModel(SchemaModel, ABC):
     aind_behavior_services_pkg_version: Literal[__semver__] = Field(
         default=__semver__, pattern=SEMVER_REGEX, title="aind_behavior_services package version", frozen=True
     )

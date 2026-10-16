@@ -124,7 +124,6 @@ nav:
         - Software Events: articles/data_formats/software_events.md
   - API Reference:
     - Overview: api/index.md
-    - Schema: api/schema.md
     - Session: api/session.md
     - Rig: api/rig.md
     - Task: api/task.md

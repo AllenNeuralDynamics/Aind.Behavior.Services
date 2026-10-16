@@ -3,9 +3,12 @@ from pathlib import Path
 from pydantic import BaseModel, Field, SerializeAsAny
 
 from aind_behavior_services.base import DefaultAwareDatetime, SchemaVersionedModel
+from aind_behavior_services.schema_model import SchemaModel
+
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.Rig"
 
 
-class Device(BaseModel):
+class Device(SchemaModel):
     """A device in the rig configuration.
     All devices are expected to derive from this base class.
     """
@@ -14,7 +17,7 @@ class Device(BaseModel):
     calibration: SerializeAsAny[BaseModel] | None = Field(default=None, description="Calibration for the device.")
 
 
-class DatedCalibration(BaseModel):
+class DatedCalibration(SchemaModel):
     """Base model for dated calibrations."""
 
     date: DefaultAwareDatetime | None = Field(default=None, description="Date of the calibration")

@@ -59,7 +59,7 @@ Validation happens here, *before* a rig is ever touched — an invalid configura
 
 ## Step 3 — Regenerate schemas and Bonsai code
 
-Whenever the models change, regenerate the derived artifacts so the Python source of truth and the Bonsai runtime stay in lockstep. Each experiment repo ships a `regenerate.py` that unions its models into a `pydantic.RootModel` and calls `convert_pydantic_to_bonsai()`, emitting the JSON Schema and the C# serializers. The framework's own schemas are regenerated with the `generate` console script. This step is enforced in CI so the models can never silently drift from the running acquisition code — see [examples](examples.md) and [architecture](architecture.md).
+Whenever the models change, regenerate the derived artifacts so the Python source of truth and the Bonsai runtime stay in lockstep. Experiment repos derive their models from `bonsai.sgen.SchemaModel` and run `bonsai-sgen export` (JSON Schema) or `bonsai-sgen generate` (C# serializers). The framework's own schemas are not committed; export them with `bonsai-sgen export aind_behavior_services`.
 
 
 ## Step 4 — Launch a session

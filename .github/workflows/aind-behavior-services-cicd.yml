@@ -50,15 +50,6 @@ jobs:
       - name: Run pytest
         run: uv run pytest
 
-      - name: Regenerate json-schema
-        run: uv run ./src/_generators/json_schema.py
-
-      - name: Check for uncommitted changes
-        shell: bash
-        run: |
-          git config --global core.safecrlf false
-          git diff --exit-code || (echo "Untracked changes found" && exit 1)
-
       - name: Build
         run: uv build
 
@@ -101,9 +92,6 @@ jobs:
       - name: Set version
         run: uv version ${{ steps.get_version.outputs.version }}
 
-      - name: Regenerate json-schema
-        run: uv run ./src/_generators/json_schema.py
-
       - name: Build
         run: uv build
 
@@ -114,14 +102,14 @@ jobs:
           path: dist/
           retention-days: 1
 
-      - name: Commit version and schema changes
+      - name: Commit version changes
         shell: bash
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Set version ${{ steps.get_version.outputs.version }} and regenerate schemas [skip ci]"
+          git commit -m "Set version ${{ steps.get_version.outputs.version }} [skip ci]"
           git push origin main
           # Move the release tag to point to this new commit.
           git tag -fa "${{ github.event.release.tag_name }}" -m "${{ github.event.release.tag_name }}"

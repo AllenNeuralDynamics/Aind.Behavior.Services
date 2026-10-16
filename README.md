@@ -60,10 +60,15 @@ One of the core principles of this repository is the strict adherence to [json-s
 
 ---
 
-## Regenerating schemas
+## Generating schemas
 
-Once a Pydantic model is updated, updates to all downstream dependencies must be made to ensure that the ground-truth data schemas (and all dependent interoperability tools) are also updated. This can be achieved by running `uv run ./src/_generators/<__init__.py>` from the root of the repository.
-This script will regenerate all `json-schemas` along with `C#` code (`./scr/Extensions`) used by the Bonsai environment.
+JSON schemas are not committed. Generate them from the Python models when needed, for example for all modules of this package:
+
+```powershell
+uv run bonsai-sgen export aind_behavior_services --allow-local-types -o schema
+```
+
+or generate the C# types directly with `bonsai-sgen generate`. `uv run python -m _generators` only regenerates the Harp device models (`rig/_harp_gen.py`).
 
 ---
 

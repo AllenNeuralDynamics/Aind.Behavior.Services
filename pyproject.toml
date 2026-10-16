@@ -20,6 +20,7 @@ version = "0.13.9"
 
 dependencies = [
     'pydantic',
+    'bonsai-sgen>=0.10.0rc1',
     'numpy',
     'aind-behavior-curriculum',
     'gitpython',
@@ -46,9 +47,6 @@ docs = [
     'pymdown-extensions',
 ]
 
-[project.scripts]
-generate = "_generators:main"
-
 [tool.ruff]
 line-length = 120
 target-version = 'py311'
@@ -66,3 +64,6 @@ ignore-words-list = 'nd, assertIn'
 [tool.uv]
 default-groups = ['dev']
 required-version = '>=0.8.4'
+
+[tool.uv.sources]
+bonsai-sgen = { git = "https://github.com/bonsai-rx/sgen", rev = "f8063e47ecd13b5bcc037a5d688e33b62563d01e" }

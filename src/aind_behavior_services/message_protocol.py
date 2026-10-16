@@ -1,23 +1,24 @@
 import enum
-from typing import TYPE_CHECKING, Annotated, Any, Generic, Literal, TypeVar
+from typing import Annotated, Any, Generic, Literal, TypeVar
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, RootModel, SerializeAsAny, create_model
+from bonsai.sgen import SchemaAlias, SchemaEnum
+from pydantic import AwareDatetime, Field, SerializeAsAny
+from typing_extensions import TypeAliasType
 
-from .schema import SgenNamespace
+from aind_behavior_services.schema_model import SchemaModel
 
 PROTOCOL_VERSION = 0
-_sgen_namespace = SgenNamespace("AllenNeuralDynamics.AindBehaviorServices.MessageProtocol")
+SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol"
 # From the point of view of a protocol API only the major version is relevant for de(serialization) as everything is expected to be backward compatible within the same major version.
 
 # ================================================================================
 # Core classes and types for the message protocol
 # ================================================================================
 
-TPayload = TypeVar("TPayload", bound=BaseModel)
+TPayload = TypeVar("TPayload", bound=SchemaModel)
 
 
-@_sgen_namespace.sgen_typename()
-class MessageType(enum.StrEnum):
+class MessageType(SchemaEnum, enum.StrEnum):
     """
     Enumeration of possible message types in the protocol.
 
@@ -34,7 +35,7 @@ class MessageType(enum.StrEnum):
     EVENT = "event"
 
 
-class _Message(BaseModel, Generic[TPayload]):
+class Message(SchemaModel, Generic[TPayload]):
     """
     A generic message container that can carry any payload type.
     While not marked as abstract, it is intended to be subclassed
@@ -63,8 +64,7 @@ class _Message(BaseModel, Generic[TPayload]):
 # ================================================================================
 # Core payload types
 # ================================================================================
-@_sgen_namespace.sgen_typename()
-class LogLevel(enum.IntEnum):
+class LogLevel(SchemaEnum, enum.IntEnum):
     """
     Enumeration of log levels for the logging system.
 
@@ -87,8 +87,7 @@ class LogLevel(enum.IntEnum):
     NOTSET = 0
 
 
-@_sgen_namespace.sgen_typename()
-class LogPayload(BaseModel):
+class LogPayload(SchemaModel):
     """
     Payload for log messages containing logging information.
 
@@ -120,8 +119,7 @@ class LogPayload(BaseModel):
     application_version: str | None = Field(default=None, description="The version of the application")
 
 
-@_sgen_namespace.sgen_typename()
-class HeartbeatStatus(enum.IntEnum):
+class HeartbeatStatus(SchemaEnum, enum.IntEnum):
     """
     Enumeration of possible heartbeat status values.
 
@@ -142,8 +140,7 @@ class HeartbeatStatus(enum.IntEnum):
     CRITICAL = 3
 
 
-@_sgen_namespace.sgen_typename()
-class HeartbeatPayload(BaseModel):
+class HeartbeatPayload(SchemaModel):
     """
     Payload for heartbeat messages indicating system health status.
 
@@ -181,40 +178,15 @@ class HeartbeatPayload(BaseModel):
 # Register payloads into the protocol
 # ================================================================================
 
-if TYPE_CHECKING:
-    RegisteredPayload = LogPayload | HeartbeatPayload
-
-else:
-
-    @_sgen_namespace.sgen_typename()
-    class RegisteredPayload(RootModel):
-        root: Annotated[
-            LogPayload | HeartbeatPayload,
-            Field(discriminator="payload_type"),
-        ]
-        model_config: ConfigDict = ConfigDict(json_schema_extra={"x-abstract": True})
-
-
-RegisteredMessages = _sgen_namespace.sgen_typename()(
-    create_model(
-        "RegisteredMessages",
-        __base__=_Message[RegisteredPayload],
-    )
+RegisteredPayload = TypeAliasType(
+    "RegisteredPayload",
+    Annotated[LogPayload | HeartbeatPayload, Field(discriminator="payload_type"), SchemaAlias()],
 )
 
 
-@_sgen_namespace.sgen_typename()
-class Message(RootModel):
-    root: _Message[Any]
+class RegisteredMessages(Message[RegisteredPayload]):
+    """A message carrying any of the registered payloads."""
 
 
-@_sgen_namespace.sgen_typename()
-class MessageProtocol(BaseModel):
-    """
-    Container for the complete message protocol including all registered message types.
-
-    """
-
-    model_config = ConfigDict(json_schema_extra={"x-abstract": True})
-    registered_message: RegisteredMessages
-    message: Message
+class _Message(Message[Any], sgen_typename=f"{SGEN_NAMESPACE}.Message"):
+    """Concrete form of `Message` for schema export, since generic models cannot be exported."""
