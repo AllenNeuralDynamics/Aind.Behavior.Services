@@ -44,7 +44,7 @@
           ],
           "default": null,
           "description": "The synchronization quad value",
-          "title": "Sync Quad Value"
+          "title": "SyncQuadValue"
         },
         "frame_index": {
           "anyOf": [
@@ -58,7 +58,7 @@
           ],
           "default": null,
           "description": "The frame index of the event",
-          "title": "Frame Index"
+          "title": "FrameIndex"
         },
         "frame_timestamp": {
           "anyOf": [
@@ -72,7 +72,7 @@
           ],
           "default": null,
           "description": "The timestamp of the frame",
-          "title": "Frame Timestamp"
+          "title": "FrameTimestamp"
         }
       },
       "title": "RenderSynchState",
@@ -143,7 +143,7 @@
           ],
           "default": null,
           "description": "The frame index of the event",
-          "title": "Frame Index"
+          "title": "FrameIndex"
         },
         "frame_timestamp": {
           "anyOf": [
@@ -156,7 +156,7 @@
           ],
           "default": null,
           "description": "The timestamp of the frame",
-          "title": "Frame Timestamp"
+          "title": "FrameTimestamp"
         },
         "data": {
           "default": null,
@@ -179,7 +179,7 @@
           ],
           "default": null,
           "description": "The data type hint of the event",
-          "title": "Data Type Hint"
+          "title": "DataTypeHint"
         }
       },
       "required": [

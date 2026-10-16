@@ -1,13 +1,14 @@
 {
   "$defs": {
     "AindManipulator": {
-      "allOf": [
-        {
-          "$ref": "#/$defs/HarpStepperDriver"
-        }
-      ],
       "description": "AindManipulator device definition",
       "properties": {
+        "device_type": {
+          "const": "StepperDriver",
+          "default": "StepperDriver",
+          "title": "DeviceType",
+          "type": "string"
+        },
         "calibration": {
           "$ref": "#/$defs/AindManipulatorCalibration",
           "default": {
@@ -73,7 +74,32 @@
               "z": 0.0
             }
           },
-          "description": "Calibration for the device."
+          "description": "Calibration for the device.",
+          "title": "Calibration"
+        },
+        "who_am_i": {
+          "const": 1130,
+          "default": 1130,
+          "title": "WhoAmI",
+          "type": "integer"
+        },
+        "serial_number": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Device serial number",
+          "title": "SerialNumber"
+        },
+        "port_name": {
+          "description": "Device port name",
+          "title": "PortName",
+          "type": "string"
         }
       },
       "required": [
@@ -171,7 +197,8 @@
             "y1": 0.0,
             "y2": 0.0,
             "z": 0.0
-          }
+          },
+          "title": "InitialPosition"
         }
       },
       "title": "AindManipulatorCalibration",
@@ -255,46 +282,6 @@
       "title": "AxisConfiguration",
       "type": "object",
       "x-sgen-typename": "AllenNeuralDynamics.AindManipulator.AxisConfiguration"
-    },
-    "HarpStepperDriver": {
-      "properties": {
-        "device_type": {
-          "const": "StepperDriver",
-          "default": "StepperDriver",
-          "title": "Device Type",
-          "type": "string"
-        },
-        "who_am_i": {
-          "const": 1130,
-          "default": 1130,
-          "title": "Who Am I",
-          "type": "integer"
-        },
-        "serial_number": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Device serial number",
-          "title": "Serial Number"
-        },
-        "port_name": {
-          "description": "Device port name",
-          "title": "Port Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "port_name"
-      ],
-      "title": "HarpStepperDriver",
-      "type": "object",
-      "x-sgen-typename": "AllenNeuralDynamics.AindBehaviorServices.Rig.Harp.HarpStepperDriver"
     },
     "ManipulatorPosition": {
       "description": "Represents a position in the manipulator coordinate system",

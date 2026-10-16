@@ -53,7 +53,7 @@
           ],
           "default": null,
           "description": "Name of the session. This will be used to create a folder in the root path. If not provided, it will be generated using subject and date.",
-          "title": "Session Name"
+          "title": "SessionName"
         },
         "subject": {
           "description": "Name of the subject",
@@ -84,18 +84,18 @@
           ],
           "default": null,
           "description": "Commit hash of the repository",
-          "title": "Commit Hash"
+          "title": "CommitHash"
         },
         "allow_dirty_repo": {
           "default": false,
           "description": "Allow running from a dirty repository",
-          "title": "Allow Dirty Repo",
+          "title": "AllowDirtyRepo",
           "type": "boolean"
         },
         "skip_hardware_validation": {
           "default": false,
           "description": "Skip hardware validation",
-          "title": "Skip Hardware Validation",
+          "title": "SkipHardwareValidation",
           "type": "boolean"
         }
       },

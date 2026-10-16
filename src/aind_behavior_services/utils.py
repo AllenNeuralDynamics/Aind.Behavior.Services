@@ -175,7 +175,7 @@ def format_datetime(value: datetime.datetime, is_tz_strict: bool = False) -> str
 
 def now() -> datetime.datetime:
     """Returns the current time as a timezone unaware datetime."""
-    return datetime.datetime.now()  # noqa: DTZ005 - intentionally timezone unaware
+    return datetime.datetime.now()
 
 
 def utcnow() -> datetime.datetime:

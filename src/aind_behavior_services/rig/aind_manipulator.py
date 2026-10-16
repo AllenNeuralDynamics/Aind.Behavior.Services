@@ -1,8 +1,10 @@
 from enum import IntEnum
 from typing import Literal
 
-from bonsai.sgen import SchemaEnum, SchemaModel
+from bonsai.sgen import SchemaEnum
 from pydantic import Field
+
+from aind_behavior_services.schema_model import SchemaModel
 
 from ._harp_gen import HarpStepperDriver
 

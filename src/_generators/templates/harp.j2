@@ -3,9 +3,11 @@
 from abc import ABC
 from typing import TYPE_CHECKING, Annotated, Literal
 
-from bonsai.sgen import SchemaAlias, SchemaModel
+from bonsai.sgen import SchemaAlias
 from pydantic import Field, field_validator
 from typing_extensions import TypeAliasType
+
+from aind_behavior_services.schema_model import SchemaModel
 
 from ._base import Device
 

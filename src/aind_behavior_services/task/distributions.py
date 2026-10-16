@@ -2,9 +2,11 @@ from abc import ABC
 from enum import StrEnum
 from typing import TYPE_CHECKING, Annotated, Any, Literal, Self
 
-from bonsai.sgen import SchemaAlias, SchemaEnum, SchemaModel
+from bonsai.sgen import SchemaAlias, SchemaEnum
 from pydantic import BeforeValidator, Field, NonNegativeFloat, field_validator, model_validator
 from typing_extensions import TypeAliasType
+
+from aind_behavior_services.schema_model import SchemaModel
 
 SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.Distributions"
 

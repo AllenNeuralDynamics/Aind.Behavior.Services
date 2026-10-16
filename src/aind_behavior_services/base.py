@@ -11,7 +11,6 @@ from typing import (
 )
 
 from aind_behavior_curriculum.task import SEMVER_REGEX
-from bonsai.sgen import SchemaModel
 from pydantic import (
     AwareDatetime,
     BaseModel,
@@ -23,6 +22,7 @@ from pydantic import (
 from semver import Version
 
 from aind_behavior_services import __semver__
+from aind_behavior_services.schema_model import SchemaModel
 
 logger = logging.getLogger(__name__)
 

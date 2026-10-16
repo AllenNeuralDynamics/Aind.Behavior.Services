@@ -1,9 +1,11 @@
 import enum
 from typing import Annotated, Any, Generic, Literal, TypeVar
 
-from bonsai.sgen import SchemaAlias, SchemaEnum, SchemaModel
+from bonsai.sgen import SchemaAlias, SchemaEnum
 from pydantic import AwareDatetime, Field, SerializeAsAny
 from typing_extensions import TypeAliasType
+
+from aind_behavior_services.schema_model import SchemaModel
 
 PROTOCOL_VERSION = 0
 SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.MessageProtocol"

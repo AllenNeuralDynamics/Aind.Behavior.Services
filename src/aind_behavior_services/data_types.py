@@ -1,8 +1,10 @@
 from enum import StrEnum
 from typing import Any, Generic, TypeVar
 
-from bonsai.sgen import SchemaEnum, SchemaModel
+from bonsai.sgen import SchemaEnum
 from pydantic import AwareDatetime, Field, SerializeAsAny
+
+from aind_behavior_services.schema_model import SchemaModel
 
 SGEN_NAMESPACE = "AllenNeuralDynamics.AindBehaviorServices.DataTypes"
 

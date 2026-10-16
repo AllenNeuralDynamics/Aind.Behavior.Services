@@ -6,7 +6,7 @@
         "payload_type": {
           "const": "HeartbeatPayload",
           "default": "HeartbeatPayload",
-          "title": "Payload Type",
+          "title": "PayloadType",
           "type": "string"
         },
         "context": {
@@ -22,7 +22,8 @@
         },
         "status": {
           "$ref": "#/$defs/HeartbeatStatus",
-          "description": "The status of the heartbeat message"
+          "description": "The status of the heartbeat message",
+          "title": "Status"
         }
       },
       "required": [
@@ -78,7 +79,7 @@
         "payload_type": {
           "const": "LogPayload",
           "default": "LogPayload",
-          "title": "Payload Type",
+          "title": "PayloadType",
           "type": "string"
         },
         "message": {
@@ -89,7 +90,8 @@
         "level": {
           "$ref": "#/$defs/LogLevel",
           "default": 10,
-          "description": "The level of the log message"
+          "description": "The level of the log message",
+          "title": "Level"
         },
         "context": {
           "anyOf": [
@@ -113,7 +115,7 @@
           ],
           "default": null,
           "description": "The version of the application",
-          "title": "Application Version"
+          "title": "ApplicationVersion"
         }
       },
       "required": [
@@ -143,7 +145,7 @@
         "protocol_version": {
           "const": 0,
           "default": 0,
-          "title": "Protocol Version",
+          "title": "ProtocolVersion",
           "type": "integer"
         },
         "timestamp": {
@@ -161,7 +163,8 @@
         },
         "payload": {
           "$ref": "#/$defs/RegisteredPayload",
-          "description": "The payload of the message"
+          "description": "The payload of the message",
+          "title": "Payload"
         },
         "process_id": {
           "anyOf": [
@@ -173,7 +176,7 @@
             }
           ],
           "description": "Process that created the message",
-          "title": "Process Id"
+          "title": "ProcessId"
         },
         "hostname": {
           "anyOf": [
@@ -197,7 +200,7 @@
             }
           ],
           "description": "Rig name that created the message",
-          "title": "Rig Name"
+          "title": "RigName"
         }
       },
       "required": [
@@ -239,7 +242,7 @@
         "protocol_version": {
           "const": 0,
           "default": 0,
-          "title": "Protocol Version",
+          "title": "ProtocolVersion",
           "type": "integer"
         },
         "timestamp": {
@@ -269,7 +272,7 @@
             }
           ],
           "description": "Process that created the message",
-          "title": "Process Id"
+          "title": "ProcessId"
         },
         "hostname": {
           "anyOf": [
@@ -293,7 +296,7 @@
             }
           ],
           "description": "Rig name that created the message",
-          "title": "Rig Name"
+          "title": "RigName"
         }
       },
       "required": [
